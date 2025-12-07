@@ -1,12 +1,62 @@
-export function getTelegramUser() {
-    if (!window.Telegram?.WebApp) return null;
+import { tg } from "./config.js";
+import { uploadWorkerPhoto } from "./storage.js";
+import { getWorkerByTelegramId, createWorker } from "./workers.js";
+import { showMainApp } from "./ui.js";
 
-    const user = Telegram.WebApp.initDataUnsafe?.user;
-    if (!user) return null;
+// Проверка наличия worker
+export async function initAuth() {
+  const user = tg?.initDataUnsafe?.user;
 
-    return {
-        telegram_id: user.id.toString(),
-        full_name: ${user.first_name} ${user.last_name || ""}.trim(),
-        username: user.username || ""
-    };
+  if (!user) {
+    alert("Open via Telegram bot");
+    return;
+  }
+
+  const telegramId = user.id.toString();
+
+  const worker = await getWorkerByTelegramId(telegramId);
+
+  if (!worker) {
+    document.getElementById("registerScreen").classList.remove("hidden");
+  } else {
+    showMainApp(worker);
+  }
+}
+
+// РЕГИСТРАЦИЯ
+export async function registerWorker() {
+  const tgUser = tg.initDataUnsafe.user;
+  const telegram_id = tgUser.id.toString();
+
+  const full_name = regName.value.trim();
+  const phone = regPhone.value.trim();
+  const city = regCity.value.trim();
+  const bio = regBio.value.trim();
+
+  const categories = Array.from(regCategories.selectedOptions).map(o => o.value);
+  const languages = Array.from(regLanguages.selectedOptions).map(o => o.value);
+
+  const photoFile = regPhoto.files[0];
+  let photo_url = null;
+
+  if (photoFile) {
+    photo_url = await uploadWorkerPhoto(photoFile, telegram_id);
+  }
+
+  const newWorker = await createWorker({
+    telegram_id,
+    full_name,
+    phone,
+    city,
+    categories,
+    languages,
+    bio,
+    photo_url,
+    status: "online",
+  });
+
+  if (newWorker) {
+    document.getElementById("registerScreen").classList.add("hidden");
+    showMainApp(newWorker);
+  }
 }
