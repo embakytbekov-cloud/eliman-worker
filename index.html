@@ -4,45 +4,66 @@
   <meta charset="UTF-8" />
   <title>ELIMAN WORKER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: sans-serif;
+    }
+  </style>
 </head>
 
-<body class="bg-slate-900 text-white p-6">
-  <div id="login" class="text-center">
+<body class="p-6">
+
+  <!-- LOGIN SCREEN -->
+  <div id="login" class="text-center mt-20">
     <h1 class="text-3xl font-bold mb-4">ELIMAN WORKER</h1>
-    <span id="status" class="px-3 py-1 bg-red-500 rounded-full text-sm">OFFLINE</span>
+    <span class="px-4 py-1 bg-red-600 rounded-full">OFFLINE</span>
 
     <p class="mt-4 text-gray-300">Войдите через Telegram</p>
 
-    <button id="loginBtn" class="mt-6 bg-green-500 px-6 py-3 rounded-xl font-bold">
+    <button id="loginBtn"
+      class="mt-6 bg-green-500 px-8 py-3 rounded-xl font-bold text-lg">
       Войти через Telegram
     </button>
 
-    <p id="error" class="mt-4 text-red-400 hidden">Ошибка</p>
+    <p id="error" class="text-red-400 mt-4 hidden"></p>
   </div>
 
-  <div id="main" class="hidden text-center">
-    <h1 class="text-3xl font-bold mb-4">Welcome Worker</h1>
-    <p id="workerName" class="text-xl"></p>
+
+  <!-- MAIN SCREEN -->
+  <div id="main" class="hidden text-center mt-20">
+    <h1 class="text-3xl font-bold">Добро пожаловать</h1>
+    <p id="workerName" class="text-xl mt-4"></p>
   </div>
+
 
 <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+  // --- Supabase ---
   const supabase = createClient(
     "https://ccqldccmikwdjkbxmcsn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjcWxkY2NtaWt3ZGprYnhtY3NuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxMzIxODEsImV4cCI6MjA4MDcwODE4MX0.ce7CPoACHTU6ryGjoELPywa1rpGmDKG5TIZxPFbleuA"
   );
 
+  // --- Telegram ---
   const tg = window.Telegram.WebApp;
   tg.expand();
 
+  // LOGIN BUTTON
   document.getElementById("loginBtn").onclick = async () => {
     const user = tg.initDataUnsafe?.user;
 
     if (!user) {
-      document.getElementById("error").innerText = "Открой через Telegram!";
+      document.getElementById("error").innerText = "Откройте через Telegram!";
       document.getElementById("error").classList.remove("hidden");
       return;
     }
@@ -50,14 +71,16 @@
     const telegram_id = String(user.id);
     const full_name = user.first_name + " " + (user.last_name || "");
 
+    // ПРОВЕРЯЕМ WORKER
     let { data: worker, error } = await supabase
       .from("workers")
       .select("*")
       .eq("telegram_id", telegram_id)
       .single();
 
+    // ЕСЛИ НЕТ – СОЗДАЁМ
     if (!worker) {
-      const { data: newWorker } = await supabase
+      let { data: newWorker, error: insertErr } = await supabase
         .from("workers")
         .insert({
           telegram_id: telegram_id,
@@ -70,6 +93,7 @@
       worker = newWorker;
     }
 
+    // ПОКАЗЫВАЕМ MAIN SCREEN
     document.getElementById("login").classList.add("hidden");
     document.getElementById("main").classList.remove("hidden");
     document.getElementById("workerName").textContent = worker.full_name;
