@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>ELIMAN WORKER</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Telegram WebApp -->
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <!-- Tailwind -->
@@ -22,69 +22,47 @@
 
 <body class="p-6">
 
-  <!-- LOGIN SCREEN -->
-  <div id="login" class="text-center mt-20">
-    <h1 class="text-3xl font-bold mb-4">ELIMAN WORKER</h1>
-    <span class="px-4 py-1 bg-red-600 rounded-full">OFFLINE</span>
-
-    <p class="mt-4 text-gray-300">Войдите через Telegram</p>
-
-    <button id="loginBtn"
-      class="mt-6 bg-green-500 px-8 py-3 rounded-xl font-bold text-lg">
-      Войти через Telegram
-    </button>
-
-    <p id="error" class="text-red-400 mt-4 hidden"></p>
+  <div id="content" class="mt-20 text-center">
+    <h1 class="text-3xl font-bold">Загрузка...</h1>
   </div>
-
-
-  <!-- MAIN SCREEN -->
-  <div id="main" class="hidden text-center mt-20">
-    <h1 class="text-3xl font-bold">Добро пожаловать</h1>
-    <p id="workerName" class="text-xl mt-4"></p>
-  </div>
-
 
 <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-  // --- Supabase ---
   const supabase = createClient(
     "https://ccqldccmikwdjkbxmcsn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNjcWxkY2NtaWt3ZGprYnhtY3NuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxMzIxODEsImV4cCI6MjA4MDcwODE4MX0.ce7CPoACHTU6ryGjoELPywa1rpGmDKG5TIZxPFbleuA"
   );
 
-  // --- Telegram ---
   const tg = window.Telegram.WebApp;
   tg.expand();
 
-  // LOGIN BUTTON
-  document.getElementById("loginBtn").onclick = async () => {
+  async function init() {
     const user = tg.initDataUnsafe?.user;
 
     if (!user) {
-      document.getElementById("error").innerText = "Откройте через Telegram!";
-      document.getElementById("error").classList.remove("hidden");
+      document.getElementById("content").innerHTML =
+        "<p class='text-red-400 text-xl'>Открой через Telegram</p>";
       return;
     }
 
     const telegram_id = String(user.id);
     const full_name = user.first_name + " " + (user.last_name || "");
 
-    // ПРОВЕРЯЕМ WORKER
-    let { data: worker, error } = await supabase
+    // Проверяем в Supabase
+    let { data: worker } = await supabase
       .from("workers")
       .select("*")
       .eq("telegram_id", telegram_id)
       .single();
 
-    // ЕСЛИ НЕТ – СОЗДАЁМ
+    // Если нет — создаём
     if (!worker) {
-      let { data: newWorker, error: insertErr } = await supabase
+      let { data: newWorker } = await supabase
         .from("workers")
         .insert({
-          telegram_id: telegram_id,
-          full_name: full_name,
+          telegram_id,
+          full_name,
           skills: []
         })
         .select()
@@ -93,11 +71,14 @@
       worker = newWorker;
     }
 
-    // ПОКАЗЫВАЕМ MAIN SCREEN
-    document.getElementById("login").classList.add("hidden");
-    document.getElementById("main").classList.remove("hidden");
-    document.getElementById("workerName").textContent = worker.full_name;
-  };
+    // Показываем главную страницу
+    document.getElementById("content").innerHTML = `
+      <h1 class="text-3xl font-bold mb-4">Добро пожаловать</h1>
+      <p class="text-xl text-green-400">${worker.full_name}</p>
+    `;
+  }
+
+  init();
 </script>
 
 </body>
