@@ -1,464 +1,137 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>ELIMAN WORKER – Регистрация</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <title>ELIMAN WORKER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Telegram WebApp -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Telegram WebApp -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <style>
-    body {
-      background: #000000;
-      color: #ffffff;
-      padding-top: calc(env(safe-area-inset-top) + 80px);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-    }
-
-    .app-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 14px 18px;
-      padding-top: calc(env(safe-area-inset-top) + 10px);
-      background: #070708;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 50;
-      border-bottom: 1px solid #111827;
-    }
-
-    .input-field {
-      background: #111827;
-      border: 1px solid #1f2937;
-      border-radius: 14px;
-      padding: 13px 14px;
-      font-size: 16px;
-      color: #ffffff;
-      width: 100%;
-    }
-
-    .input-field::placeholder {
-      color: #6b7280;
-    }
-
-    .section-title {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .section-subtitle {
-      font-size: 13px;
-      color: #9ca3af;
-    }
-
-    .primary-btn {
-      background: #06c167;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 17px;
-      padding: 14px;
-      width: 100%;
-      text-align: center;
-    }
-
-    .category-card {
-      background: #111827;
-      border-radius: 14px;
-      border: 1px solid #1f2937;
-      padding: 12px 12px;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-    }
-
-    .category-card span {
-      color: #e5e7eb;
-    }
-
-    .category-card small {
-      color: #6b7280;
-      font-size: 11px;
-    }
-
-    .category-card.selected {
-      border-color: #06c167;
-      box-shadow: 0 0 16px rgba(6, 193, 103, 0.4);
-    }
-
-    .service-group-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #e5e7eb;
-    }
-
-    .photo-circle {
-      width: 140px;
-      height: 140px;
-      border-radius: 999px;
-      background: #111827;
-      border: 2px dashed #374151;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 18px auto;
-      color: #9ca3af;
-      font-size: 13px;
-      text-align: center;
-      padding: 8px;
-    }
-  </style>
+    <style>
+        .hidden { display: none; }
+        .category-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .category-card.selected {
+            border-color: #10b981;
+            background: #064e3b;
+        }
+        #photoPreview {
+            width: 140px;
+            height: 140px;
+            border-radius: 9999px;
+            background: #374151;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            color: #9ca3af;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
-<body>
+<body class="bg-gray-900 text-white p-6 pt-20">
 
-  <!-- HEADER -->
-  <header class="app-header">
-    <button id="closeBtn" class="text-sm text-gray-300">
-      Закрыть
-    </button>
+    <h1 id="headerTitle" class="text-3xl font-bold mb-6">О вас</h1>
 
-    <div class="text-center flex-1">
-      <div id="headerTitle" class="text-base font-semibold">
-        Регистрация
-      </div>
-    </div>
-
-    <div class="opacity-0">•••</div>
-  </header>
-
-  <main class="px-4 pb-10">
-
-    <!-- STEP 1: PERSONAL INFO + ADDRESS -->
+    <!-- STEP 1 -->
     <section id="step1" class="space-y-4">
-      <div>
-        <div class="section-title">О вас</div>
-        <div class="section-subtitle">Заполните данные, чтобы мы знали, куда отправлять заказы</div>
-      </div>
 
-      <input id="fullName" class="input-field" type="text" placeholder="Полное имя" />
+        <input id="fullName" class="w-full p-3 rounded bg-gray-800" placeholder="Полное имя" />
+        <input id="phone" class="w-full p-3 rounded bg-gray-800" placeholder="Телефон" />
+        <input id="street" class="w-full p-3 rounded bg-gray-800" placeholder="Улица, дом" />
+        <input id="apt" class="w-full p-3 rounded bg-gray-800" placeholder="Квартира/офис (необязательно)" />
+        <input id="city" class="w-full p-3 rounded bg-gray-800" placeholder="Город" />
+        <input id="state" class="w-full p-3 rounded bg-gray-800" placeholder="Штат" />
+        <input id="zip" class="w-full p-3 rounded bg-gray-800" placeholder="ZIP код" />
 
-      <input id="phone" class="input-field" type="tel" placeholder="Телефон" />
+        <select id="language" class="w-full p-3 rounded bg-gray-800">
+            <option value="English">English</option>
+            <option value="Russian">Русский</option>
+            <option value="Spanish">Spanish</option>
+        </select>
 
-      <div class="pt-2">
-        <div class="section-subtitle mb-1">Адрес</div>
-      </div>
-
-      <input id="addressLine1" class="input-field" type="text" placeholder="Улица, дом" />
-
-      <input id="addressLine2" class="input-field" type="text" placeholder="Квартира / офис (необязательно)" />
-
-      <div class="flex gap-3">
-        <input id="city" class="input-field" type="text" placeholder="Город" />
-        <input id="state" class="input-field" type="text" placeholder="Штат" />
-      </div>
-
-      <input id="zip" class="input-field" type="text" placeholder="ZIP код" />
-
-      <select id="language" class="input-field">
-        <option value="">Предпочитаемый язык</option>
-        <option value="en">English</option>
-        <option value="ru">Русский</option>
-        <option value="es">Español</option>
-      </select>
-
-      <button id="toStep2Btn" class="primary-btn mt-2">
-        Далее
-      </button>
+        <button id="nextBtn"
+                class="w-full bg-green-500 p-3 rounded text-lg font-bold mt-4">
+            Далее
+        </button>
     </section>
 
-    <!-- STEP 2: SERVICES -->
-    <section id="step2" class="space-y-5 hidden">
-      <div>
-        <div class="section-title">Ваши услуги</div>
-        <div class="section-subtitle">Выберите, что вы готовы выполнять. Можно несколько.</div>
-      </div>
 
-      <!-- CLEANING -->
-      <div>
-        <div class="service-group-title">🧹 Cleaning</div>
-        <div class="space-y-2">
-          <div class="category-card" data-service="regular_cleaning">
-            <div>
-              <span>Regular Cleaning</span><br />
-              <small>Стандартная уборка квартиры/дома</small>
+    <!-- STEP 2: CATEGORY -->
+    <section id="step2" class="hidden space-y-4">
+        <h2 class="text-2xl font-bold mb-2">Выберите категорию</h2>
+
+        <div class="space-y-3">
+
+            <div class="category-card" data-cat="appliance">
+                <b>Appliance Repair</b>
+                <div class="text-gray-400 text-sm">Washer, Dryer, Refrigerator…</div>
             </div>
-          </div>
-          <div class="category-card" data-service="deep_cleaning">
-            <div>
-              <span>Deep Cleaning</span><br />
-              <small>Глубокая уборка, после запущенного состояния</small>
+
+            <div class="category-card" data-cat="cleaning">
+                <b>Cleaning</b>
+                <div class="text-gray-400 text-sm">Home, Office, Car, Lawn…</div>
             </div>
-          </div>
-          <div class="category-card" data-service="move_in_out">
-            <div>
-              <span>Move-in / Move-out</span><br />
-              <small>Уборка при въезде/выезде</small>
+
+            <div class="category-card" data-cat="handyman">
+                <b>Handyman</b>
+                <div class="text-gray-400 text-sm">Repair, Painting, Install…</div>
             </div>
-          </div>
-          <div class="category-card" data-service="airbnb_cleaning">
-            <div>
-              <span>Airbnb Cleaning</span><br />
-              <small>Быстрая уборка между гостями</small>
+
+            <div class="category-card" data-cat="locksmith">
+                <b>Locksmith</b>
+                <div class="text-gray-400 text-sm">Repair, Install, Car locks…</div>
             </div>
-          </div>
-          <div class="category-card" data-service="office_cleaning">
-            <div>
-              <span>Office Cleaning</span><br />
-              <small>Уборка офисов и коммерции</small>
+
+            <div class="category-card" data-cat="moving">
+                <b>Moving</b>
+                <div class="text-gray-400 text-sm">Packing, Lifting, Transport…</div>
             </div>
-          </div>
+
+            <div class="category-card" data-cat="smart_home">
+                <b>Smart Home Service</b>
+                <div class="text-gray-400 text-sm">Video Doorbell, Cameras…</div>
+            </div>
+
+            <div class="category-card" data-cat="tire">
+                <b>Tire Service</b>
+                <div class="text-gray-400 text-sm">Tire Change, Jump Start…</div>
+            </div>
+
         </div>
-      </div>
 
-      <!-- HANDYMAN -->
-      <div>
-        <div class="service-group-title">🔧 Handyman</div>
-        <div class="space-y-2">
-          <div class="category-card" data-service="tv_mounting">
-            <div>
-              <span>TV Mounting</span><br />
-              <small>Крепление телевизора</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="furniture_assembly">
-            <div>
-              <span>Furniture Assembly</span><br />
-              <small>Сборка мебели</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="painting">
-            <div>
-              <span>Painting</span><br />
-              <small>Покраска стен / мелкий ремонт</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="drywall_patch">
-            <div>
-              <span>Drywall Patch</span><br />
-              <small>Латание дыр в стенах</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="door_window_repair">
-            <div>
-              <span>Door / Window Repair</span><br />
-              <small>Ремонт дверей и окон</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="shelves_install">
-            <div>
-              <span>Shelves Install</span><br />
-              <small>Установка полок и карнизов</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- APPLIANCE -->
-      <div>
-        <div class="service-group-title">🧊 Appliance Repair</div>
-        <div class="space-y-2">
-          <div class="category-card" data-service="washer_repair">
-            <div>
-              <span>Washer Repair</span><br />
-              <small>Ремонт стиральной машины</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="dryer_repair">
-            <div>
-              <span>Dryer Repair</span><br />
-              <small>Ремонт сушилки</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="fridge_repair">
-            <div>
-              <span>Fridge Repair</span><br />
-              <small>Ремонт холодильника</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="dishwasher_repair">
-            <div>
-              <span>Dishwasher Repair</span><br />
-              <small>Ремонт посудомоечной машины</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="oven_stove_repair">
-            <div>
-              <span>Oven / Stove Repair</span><br />
-              <small>Ремонт плиты / духовки</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MOVING -->
-      <div>
-        <div class="service-group-title">🚚 Moving</div>
-        <div class="space-y-2">
-          <div class="category-card" data-service="help_moving">
-            <div>
-              <span>Help Moving</span><br />
-              <small>Помощь с переездом</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="packing">
-            <div>
-              <span>Packing / Unpacking</span><br />
-              <small>Упаковка и распаковка вещей</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="furniture_moving">
-            <div>
-              <span>Furniture Moving</span><br />
-              <small>Перенос мебели</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="junk_removal">
-            <div>
-              <span>Junk Removal</span><br />
-              <small>Вывоз старой мебели / мусора</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LOCKSMITH -->
-      <div>
-        <div class="service-group-title">🔑 Locksmith</div>
-        <div class="space-y-2">
-          <div class="category-card" data-service="home_lockout">
-            <div>
-              <span>Home Lockout</span><br />
-              <small>Открыть дверь квартиры/дома</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="car_lockout">
-            <div>
-              <span>Car Lockout</span><br />
-              <small>Открыть автомобиль</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="lock_replace">
-            <div>
-              <span>Lock Replace</span><br />
-              <small>Замена замков</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="rekey">
-            <div>
-              <span>Rekeying</span><br />
-              <small>Перекодировка замков</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ROADSIDE -->
-      <div>
-        <div class="service-group-title">🚗 Tire & Roadside</div>
-        <div class="space-y-2">
-          <div class="category-card" data-service="flat_tire">
-            <div>
-              <span>Flat Tire Change</span><br />
-              <small>Замена пробитого колеса</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="jump_start">
-            <div>
-              <span>Jump Start</span><br />
-              <small>Прикурить авто</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="battery_replace">
-            <div>
-              <span>Battery Replace</span><br />
-              <small>Замена аккумулятора</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="fuel_delivery">
-            <div>
-              <span>Fuel Delivery</span><br />
-              <small>Подвоз топлива</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SMART HOME -->
-      <div>
-        <div class="service-group-title">🏠 Smart Home</div>
-        <div class="space-y-2">
-          <div class="category-card" data-service="camera_install">
-            <div>
-              <span>Security Camera Install</span><br />
-              <small>Установка камер наблюдения</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="smart_lock_install">
-            <div>
-              <span>Smart Lock Install</span><br />
-              <small>Установка умных замков</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="doorbell_install">
-            <div>
-              <span>Doorbell Ring/Nest</span><br />
-              <small>Установка видеодомофона / звонка</small>
-            </div>
-          </div>
-          <div class="category-card" data-service="thermostat_install">
-            <div>
-              <span>Smart Thermostat Install</span><br />
-              <small>Установка термостата</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button id="toStep3Btn" class="primary-btn mt-3">
-        Далее
-      </button>
+        <button id="nextBtn2"
+                class="w-full bg-green-500 p-3 rounded text-lg font-bold mt-4">
+            Далее
+        </button>
     </section>
+
 
     <!-- STEP 3: PHOTO -->
-    <section id="step3" class="space-y-5 hidden">
-      <div>
-        <div class="section-title">Фото профиля</div>
-        <div class="section-subtitle">Клиентам проще доверять, когда они видят человека</div>
-      </div>
+    <section id="step3" class="hidden space-y-4 text-center">
+        <h2 class="text-2xl font-bold">Фото профиля</h2>
 
-      <div id="photoPreview" class="photo-circle">
-        Нажмите, чтобы добавить фото
-      </div>
-      <input id="photoInput" type="file" accept="image/*" class="hidden" />
+        <div id="photoPreview">Загрузить фото</div>
+        <input id="photoInput" type="file" accept="image/*" class="hidden" />
 
-      <button id="finishBtn" class="primary-btn mt-4">
-        Завершить регистрацию
-      </button>
+        <button id="finishBtn"
+                class="w-full bg-green-500 p-3 rounded text-lg font-bold mt-4">
+            Завершить регистрацию
+        </button>
     </section>
 
-    <!-- AFTER REGISTRATION -->
-    <section id="doneScreen" class="space-y-4 hidden">
-      <div class="section-title">Готово 🎉</div>
-      <div class="section-subtitle">
-        Ваша анкета сохранена. Можете начать принимать заказы после одобрения.
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ОДИН СКРИПТ -->
-  <script type="module" src="./js/app.js"></script>
+    <!-- CONNECT JS -->
+    <script type="module" src="./js/app.js"></script>
 
 </body>
 </html>
