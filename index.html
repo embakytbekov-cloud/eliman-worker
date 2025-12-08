@@ -225,20 +225,29 @@
 
 
 <script type="module" src="./js/app.js"></script>
-
 <script>
-let selectedCategory = null;
+/* ===== НОВЫЙ МУЛЬТИ-ВЫБОР КАТЕГОРИЙ ===== */
+let selectedCategories = [];
 
 document.querySelectorAll(".category-card").forEach(card => {
     card.onclick = () => {
-        document.querySelectorAll(".category-card")
-            .forEach(c => c.classList.remove("selected"));
+        const cat = card.dataset.cat;
 
-        card.classList.add("selected");
-        selectedCategory = card.dataset.cat;
+        if (selectedCategories.includes(cat)) {
+            selectedCategories = selectedCategories.filter(c => c !== cat);
+            card.classList.remove("selected");
+        } else {
+            selectedCategories.push(cat);
+            card.classList.add("selected");
+        }
+
+        console.log("Выбрано:", selectedCategories);
     };
 });
+/* ======================================= */
 
+
+/* ===== ПРЕВЬЮ ФОТО ===== */
 document.getElementById("photoPreview").onclick = () => {
     document.getElementById("photoInput").click();
 };
@@ -247,24 +256,23 @@ document.getElementById("photoInput").onchange = (e) => {
     const file = e.target.files[0];
     if (file) {
         const url = URL.createObjectURL(file);
-        document.getElementById("photoPreview").style.backgroundImage = `url(${url})`;
+        document.getElementById("photoPreview").style.backgroundImage = url(${url});
         document.getElementById("photoPreview").style.backgroundSize = "cover";
         document.getElementById("photoPreview").style.border = "none";
         document.getElementById("photoPreview").textContent = "";
     }
 };
+/* ======================================= */
 
+
+/* ===== НАВИГАЦИЯ ПО ШАГАМ ===== */
 function goStep2() {
     step1.classList.add("hidden");
     step2.classList.remove("hidden");
-    headerTitle.textContent = "Категория";
+    headerTitle.textContent = "Категории";
 }
 
 function goStep3() {
-    if (!selectedCategory) {
-        alert("Выберите категорию");
-        return;
-    }
     step2.classList.add("hidden");
     step3.classList.remove("hidden");
     headerTitle.textContent = "Фото профиля";
@@ -273,8 +281,10 @@ function goStep3() {
 function finishRegistration() {
     alert("Регистрация завершена!");
 }
+/* ======================================= */
 </script>
 
 </body>
 </html>
+
 
