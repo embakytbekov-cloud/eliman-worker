@@ -46,9 +46,10 @@ h1 {
     font-size: 18px;
     font-weight: bold;
     color: white;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 </style>
+
 </head>
 
 <body>
@@ -73,7 +74,13 @@ h1 {
     <option>Español</option>
 </select>
 
-<button class="btn">Далее</button>
+<button class="btn" id="nextBtn">Далее</button>
+
+<script>
+document.getElementById("nextBtn").onclick = () => {
+    Telegram.WebApp.close();
+};
+</script>
 
 </body>
 </html>
