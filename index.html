@@ -1,116 +1,155 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>ELIMAN WORKER</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Telegram WebApp -->
+    <!-- TG -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        body { background: #0B1220; color: white; }
-        .btn { background:#10D057; padding:14px; border-radius:10px; font-weight:bold; font-size:18px; }
-        .input { width:100%; padding:14px; border-radius:10px; margin-bottom:14px; background:#182233; color:white; }
-        .card { background:#182233; padding:16px; border-radius:16px; margin-bottom:14px; cursor:pointer; }
-        .card.selected { outline:2px solid #10D057; }
-    </style>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 
-<body class="p-6 pt-[90px]">
+<body class="p-6">
 
-<!-- ========================= -->
-<!-- ШАГ 1 — О ВАС -->
-<!-- ========================= -->
-
+<!-- 🔵 STEP 1 — ABOUT YOU -->
 <section id="step1">
-    <h1 class="text-3xl font-bold mb-4">Регистрация</h1>
-    <p class="text-gray-400 mb-6">Заполните данные, чтобы мы знали, куда отправлять заказы.</p>
+    <h2 class="section-title">О вас</h2>
 
-    <input id="fullName" class="input" placeholder="Полное имя" />
-    <input id="phone" class="input" placeholder="Телефон" />
-    <input id="street" class="input" placeholder="Улица, дом" />
-    <input id="apt" class="input" placeholder="Квартира / офис (необязательно)" />
-    <input id="city" class="input" placeholder="Город" />
-    <input id="state" class="input" placeholder="Штат" />
-    <input id="zip" class="input" placeholder="ZIP код" />
+    <input id="fullName" type="text" class="input" placeholder="Полное имя">
+    <input id="phone" type="text" class="input" placeholder="Телефон">
 
-    <select id="language" class="input text-black">
-        <option value="English">English</option>
-        <option value="Russian">Русский</option>
-        <option value="Spanish">Spanish</option>
+    <input id="street" type="text" class="input" placeholder="Улица, дом">
+    <input id="apt" type="text" class="input" placeholder="Квартира / офис (необязательно)">
+    <div class="flex gap-3">
+        <input id="city" type="text" class="input flex-1" placeholder="Город">
+        <input id="state" type="text" class="input flex-1" placeholder="Штат">
+    </div>
+    <input id="zip" type="text" class="input" placeholder="ZIP код">
+
+    <select id="language" class="input">
+        <option>English</option>
+        <option>Русский</option>
+        <option>Spanish</option>
     </select>
 
-    <button id="toCategories" class="btn w-full mt-2">Далее</button>
+    <button id="goStep2" class="primary-btn">Далее</button>
 </section>
 
-<!-- ========================= -->
-<!-- ШАГ 2 — КАТЕГОРИИ -->
-<!-- ========================= -->
+<!-- 🟢 STEP 2 — CATEGORY -->
+<section id="step2" class="hidden">
+    <h2 class="section-title">Пожалуйста выберите свою категорию<br> чтобы обслуживать клиентов</h2>
 
-<section id="categoriesStep" class="hidden">
-    <h1 class="text-3xl font-bold mb-4">Категория</h1>
-    <p class="text-gray-400 mb-6">Пожалуйста выберите свою категорию, чтобы обслуживать клиентов.</p>
-
-    <div data-cat="appliance" class="card category-card">
-        <h3 class="font-bold text-lg">Appliance Repair</h3>
-        <p class="text-gray-400">Washer, dryer, refrigerator…</p>
+    <div class="category-card" data-cat="appliance">
+        <div class="category-title">Appliance Repair</div>
+        <div class="category-sub">Washer, dryer, refrigerator…</div>
     </div>
 
-    <div data-cat="cleaning" class="card category-card">
-        <h3 class="font-bold text-lg">Cleaning</h3>
-        <p class="text-gray-400">Home, office, car…</p>
+    <div class="category-card" data-cat="cleaning">
+        <div class="category-title">Cleaning</div>
+        <div class="category-sub">Home, office, car…</div>
     </div>
 
-    <div data-cat="handyman" class="card category-card">
-        <h3 class="font-bold text-lg">Handyman</h3>
-        <p class="text-gray-400">Painting, install, repair…</p>
+    <div class="category-card" data-cat="handyman">
+        <div class="category-title">Handyman</div>
+        <div class="category-sub">Repair, install, painting…</div>
     </div>
 
-    <div data-cat="locksmith" class="card category-card">
-        <h3 class="font-bold text-lg">Locksmith</h3>
-        <p class="text-gray-400">Locks, car locks…</p>
+    <div class="category-card" data-cat="locksmith">
+        <div class="category-title">Locksmith</div>
+        <div class="category-sub">Locks, car locks…</div>
     </div>
 
-    <div data-cat="moving" class="card category-card">
-        <h3 class="font-bold text-lg">Moving</h3>
-        <p class="text-gray-400">Packing, moving, lifting…</p>
+    <div class="category-card" data-cat="moving">
+        <div class="category-title">Moving</div>
+        <div class="category-sub">Packing, lifting…</div>
     </div>
 
-    <div data-cat="smarthome" class="card category-card">
-        <h3 class="font-bold text-lg">Smart Home</h3>
-        <p class="text-gray-400">Doorbell, camera…</p>
+    <div class="category-card" data-cat="smart">
+        <div class="category-title">Smart Home</div>
+        <div class="category-sub">Doorbell, camera…</div>
     </div>
 
-    <div data-cat="tire" class="card category-card">
-        <h3 class="font-bold text-lg">Tire & Roadside</h3>
-        <p class="text-gray-400">Tire change, jump start…</p>
+    <div class="category-card" data-cat="tire">
+        <div class="category-title">Tire & Roadside</div>
+        <div class="category-sub">Tire change, jump start…</div>
     </div>
 
-    <button id="toPhoto" class="btn w-full mt-4">Далее</button>
+    <button id="goStep3" class="primary-btn">Далее</button>
 </section>
 
-<!-- ========================= -->
-<!-- ШАГ 3 — ФОТО -->
-<!-- ========================= -->
+<!-- 🟣 STEP 3 — PHOTO -->
+<section id="step3" class="hidden">
+    <h2 class="section-title">Фото профиля</h2>
 
-<section id="photoStep" class="hidden">
-    <h1 class="text-3xl font-bold mb-6">Фото профиля</h1>
-
-    <div id="photoPreview"
-         class="w-32 h-32 mx-auto rounded-full border-2 border-gray-500 flex items-center justify-center text-gray-400 text-center cursor-pointer mb-6">
-         Нажмите, чтобы<br>выбрать фото
-    </div>
-
+    <div id="photoPreview">Нажмите, чтобы выбрать фото</div>
     <input id="photoInput" type="file" accept="image/*" class="hidden">
 
-    <button id="finishBtn" class="btn w-full">Завершить</button>
+    <button id="finishBtn" class="primary-btn">Завершить</button>
 </section>
 
 <script type="module" src="./js/app.js"></script>
+
+<script>
+// ===== FRONTEND LOGIC =====
+let selectedCategory = null;
+
+// STEP SWITCH
+const step1 = document.getElementById("step1");
+const step2 = document.getElementById("step2");
+const step3 = document.getElementById("step3");
+
+document.getElementById("goStep2").onclick = () => {
+    step1.classList.add("hidden");
+    step2.classList.remove("hidden");
+};
+
+document.querySelectorAll(".category-card").forEach(card => {
+    card.onclick = () => {
+        document.querySelectorAll(".category-card")
+            .forEach(c => c.classList.remove("selected"));
+
+        card.classList.add("selected");
+        selectedCategory = card.dataset.cat;
+    };
+});
+
+document.getElementById("goStep3").onclick = () => {
+    if (!selectedCategory) {
+        alert("Выберите категорию");
+        return;
+    }
+    step2.classList.add("hidden");
+    step3.classList.remove("hidden");
+};
+
+// PHOTO UPLOAD
+document.getElementById("photoPreview").onclick = () => {
+    document.getElementById("photoInput").click();
+};
+
+document.getElementById("photoInput").onchange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const url = URL.createObjectURL(file);
+        const preview = document.getElementById("photoPreview");
+
+        preview.style.backgroundImage = `url(${url})`;
+        preview.style.backgroundSize = "cover";
+        preview.style.backgroundPosition = "center";
+        preview.textContent = "";
+        preview.style.border = "none";
+    }
+};
+
+document.getElementById("finishBtn").onclick = () => {
+    alert("Регистрация завершена!");
+};
+</script>
 
 </body>
 </html>
