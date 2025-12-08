@@ -1,116 +1,182 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Регистрация | ELIMAN WORKER</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <title>ELIMAN WORKER – Регистрация</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body { background: #07111F; color: white; font-family: sans-serif; }
+    .screen { max-width: 600px; margin: auto; padding: 20px; }
+    .hidden { display: none; }
+
+    .btn {
+      width: 100%; padding: 14px; border-radius: 10px;
+      background: #16c65b; font-weight: bold; color: black;
+    }
+
+    .card {
+      background: #0d1828;
+      padding: 14px; border-radius: 12px;
+      border: 1px solid #253043;
+      cursor: pointer;
+    }
+
+    .card.selected {
+      border-color: #16c65b;
+      background: #122538;
+    }
+
+    #photoBox {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 2px dashed #3b4657;
+      margin: auto; display: flex;
+      align-items: center; justify-content: center;
+      text-align: center; color: #8b9bb4;
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
 </head>
 
-<body class="bg-gray-900 text-white">
+<body>
+<div class="screen">
 
-    <main class="p-5 space-y-6">
+  <!-- HEADER -->
+  <h2 id="headerTitle" class="text-2xl font-bold mb-5">Регистрация</h2>
 
-        <!-- ШАГ 1 — О ВАС -->
-        <section id="step1" class="space-y-4">
-            <h2 class="text-3xl font-bold">О вас</h2>
+  <!-- ШАГ 1 — О СЕБЕ -->
+  <div id="step1">
+    <input id="fullName" class="w-full p-3 mb-3 rounded bg-[#0d1828]" placeholder="Полное имя">
+    <input id="phone" class="w-full p-3 mb-3 rounded bg-[#0d1828]" placeholder="Телефон">
 
-            <input id="fullName" class="w-full p-3 rounded text-black" placeholder="Полное имя">
-            <input id="phone" class="w-full p-3 rounded text-black" placeholder="Телефон">
+    <input id="street" class="w-full p-3 mb-3 rounded bg-[#0d1828]" placeholder="Улица, дом">
+    <input id="apt" class="w-full p-3 mb-3 rounded bg-[#0d1828]" placeholder="Квартира / офис (optional)">
+    
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <input id="city" class="p-3 rounded bg-[#0d1828]" placeholder="Город">
+      <input id="state" class="p-3 rounded bg-[#0d1828]" placeholder="Штат">
+    </div>
 
-            <h3 class="text-xl font-semibold mt-4">Адрес</h3>
+    <input id="zip" class="w-full p-3 mb-3 rounded bg-[#0d1828]" placeholder="ZIP код">
 
-            <input id="street" class="w-full p-3 rounded text-black" placeholder="Улица, дом">
-            <input id="apt" class="w-full p-3 rounded text-black" placeholder="Квартира / офис (необязательно)">
-            
-            <div class="flex gap-3">
-                <input id="city" class="w-1/2 p-3 rounded text-black" placeholder="Город">
-                <input id="state" class="w-1/2 p-3 rounded text-black" placeholder="Штат">
-            </div>
+    <select id="language" class="w-full p-3 mb-5 rounded bg-[#0d1828]">
+      <option>English</option>
+      <option>Русский</option>
+      <option>Spanish</option>
+    </select>
 
-            <input id="zip" class="w-full p-3 rounded text-black" placeholder="ZIP код">
+    <button id="toStep2" class="btn">Далее</button>
+  </div>
 
-            <select id="language" class="w-full p-3 rounded text-black">
-                <option value="English">English</option>
-                <option value="Russian">Русский</option>
-                <option value="Spanish">Spanish</option>
-            </select>
+  <!-- ШАГ 2 — КАТЕГОРИЯ -->
+  <div id="step2" class="hidden">
+    <h2 class="text-xl font-bold mb-4">Категория услуг</h2>
 
-            <button id="step1NextBtn" class="w-full bg-green-500 p-3 rounded text-lg font-bold">
-                Далее
-            </button>
-        </section>
+    <div id="catList" class="space-y-3 mb-6">
 
+      <div class="card" data-cat="appliance">
+        <div class="font-bold">Appliance Repair</div>
+        <div class="text-sm text-gray-400">Washer, dryer, refrigerator…</div>
+      </div>
 
-        <!-- ШАГ 2 — КАТЕГОРИЯ -->
-        <section id="step2" class="hidden space-y-4">
-            <h2 class="text-3xl font-bold">Категория</h2>
+      <div class="card" data-cat="cleaning">
+        <div class="font-bold">Cleaning</div>
+        <div class="text-sm text-gray-400">Home, office, car…</div>
+      </div>
 
-            <div class="grid grid-cols-1 gap-3">
+      <div class="card" data-cat="handyman">
+        <div class="font-bold">Handyman</div>
+        <div class="text-sm text-gray-400">Repair, painting, install…</div>
+      </div>
 
-                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Appliance Repair">
-                    Appliance Repair (washer, dryer, refrigerator...)
-                </div>
+      <div class="card" data-cat="locksmith">
+        <div class="font-bold">Locksmith</div>
+        <div class="text-sm text-gray-400">Locks, car locks…</div>
+      </div>
 
-                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Cleaning">
-                    Cleaning (home, office, car, lawn...)
-                </div>
+      <div class="card" data-cat="moving">
+        <div class="font-bold">Moving</div>
+        <div class="text-sm text-gray-400">Packing, moving, lifting…</div>
+      </div>
 
-                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Handyman">
-                    Handyman (repair, install, painting...)
-                </div>
+      <div class="card" data-cat="smart">
+        <div class="font-bold">Smart Home</div>
+        <div class="text-sm text-gray-400">Doorbell, camera…</div>
+      </div>
 
-                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Locksmith">
-                    Locksmith (car lock, install, open door...)
-                </div>
+      <div class="card" data-cat="tire">
+        <div class="font-bold">Tire & Roadside</div>
+        <div class="text-sm text-gray-400">Tire change, jump start…</div>
+      </div>
 
-                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Moving">
-                    Moving (packing, moving, heavy lifting...)
-                </div>
+    </div>
 
-                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Smart Home">
-                    Smart Home (camera, video doorbell...)
-                </div>
+    <button id="toStep3" class="btn">Далее</button>
+  </div>
 
-                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Tire Service">
-                    Tire Service (change, rotate, jump-start...)
-                </div>
+  <!-- ШАГ 3 — ФОТО -->
+  <div id="step3" class="hidden">
+    <h2 class="text-xl font-bold mb-4">Фото профиля</h2>
 
-            </div>
+    <div id="photoBox">Нажмите, чтобы выбрать фото</div>
+    <input type="file" id="photoInput" class="hidden" accept="image/*">
 
-            <button id="toPhotoBtn" class="w-full bg-green-500 p-3 rounded text-lg font-bold">
-                Далее
-            </button>
-        </section>
+    <button id="finishBtn" class="btn mt-6">Завершить</button>
+  </div>
 
+</div>
 
-        <!-- ШАГ 3 — ФОТО -->
-        <section id="step3" class="hidden space-y-4">
-            <h2 class="text-3xl font-bold">Фото профиля</h2>
+<script>
+let selectedCategory = null;
 
-            <div id="photoPreview"
-                 class="w-32 h-32 rounded-full bg-gray-700 flex items-center justify-center mx-auto cursor-pointer">
-                Фото
-            </div>
+// ПЕРЕХОД НА ШАГ 2
+document.getElementById("toStep2").onclick = () => {
+  document.getElementById("step1").classList.add("hidden");
+  document.getElementById("step2").classList.remove("hidden");
+  document.getElementById("headerTitle").innerText = "Категория";
+};
 
-            <input id="photoInput" type="file" accept="image/*" class="hidden">
+// ВЫБОР КАТЕГОРИИ
+document.querySelectorAll(".card").forEach(card => {
+  card.onclick = () => {
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+    card.classList.add("selected");
+    selectedCategory = card.dataset.cat;
+  };
+});
 
-            <button id="finishBtn" class="w-full bg-green-500 p-3 rounded text-lg font-bold">
-                Завершить регистрацию
-            </button>
-        </section>
+// ПЕРЕХОД НА ШАГ 3
+document.getElementById("toStep3").onclick = () => {
+  if (!selectedCategory) return alert("Выберите категорию");
+  
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.remove("hidden");
+  document.getElementById("headerTitle").innerText = "Фото профиля";
+};
 
+// ФОТО ВЫБОР
+document.getElementById("photoBox").onclick = () =>
+  document.getElementById("photoInput").click();
 
-        <!-- ГОТОВО -->
-        <section id="doneScreen" class="hidden text-center space-y-4">
-            <h2 class="text-3xl font-bold">Готово 🎉</h2>
-            <p>Ваша анкета отправлена.</p>
-        </section>
+document.getElementById("photoInput").onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    </main>
+  const url = URL.createObjectURL(file);
+  document.getElementById("photoBox").style.backgroundImage = `url(${url})`;
+  document.getElementById("photoBox").innerText = "";
+};
 
-    <script type="module" src="./js/app.js"></script>
+// ФИНИШ
+document.getElementById("finishBtn").onclick = () => {
+  alert("Регистрация завершена!");
+};
+</script>
 
 </body>
 </html>
