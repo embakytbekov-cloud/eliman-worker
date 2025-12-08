@@ -1,127 +1,104 @@
-console.log("APP JS LOADED");
+import { supabase } from "./config.js";
 
-// TELEGRAM
-const tg = window.Telegram?.WebApp;
-tg?.expand();
+const tg = window.Telegram.WebApp;
 
-// DOM ELEMENTS
-const headerTitle = document.getElementById("headerTitle");
-
+// ШАГИ
 const step1 = document.getElementById("step1");
 const step2 = document.getElementById("step2");
 const step3 = document.getElementById("step3");
-const doneScreen = document.getElementById("doneScreen");
+const headerTitle = document.getElementById("headerTitle");
 
-const toStep2Btn = document.getElementById("toStep2Btn");
-const toStep3Btn = document.getElementById("toStep3Btn");
-const finishBtn = document.getElementById("finishBtn");
+let selectedCategory = null;
+let uploadedPhoto = null;
 
-// INPUTS
-const fullName = document.getElementById("fullName");
-const phone = document.getElementById("phone");
-const addressLine1 = document.getElementById("addressLine1");
-const addressLine2 = document.getElementById("addressLine2");
-const city = document.getElementById("city");
-const state = document.getElementById("state");
-const zip = document.getElementById("zip");
-const language = document.getElementById("language");
-
-// PHOTO
-const photoPreview = document.getElementById("photoPreview");
-const photoInput = document.getElementById("photoInput");
-
-// SERVICES (multiple)
-const serviceCards = document.querySelectorAll(".category-card");
-let selectedServices = new Set();
-
-/* -----------------------------
-      STEP: SERVICE SELECT
---------------------------------*/
-serviceCards.forEach(card => {
-    card.addEventListener("click", () => {
-        const key = card.dataset.service;
-
-        if (selectedServices.has(key)) {
-            selectedServices.delete(key);
-            card.classList.remove("selected");
-        } else {
-            selectedServices.add(key);
-            card.classList.add("selected");
-        }
-    });
-});
-
-/* -----------------------------
-      STEP 1 → STEP 2
---------------------------------*/
-toStep2Btn.addEventListener("click", () => {
-    if (
-        fullName.value.trim() === "" ||
-        phone.value.trim() === "" ||
-        addressLine1.value.trim() === "" ||
-        city.value.trim() === "" ||
-        zip.value.trim() === ""
-    ) {
-        alert("Заполните обязательные поля");
-        return;
-    }
-
+// ---------- STEP 1 ----------
+document.getElementById("nextBtn").onclick = () => {
     step1.classList.add("hidden");
     step2.classList.remove("hidden");
-    headerTitle.textContent = "Услуги";
+    headerTitle.textContent = "Категория";
+};
+
+// ---------- SELECT CATEGORY ----------
+document.querySelectorAll(".category-card").forEach(card => {
+    card.onclick = () => {
+        document.querySelectorAll(".category-card").forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        selectedCategory = card.dataset.cat;
+    };
 });
 
-/* -----------------------------
-      STEP 2 → STEP 3
---------------------------------*/
-toStep3Btn.addEventListener("click", () => {
-    if (selectedServices.size === 0) {
-        alert("Выберите минимум одну услугу");
-        return;
-    }
+// ---------- STEP 2 ----------
+document.getElementById("nextBtn2").onclick = () => {
+    if (!selectedCategory) return alert("Выберите категорию");
 
     step2.classList.add("hidden");
     step3.classList.remove("hidden");
     headerTitle.textContent = "Фото профиля";
-});
+};
 
-/* -----------------------------
-      PHOTO UPLOAD
---------------------------------*/
-photoPreview.addEventListener("click", () => photoInput.click());
+// ---------- PHOTO ----------
+document.getElementById("photoPreview").onclick = () => {
+    document.getElementById("photoInput").click();
+};
 
-photoInput.addEventListener("change", e => {
+document.getElementById("photoInput").onchange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    uploadedPhoto = file;
+
     const url = URL.createObjectURL(file);
-    photoPreview.style.backgroundImage = `url(${url})`;
-    photoPreview.style.backgroundSize = "cover";
-    photoPreview.textContent = "";
-});
+    const preview = document.getElementById("photoPreview");
+    preview.style.backgroundImage = url(${url});
+    preview.style.backgroundSize = "cover";
+    preview.textContent = "";
+};
 
-/* -----------------------------
-      FINISH REGISTRATION
---------------------------------*/
-finishBtn.addEventListener("click", () => {
-    const data = {
-        fullName: fullName.value,
-        phone: phone.value,
-        addressLine1: addressLine1.value,
-        addressLine2: addressLine2.value,
-        city: city.value,
-        state: state.value,
-        zip: zip.value,
-        language: language.value,
-        services: Array.from(selectedServices),
-        hasPhoto: !!photoInput.files[0]
-    };
+// ---------- FINISH ----------
+document.getElementById("finishBtn").onclick = async () => {
 
-    console.log("FINAL DATA:", data);
+    const fullName = document.getElementById("fullName").value;
+    const phone = document.getElementById("phone").value;
+    const street = document.getElementById("street").value;
+    const apt = document.getElementById("apt").value;
+    const city = document.getElementById("city").value;
+    const state = document.getElementById("state").value;
+    const zip = document.getElementById("zip").value;
+    const language = document.getElementById("language").value;
 
-    step3.classList.add("hidden");
-    doneScreen.classList.remove("hidden");
-    headerTitle.textContent = "Готово 🎉";
+    if (!fullName  !phone  !street  !city  !state || !zip) {
+        return alert("Заполните все обязательные поля");
+    }
 
-    tg?.sendData(JSON.stringify(data));
-});
+    // Upload Photo
+    let photo_url = null;
+    if (uploadedPhoto) {
+        const filename = worker_${Date.now()}.jpg;
+        const { data, error } = await supabase.storage
+            .from("profiles")
+            .upload(filename, uploadedPhoto);
+
+        if (!error) {
+            photo_url = supabase.storage.from("profiles").getPublicUrl(filename).data.publicUrl;
+        }
+    }
+
+    // SAVE WORKER
+    await supabase.from("workers").insert([
+        {
+            full_name: fullName,
+            phone,
+            street,
+            apt,
+            city,
+            state,
+            zip,
+            language,
+            category: selectedCategory,
+            photo: photo_url,
+            telegram_id: tg.initDataUnsafe.user?.id,
+        }
+    ]);
+
+    tg.close();
+};
