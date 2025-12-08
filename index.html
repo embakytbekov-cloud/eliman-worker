@@ -5,78 +5,192 @@
     <title>ELIMAN WORKER</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* Фиксированная iOS-style шапка */
-        .app-header {
+        .header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding-top: env(safe-area-inset-top);
-            background: #0f172a;
+            padding: 14px 18px;
+            padding-top: calc(env(safe-area-inset-top) + 14px);
+            background: #0b0b0c;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             z-index: 50;
+        }
+
+        .input-field {
+            background: #1a1a1c;
+            border: 1px solid #2c2c2e;
+            color: white;
+            padding: 14px;
+            font-size: 17px;
+            border-radius: 12px;
+        }
+
+        .category-card {
+            background: #1a1a1c;
+            border: 1px solid #2c2c2e;
+            padding: 18px;
+            border-radius: 14px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .category-card.selected {
+            border-color: #06c167;
+            box-shadow: 0 0 15px #06c16755;
+        }
+
+        .photo-box {
+            width: 160px;
+            height: 160px;
+            background: #1a1a1c;
+            border: 2px dashed #2c2c2e;
+            border-radius: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 16px;
+            margin: auto;
+        }
+
+        .submit-btn {
+            background: #06c167;
+            border-radius: 14px;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            padding: 16px;
         }
     </style>
 </head>
 
-<body class="bg-gray-900 text-white"
-      style="padding-top: calc(env(safe-area-inset-top) + 80px);">
+<body class="bg-black text-white"
+      style="padding-top: calc(env(safe-area-inset-top) + 90px);">
 
-    <!-- ⭐ iOS HEADER ⭐ -->
-    <div class="app-header px-4 py-3 flex items-center justify-between">
-        <button onclick="window.Telegram.WebApp.close()"
-                class="text-lg text-gray-300">
-            Закрыть
-        </button>
+<!-- HEADER -->
+<div class="header">
+    <button onclick="window.Telegram.WebApp.close()" class="text-gray-300 text-lg">
+        Закрыть
+    </button>
 
-        <h2 class="text-xl font-bold">Регистрация</h2>
+    <h2 id="headerTitle" class="text-xl font-bold">Регистрация</h2>
 
-        <div class="opacity-0">•••</div>
+    <div class="opacity-0">•••</div>
+</div>
+
+
+<!-- REGISTRATION STEP 1 -->
+<div id="step1" class="px-5 mt-4 space-y-4">
+
+    <h3 class="text-2xl font-bold mb-2">Ваши данные</h3>
+
+    <input id="fullName" type="text" placeholder="Полное имя"
+           class="input-field w-full">
+
+    <input id="phone" type="text" placeholder="Телефон"
+           class="input-field w-full">
+
+    <input id="city" type="text" placeholder="Город"
+           class="input-field w-full">
+
+    <button onclick="goStep2()" class="submit-btn w-full mt-4">
+        Далее
+    </button>
+</div>
+
+
+<!-- REGISTRATION STEP 2 -->
+<div id="step2" class="hidden px-5 mt-4 space-y-4">
+
+    <h3 class="text-2xl font-bold mb-2">Выберите категорию</h3>
+
+    <div class="grid grid-cols-2 gap-4">
+        <div class="category-card" data-cat="Cleaning">Cleaning</div>
+        <div class="category-card" data-cat="Handyman">Handyman</div>
+        <div class="category-card" data-cat="Moving">Moving</div>
+        <div class="category-card" data-cat="Appliance">Appliance</div>
     </div>
 
-    <!-- Registration Screen -->
-    <div id="registerScreen" class="p-6 mt-2">
+    <button onclick="goStep3()" class="submit-btn w-full mt-4">
+        Далее
+    </button>
+</div>
 
-        <input id="fullName" type="text" placeholder="Ваше имя"
-               class="w-full mb-3 p-3 rounded text-black">
 
-        <input id="phone" type="text" placeholder="Телефон"
-               class="w-full mb-3 p-3 rounded text-black">
+<!-- REGISTRATION STEP 3 -->
+<div id="step3" class="hidden px-5 mt-4 space-y-4">
 
-        <input id="city" type="text" placeholder="Город"
-               class="w-full mb-3 p-3 rounded text-black">
+    <h3 class="text-2xl font-bold mb-4">Фото профиля</h3>
 
-        <select id="language" class="w-full mb-3 p-3 rounded text-black">
-            <option value="English">English</option>
-            <option value="Russian">Русский</option>
-            <option value="Spanish">Spanish</option>
-        </select>
-
-        <select id="category" class="w-full mb-3 p-3 rounded text-black">
-            <option value="Cleaning">Cleaning</option>
-            <option value="Handyman">Handyman</option>
-            <option value="Moving">Moving</option>
-            <option value="Appliance">Appliance Repair</option>
-        </select>
-
-        <button id="registerBtn"
-                class="w-full bg-green-500 p-3 rounded-xl text-lg font-bold">
-            Зарегистрироваться
-        </button>
+    <div id="photoPreview" class="photo-box">
+        Нажмите, чтобы выбрать фото
     </div>
 
-    <!-- Main screen -->
-    <div id="mainScreen" class="hidden p-6">
-        <h1 class="text-3xl font-bold">Добро пожаловать!</h1>
-        <p id="workerName" class="text-xl mt-3"></p>
-    </div>
+    <input type="file" id="photoInput" accept="image/*" class="hidden">
 
-    <script type="module" src="./js/app.js"></script>
+    <button onclick="finishRegistration()" class="submit-btn w-full mt-6">
+        Готово
+    </button>
+</div>
+
+
+<script type="module" src="./js/app.js"></script>
+
+<script>
+let selectedCategory = null;
+
+document.querySelectorAll(".category-card").forEach(card => {
+    card.onclick = () => {
+        document.querySelectorAll(".category-card")
+            .forEach(c => c.classList.remove("selected"));
+
+        card.classList.add("selected");
+        selectedCategory = card.dataset.cat;
+    };
+});
+
+document.getElementById("photoPreview").onclick = () => {
+    document.getElementById("photoInput").click();
+};
+
+document.getElementById("photoInput").onchange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const url = URL.createObjectURL(file);
+        document.getElementById("photoPreview").style.backgroundImage = `url(${url})`;
+        document.getElementById("photoPreview").style.backgroundSize = "cover";
+        document.getElementById("photoPreview").style.border = "none";
+        document.getElementById("photoPreview").textContent = "";
+    }
+};
+
+function goStep2() {
+    step1.classList.add("hidden");
+    step2.classList.remove("hidden");
+    headerTitle.textContent = "Категория";
+}
+
+function goStep3() {
+    if (!selectedCategory) {
+        alert("Выберите категорию");
+        return;
+    }
+    step2.classList.add("hidden");
+    step3.classList.remove("hidden");
+    headerTitle.textContent = "Фото профиля";
+}
+
+function finishRegistration() {
+    alert("Регистрация завершена!");
+}
+</script>
+
 </body>
 </html>
