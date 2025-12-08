@@ -1,105 +1,77 @@
-// js/app.js
+// STEP BLOCKS
+const step1 = document.getElementById("step1");
+const step2 = document.getElementById("step2");
+const step3 = document.getElementById("step3");
+const doneScreen = document.getElementById("doneScreen");
 
-document.addEventListener("DOMContentLoaded", () => {
-  // --- элементы шапки ---
-  const headerTitle = document.getElementById("headerTitle");
-  const headerSubtitle = document.getElementById("headerSubtitle");
-
-  // --- шаги ---
-  const step1 = document.getElementById("step1");
-  const step2 = document.getElementById("step2");
-  const step3 = document.getElementById("step3");
-  const doneScreen = document.getElementById("doneScreen");
-
-  // --- кнопки ---
-  const step1NextBtn = document.getElementById("step1NextBtn");
-  const toPhotoBtn = document.getElementById("toPhotoBtn");
-  const finishBtn = document.getElementById("finishBtn");
-
-  // --- поля шага 1 ---
-  const fullNameInput = document.getElementById("fullName");
-  const phoneInput = document.getElementById("phone");
-  const streetInput = document.getElementById("street");
-  const cityInput = document.getElementById("city");
-  const zipInput = document.getElementById("zip");
-  const languageSelect = document.getElementById("language");
-
-  // простая функция показать один шаг, скрыть остальные
-  function showStep(stepNumber) {
-    const all = [step1, step2, step3, doneScreen];
-    all.forEach((el) => el && el.classList.add("hidden"));
-
-    if (stepNumber === 1 && step1) {
-      step1.classList.remove("hidden");
-      headerTitle.textContent = "Регистрация";
-      headerSubtitle.textContent = "О вас";
-    }
-
-    if (stepNumber === 2 && step2) {
-      step2.classList.remove("hidden");
-      headerTitle.textContent = "Регистрация";
-      headerSubtitle.textContent = "Категория услуг";
-    }
-
-    if (stepNumber === 3 && step3) {
-      step3.classList.remove("hidden");
-      headerTitle.textContent = "Регистрация";
-      headerSubtitle.textContent = "Фото профиля";
-    }
-
-    if (stepNumber === 4 && doneScreen) {
-      doneScreen.classList.remove("hidden");
-      headerTitle.textContent = "Готово";
-      headerSubtitle.textContent = "";
-    }
-  }
-
-  // сразу показываем шаг 1
-  showStep(1);
-
-  // --- КЛИК ПО "ДАЛЕЕ" НА ШАГЕ 1 ---
-  if (step1NextBtn) {
-    step1NextBtn.addEventListener("click", () => {
-      const fullName = fullNameInput.value.trim();
-      const phone = phoneInput.value.trim();
-      const street = streetInput.value.trim();
-      const city = cityInput.value.trim();
-      const zip = zipInput.value.trim();
-      const lang = languageSelect.value.trim();
-
-      // простая проверка
-      if (!fullName  !phone  !street  !city  !zip || !lang) {
-        alert("Заполни все обязательные поля");
+// BUTTON 1 — Далее (О вас)
+document.getElementById("step1NextBtn").addEventListener("click", () => {
+    if (!fullName.value.trim() ||
+        !phone.value.trim() ||
+        !street.value.trim() ||
+        !city.value.trim() ||
+        !state.value.trim() ||
+        !zip.value.trim()) {
+        alert("Заполните все обязательные поля");
         return;
-      }
+    }
 
-      // здесь позже добавим отправку в Supabase
-      console.log("STEP 1 DATA:", {
-        fullName,
-        phone,
-        street,
-        city,
-        zip,
-        lang,
-      });
+    step1.classList.add("hidden");
+    step2.classList.remove("hidden");
+});
 
-      showStep(2);
+
+// CATEGORY SELECT
+let selectedCategory = null;
+
+document.querySelectorAll(".category-card").forEach(card => {
+    card.addEventListener("click", () => {
+        document.querySelectorAll(".category-card")
+            .forEach(c => c.classList.remove("ring-2", "ring-green-500"));
+
+        card.classList.add("ring-2", "ring-green-500");
+        selectedCategory = card.dataset.cat;
     });
-  }
+});
 
-  // --- КЛИК ПО "ДАЛЕЕ К ФОТО" НА ШАГЕ 2 ---
-  if (toPhotoBtn) {
-    toPhotoBtn.addEventListener("click", () => {
-      showStep(3);
-    });
-  }
 
-  // --- КЛИК ПО "ЗАВЕРШИТЬ РЕГИСТРАЦИЮ" НА ШАГЕ 3 ---
-  if (finishBtn) {
-    finishBtn.addEventListener("click", () => {
-      // тут потом будет загрузка фото + запись в Supabase
-      console.log("registration finished (without Supabase yet)");
-      showStep(4);
-    });
-  }
+// BUTTON 2 — Далее (Категории)
+document.getElementById("toPhotoBtn").addEventListener("click", () => {
+    if (!selectedCategory) {
+        alert("Выберите категорию");
+        return;
+    }
+
+    step2.classList.add("hidden");
+    step3.classList.remove("hidden");
+});
+
+
+// PHOTO UPLOAD
+const photoInput = document.getElementById("photoInput");
+const photoPreview = document.getElementById("photoPreview");
+
+photoPreview.onclick = () => photoInput.click();
+
+photoInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    photoPreview.style.backgroundImage = url(${url});
+    photoPreview.style.backgroundSize = "cover";
+    photoPreview.style.backgroundPosition = "center";
+    photoPreview.textContent = "";
+};
+
+
+// BUTTON 3 — Завершить
+document.getElementById("finishBtn").addEventListener("click", () => {
+    if (!photoInput.files[0]) {
+        alert("Загрузите фото");
+        return;
+    }
+
+    step3.classList.add("hidden");
+    doneScreen.classList.remove("hidden");
 });
