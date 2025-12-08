@@ -106,19 +106,102 @@
 </div>
 
 
+
 <!-- REGISTRATION STEP 2 -->
-<div id="step2" class="hidden px-5 mt-4 space-y-4">
+<div id="step2" class="hidden px-5 mt-4 space-y-6">
 
-    <h3 class="text-2xl font-bold mb-2">Выберите категорию</h3>
+    <h3 class="text-2xl font-bold mb-2">Выберите сервисы</h3>
+    <p class="text-gray-400 text-sm">Вы можете выбрать несколько категорий</p>
 
-    <div class="grid grid-cols-2 gap-4">
-        <div class="category-card" data-cat="Cleaning">Cleaning</div>
-        <div class="category-card" data-cat="Handyman">Handyman</div>
-        <div class="category-card" data-cat="Moving">Moving</div>
-        <div class="category-card" data-cat="Appliance">Appliance</div>
+    <!-- CLEANING -->
+    <div>
+        <h4 class="text-lg font-semibold mb-2">🧹 Cleaning</h4>
+
+        <div class="space-y-3">
+            <div class="category-card" data-cat="regular_cleaning">Regular Cleaning</div>
+            <div class="category-card" data-cat="deep_cleaning">Deep Cleaning</div>
+            <div class="category-card" data-cat="move_in_out">Move-in / Move-out</div>
+            <div class="category-card" data-cat="airbnb_cleaning">Airbnb Cleaning</div>
+            <div class="category-card" data-cat="office_cleaning">Office Cleaning</div>
+        </div>
     </div>
 
-    <button onclick="goStep3()" class="submit-btn w-full mt-4">
+    <!-- HANDYMAN -->
+    <div>
+        <h4 class="text-lg font-semibold mb-2">🔧 Handyman</h4>
+
+        <div class="space-y-3">
+            <div class="category-card" data-cat="tv_mounting">TV Mounting</div>
+            <div class="category-card" data-cat="furniture_assembly">Furniture Assembly</div>
+            <div class="category-card" data-cat="painting">Painting</div>
+            <div class="category-card" data-cat="drywall_patch">Drywall Patch</div>
+            <div class="category-card" data-cat="door_repair">Door/Window Repair</div>
+            <div class="category-card" data-cat="shelves_install">Shelves Install</div>
+        </div>
+    </div>
+
+    <!-- APPLIANCE REPAIR -->
+    <div>
+        <h4 class="text-lg font-semibold mb-2">🧊 Appliance Repair</h4>
+
+        <div class="space-y-3">
+            <div class="category-card" data-cat="washer">Washer Repair</div>
+            <div class="category-card" data-cat="dryer">Dryer Repair</div>
+            <div class="category-card" data-cat="fridge">Fridge Repair</div>
+            <div class="category-card" data-cat="dishwasher">Dishwasher Repair</div>
+            <div class="category-card" data-cat="oven">Oven / Stove Repair</div>
+        </div>
+    </div>
+
+    <!-- MOVING -->
+    <div>
+        <h4 class="text-lg font-semibold mb-2">🚚 Moving</h4>
+
+        <div class="space-y-3">
+            <div class="category-card" data-cat="help_moving">Help Moving</div>
+            <div class="category-card" data-cat="packing">Packing / Unpacking</div>
+            <div class="category-card" data-cat="furniture_moving">Furniture Moving</div>
+            <div class="category-card" data-cat="junk_removal">Junk Removal</div>
+        </div>
+    </div>
+
+    <!-- LOCKSMITH -->
+    <div>
+        <h4 class="text-lg font-semibold mb-2">🔑 Locksmith</h4>
+
+        <div class="space-y-3">
+            <div class="category-card" data-cat="home_lockout">Home Lockout</div>
+            <div class="category-card" data-cat="car_lockout">Car Lockout</div>
+            <div class="category-card" data-cat="lock_replace">Lock Replace</div>
+            <div class="category-card" data-cat="rekey">Rekeying</div>
+        </div>
+    </div>
+
+    <!-- ROADSIDE -->
+    <div>
+        <h4 class="text-lg font-semibold mb-2">🚗 Tire & Roadside</h4>
+
+        <div class="space-y-3">
+            <div class="category-card" data-cat="flat_tire">Flat Tire Change</div>
+            <div class="category-card" data-cat="jump_start">Jump Start</div>
+            <div class="category-card" data-cat="battery_replace">Battery Replace</div>
+            <div class="category-card" data-cat="fuel_delivery">Fuel Delivery</div>
+        </div>
+    </div>
+
+    <!-- SMART HOME -->
+    <div>
+        <h4 class="text-lg font-semibold mb-2">🏠 Smart Home</h4>
+
+        <div class="space-y-3">
+            <div class="category-card" data-cat="camera_install">Security Camera Install</div>
+            <div class="category-card" data-cat="smart_lock">Smart Lock Install</div>
+            <div class="category-card" data-cat="doorbell">Doorbell Ring/Nest</div>
+            <div class="category-card" data-cat="thermostat">Smart Thermostat Install</div>
+        </div>
+    </div>
+
+    <button onclick="goStep3()" class="submit-btn w-full mt-6">
         Далее
     </button>
 </div>
@@ -194,3 +277,4 @@ function finishRegistration() {
 
 </body>
 </html>
+
