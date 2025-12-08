@@ -1,86 +1,213 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>ELIMAN WORKER</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eliman Worker</title>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Telegram WebApp -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<style>
-body {
-    background: #0f1620;
-    color: white;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    padding: 20px;
-}
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-h1 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
+    <style>
+        body {
+            background: #0f172a;
+            color: white;
+        }
 
-.input {
-    width: 100%;
-    background: #1e293b;
-    border: none;
-    padding: 14px;
-    border-radius: 10px;
-    font-size: 17px;
-    color: white;
-    margin-bottom: 12px;
-}
+        .input-box {
+            width: 100%;
+            background: #1e293b;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            color: white;
+        }
 
-.row {
-    display: flex;
-    gap: 10px;
-}
+        .category-card {
+            background: #1e293b;
+            padding: 16px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-.btn {
-    width: 100%;
-    background: #22c55e;
-    border: none;
-    padding: 16px;
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-    margin-top: 20px;
-}
-</style>
+        .category-card.selected {
+            background: #22c55e;
+            color: black;
+        }
 
+        #photoCircle {
+            width: 160px;
+            height: 160px;
+            border-radius: 100%;
+            border: 2px dashed #64748b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 70px auto 30px;
+            font-size: 16px;
+            text-align: center;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+
+        .primary-btn {
+            width: 100%;
+            background: #22c55e;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 
-<body>
+<body class="p-5 pb-20">
 
-<h1>О вас</h1>
+    <!-- ШАГ 1 — О ВАС -->
+    <section id="step1" class="mt-8">
+        <h2 class="text-3xl font-bold mb-4">О вас</h2>
 
-<input class="input" placeholder="Полное имя">
-<input class="input" placeholder="Телефон">
-<input class="input" placeholder="Улица, дом">
-<input class="input" placeholder="Квартира / офис (необязательно)">
+        <input id="fullName" class="input-box" placeholder="Полное имя">
+        <input id="phone" class="input-box" placeholder="Телефон">
+        <input id="street" class="input-box" placeholder="Улица, дом">
+        <input id="apt" class="input-box" placeholder="Квартира / офис (необязательно)">
+        
+        <div class="flex gap-3">
+            <input id="city" class="input-box" placeholder="Город">
+            <input id="state" class="input-box" placeholder="Штат">
+        </div>
 
-<div class="row">
-    <input class="input" placeholder="Город">
-    <input class="input" placeholder="Штат">
-</div>
+        <input id="zip" class="input-box" placeholder="ZIP код">
 
-<input class="input" placeholder="ZIP код">
+        <select id="language" class="input-box text-black">
+            <option value="English">English</option>
+            <option value="Russian">Русский</option>
+            <option value="Spanish">Spanish</option>
+        </select>
 
-<select class="input">
-    <option>English</option>
-    <option>Русский</option>
-    <option>Español</option>
-</select>
+        <button onclick="goStep2()" class="primary-btn">Далее</button>
+    </section>
 
-<button class="btn" id="nextBtn">Далее</button>
 
-<script>
-document.getElementById("nextBtn").onclick = () => {
-    Telegram.WebApp.close();
-};
-</script>
+
+    <!-- ШАГ 2 — Категория -->
+    <section id="step2" class="hidden mt-8">
+        <h2 class="text-3xl font-bold mb-3">Категория</h2>
+        <p class="text-gray-300 mb-4">Пожалуйста выберите свою категорию чтобы обслуживать клиентов.</p>
+
+        <div class="category-card" data-cat="Appliance">
+            <div class="font-bold text-xl">Appliance Repair</div>
+            <div class="text-gray-300 text-sm">Washer, dryer, refrigerator…</div>
+        </div>
+
+        <div class="category-card" data-cat="Cleaning">
+            <div class="font-bold text-xl">Cleaning</div>
+            <div class="text-gray-300 text-sm">Home, office, car…</div>
+        </div>
+
+        <div class="category-card" data-cat="Handyman">
+            <div class="font-bold text-xl">Handyman</div>
+            <div class="text-gray-300 text-sm">Repair, painting, install…</div>
+        </div>
+
+        <div class="category-card" data-cat="Locksmith">
+            <div class="font-bold text-xl">Locksmith</div>
+            <div class="text-gray-300 text-sm">Locks, car locks…</div>
+        </div>
+
+        <div class="category-card" data-cat="Moving">
+            <div class="font-bold text-xl">Moving</div>
+            <div class="text-gray-300 text-sm">Packing, lifting…</div>
+        </div>
+
+        <div class="category-card" data-cat="SmartHome">
+            <div class="font-bold text-xl">Smart Home</div>
+            <div class="text-gray-300 text-sm">Doorbell, camera…</div>
+        </div>
+
+        <div class="category-card" data-cat="Tire">
+            <div class="font-bold text-xl">Tire & Roadside</div>
+            <div class="text-gray-300 text-sm">Tire change, jump start…</div>
+        </div>
+
+        <button onclick="goStep3()" class="primary-btn">Далее</button>
+    </section>
+
+
+
+    <!-- ШАГ 3 — Фото -->
+    <section id="step3" class="hidden mt-10 text-center">
+        <h2 class="text-3xl font-bold mb-3">Фото профиля</h2>
+
+        <div id="photoCircle">Нажмите, чтобы выбрать фото</div>
+        <input id="photoInput" type="file" accept="image/*" class="hidden">
+
+        <button class="primary-btn" onclick="finishRegistration()">Завершить</button>
+    </section>
+
+
+
+
+    <!-- JS ЛОГИКА -->
+    <script>
+        let selectedCategory = null;
+
+        // --- ШАГ 1
+        function goStep2() {
+            document.getElementById("step1").classList.add("hidden");
+            document.getElementById("step2").classList.remove("hidden");
+        }
+
+        // --- ВЫБОР КАТЕГОРИИ
+        document.querySelectorAll(".category-card").forEach(card => {
+            card.onclick = () => {
+                document.querySelectorAll(".category-card")
+                    .forEach(c => c.classList.remove("selected"));
+                card.classList.add("selected");
+                selectedCategory = card.dataset.cat;
+            };
+        });
+
+        // --- ШАГ 2
+        function goStep3() {
+            if (!selectedCategory) {
+                alert("Выберите категорию");
+                return;
+            }
+
+            document.getElementById("step2").classList.add("hidden");
+            document.getElementById("step3").classList.remove("hidden");
+        }
+
+        // --- ФОТО
+        document.getElementById("photoCircle").onclick = () =>
+            document.getElementById("photoInput").click();
+
+        document.getElementById("photoInput").onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+            const circle = document.getElementById("photoCircle");
+
+            circle.style.backgroundImage = `url(${url})`;
+            circle.style.backgroundSize = "cover";
+            circle.style.border = "none";
+            circle.textContent = "";
+        };
+
+        // --- ШАГ 3 Завершить
+        function finishRegistration() {
+            alert("Регистрация завершена!");
+        }
+    </script>
 
 </body>
 </html>
