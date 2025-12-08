@@ -4,12 +4,12 @@ let selectedLanguage = null;
 let selectedCategory = null;
 let selectedPhotoFile = null;
 
-// STEP BUTTONS
+// STEP SECTIONS
 const step1 = document.getElementById("step1");
 const step2 = document.getElementById("step2");
 const step3 = document.getElementById("step3");
 
-// Language selection
+// LANGUAGE SELECT
 document.querySelectorAll(".lang-card").forEach(card => {
     card.onclick = () => {
         document.querySelectorAll(".lang-card")
@@ -20,17 +20,17 @@ document.querySelectorAll(".lang-card").forEach(card => {
     };
 });
 
-// Continue to step 2
+// GO TO STEP 2
 window.goStep2 = function () {
     if (!selectedLanguage) {
-        alert("Пожалуйста, выберите язык");
+        alert("Please select a language");
         return;
     }
     step1.classList.add("hidden");
     step2.classList.remove("hidden");
 };
 
-// Category selection
+// CATEGORY SELECT
 document.querySelectorAll(".category-card").forEach(card => {
     card.onclick = () => {
         document.querySelectorAll(".category-card")
@@ -41,17 +41,17 @@ document.querySelectorAll(".category-card").forEach(card => {
     };
 });
 
-// Continue to step 3
+// GO TO STEP 3
 window.goStep3 = function () {
     if (!selectedCategory) {
-        alert("Выберите категорию");
+        alert("Please select a service category");
         return;
     }
     step2.classList.add("hidden");
     step3.classList.remove("hidden");
 };
 
-// Photo preview
+// PHOTO PREVIEW
 document.getElementById("photoInput").onchange = (e) => {
     selectedPhotoFile = e.target.files[0];
     if (!selectedPhotoFile) return;
@@ -60,44 +60,54 @@ document.getElementById("photoInput").onchange = (e) => {
     const preview = document.getElementById("photoPreview");
     preview.style.backgroundImage = `url(${url})`;
     preview.style.backgroundSize = "cover";
+    preview.style.backgroundPosition = "center";
     preview.style.border = "none";
 };
 
-// Final registration
+// FINAL REGISTRATION
 window.finishRegistration = async function () {
     const fullName = document.getElementById("fullName").value.trim();
     const phone = document.getElementById("phone").value.trim();
+    const street = document.getElementById("street").value.trim();
+    const apt = document.getElementById("apt").value.trim();
     const city = document.getElementById("city").value.trim();
+    const state = document.getElementById("state").value.trim();
     const zipcode = document.getElementById("zipcode").value.trim();
 
     if (!fullName || !phone || !city || !zipcode) {
-        alert("Заполните все поля");
+        alert("Please fill all required fields");
         return;
     }
 
     let photoUrl = null;
 
+    // UPLOAD PHOTO
     if (selectedPhotoFile) {
         const fileName = `profile_${Date.now()}.jpg`;
 
-        const { data: storageData, error: storageError } = await supabase
+        const { error: uploadError } = await supabase
             .storage
             .from("worker_photos")
             .upload(fileName, selectedPhotoFile);
 
-        if (storageError) {
-            alert("Ошибка загрузки фото");
-            console.log(storageError);
+        if (uploadError) {
+            alert("Photo upload failed");
+            console.log(uploadError);
             return;
         }
 
-        photoUrl = `https://ccqldccmikwdjkbxmcsn.supabase.co/storage/v1/object/public/worker_photos/${fileName}`;
+        photoUrl =
+            `https://ccqldccmikwdjkbxmcsn.supabase.co/storage/v1/object/public/worker_photos/${fileName}`;
     }
 
+    // INSERT INTO TABLE
     const { error } = await supabase.from("workers").insert({
         full_name: fullName,
         phone: phone,
+        street: street,
+        apt: apt,
         city: city,
+        state: state,
         zipcode: zipcode,
         language: selectedLanguage,
         category: selectedCategory,
@@ -105,10 +115,10 @@ window.finishRegistration = async function () {
     });
 
     if (error) {
-        alert("Ошибка регистрации");
+        alert("Registration failed");
         console.log(error);
         return;
     }
 
-    alert("Регистрация завершена!");
+    alert("Registration complete!");
 };
