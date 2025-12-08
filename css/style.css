@@ -1,1 +1,86 @@
-/* Custom Styles */
+/*body {
+    background: #0B111A;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+}
+
+.section-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    background: #101824;
+    margin-bottom: 14px;
+    color: #fff;
+}
+
+select.input {
+    color: #fff;
+}
+
+.primary-btn {
+    width: 100%;
+    background: #18C964;
+    padding: 16px;
+    text-align: center;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+/* ------ CATEGORY CARDS (STEP 2) ------ */
+
+.category-card {
+    background: #101824;
+    padding: 14px 18px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.category-card:hover {
+    background: #14202E;
+}
+
+.category-card.selected {
+    border: 2px solid #18C964;
+}
+
+.category-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.category-sub {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+/* ------ PHOTO STEP ------ */
+
+#photoStep {
+    padding-top: 90px;
+}
+
+#photoPreview {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 2px dashed #666;
+    margin: 40px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #aaa;
+    text-align: center;
+    opacity: 0.8;
+}
+ Custom Styles */
