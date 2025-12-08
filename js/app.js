@@ -1,104 +1,105 @@
-import { supabase } from "./config.js";
+// js/app.js
 
-const tg = window.Telegram.WebApp;
+document.addEventListener("DOMContentLoaded", () => {
+  // --- элементы шапки ---
+  const headerTitle = document.getElementById("headerTitle");
+  const headerSubtitle = document.getElementById("headerSubtitle");
 
-// ШАГИ
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const step3 = document.getElementById("step3");
-const headerTitle = document.getElementById("headerTitle");
+  // --- шаги ---
+  const step1 = document.getElementById("step1");
+  const step2 = document.getElementById("step2");
+  const step3 = document.getElementById("step3");
+  const doneScreen = document.getElementById("doneScreen");
 
-let selectedCategory = null;
-let uploadedPhoto = null;
+  // --- кнопки ---
+  const step1NextBtn = document.getElementById("step1NextBtn");
+  const toPhotoBtn = document.getElementById("toPhotoBtn");
+  const finishBtn = document.getElementById("finishBtn");
 
-// ---------- STEP 1 ----------
-document.getElementById("nextBtn").onclick = () => {
-    step1.classList.add("hidden");
-    step2.classList.remove("hidden");
-    headerTitle.textContent = "Категория";
-};
+  // --- поля шага 1 ---
+  const fullNameInput = document.getElementById("fullName");
+  const phoneInput = document.getElementById("phone");
+  const streetInput = document.getElementById("street");
+  const cityInput = document.getElementById("city");
+  const zipInput = document.getElementById("zip");
+  const languageSelect = document.getElementById("language");
 
-// ---------- SELECT CATEGORY ----------
-document.querySelectorAll(".category-card").forEach(card => {
-    card.onclick = () => {
-        document.querySelectorAll(".category-card").forEach(c => c.classList.remove("selected"));
-        card.classList.add("selected");
-        selectedCategory = card.dataset.cat;
-    };
+  // простая функция показать один шаг, скрыть остальные
+  function showStep(stepNumber) {
+    const all = [step1, step2, step3, doneScreen];
+    all.forEach((el) => el && el.classList.add("hidden"));
+
+    if (stepNumber === 1 && step1) {
+      step1.classList.remove("hidden");
+      headerTitle.textContent = "Регистрация";
+      headerSubtitle.textContent = "О вас";
+    }
+
+    if (stepNumber === 2 && step2) {
+      step2.classList.remove("hidden");
+      headerTitle.textContent = "Регистрация";
+      headerSubtitle.textContent = "Категория услуг";
+    }
+
+    if (stepNumber === 3 && step3) {
+      step3.classList.remove("hidden");
+      headerTitle.textContent = "Регистрация";
+      headerSubtitle.textContent = "Фото профиля";
+    }
+
+    if (stepNumber === 4 && doneScreen) {
+      doneScreen.classList.remove("hidden");
+      headerTitle.textContent = "Готово";
+      headerSubtitle.textContent = "";
+    }
+  }
+
+  // сразу показываем шаг 1
+  showStep(1);
+
+  // --- КЛИК ПО "ДАЛЕЕ" НА ШАГЕ 1 ---
+  if (step1NextBtn) {
+    step1NextBtn.addEventListener("click", () => {
+      const fullName = fullNameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const street = streetInput.value.trim();
+      const city = cityInput.value.trim();
+      const zip = zipInput.value.trim();
+      const lang = languageSelect.value.trim();
+
+      // простая проверка
+      if (!fullName  !phone  !street  !city  !zip || !lang) {
+        alert("Заполни все обязательные поля");
+        return;
+      }
+
+      // здесь позже добавим отправку в Supabase
+      console.log("STEP 1 DATA:", {
+        fullName,
+        phone,
+        street,
+        city,
+        zip,
+        lang,
+      });
+
+      showStep(2);
+    });
+  }
+
+  // --- КЛИК ПО "ДАЛЕЕ К ФОТО" НА ШАГЕ 2 ---
+  if (toPhotoBtn) {
+    toPhotoBtn.addEventListener("click", () => {
+      showStep(3);
+    });
+  }
+
+  // --- КЛИК ПО "ЗАВЕРШИТЬ РЕГИСТРАЦИЮ" НА ШАГЕ 3 ---
+  if (finishBtn) {
+    finishBtn.addEventListener("click", () => {
+      // тут потом будет загрузка фото + запись в Supabase
+      console.log("registration finished (without Supabase yet)");
+      showStep(4);
+    });
+  }
 });
-
-// ---------- STEP 2 ----------
-document.getElementById("nextBtn2").onclick = () => {
-    if (!selectedCategory) return alert("Выберите категорию");
-
-    step2.classList.add("hidden");
-    step3.classList.remove("hidden");
-    headerTitle.textContent = "Фото профиля";
-};
-
-// ---------- PHOTO ----------
-document.getElementById("photoPreview").onclick = () => {
-    document.getElementById("photoInput").click();
-};
-
-document.getElementById("photoInput").onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    uploadedPhoto = file;
-
-    const url = URL.createObjectURL(file);
-    const preview = document.getElementById("photoPreview");
-    preview.style.backgroundImage = url(${url});
-    preview.style.backgroundSize = "cover";
-    preview.textContent = "";
-};
-
-// ---------- FINISH ----------
-document.getElementById("finishBtn").onclick = async () => {
-
-    const fullName = document.getElementById("fullName").value;
-    const phone = document.getElementById("phone").value;
-    const street = document.getElementById("street").value;
-    const apt = document.getElementById("apt").value;
-    const city = document.getElementById("city").value;
-    const state = document.getElementById("state").value;
-    const zip = document.getElementById("zip").value;
-    const language = document.getElementById("language").value;
-
-    if (!fullName  !phone  !street  !city  !state || !zip) {
-        return alert("Заполните все обязательные поля");
-    }
-
-    // Upload Photo
-    let photo_url = null;
-    if (uploadedPhoto) {
-        const filename = worker_${Date.now()}.jpg;
-        const { data, error } = await supabase.storage
-            .from("profiles")
-            .upload(filename, uploadedPhoto);
-
-        if (!error) {
-            photo_url = supabase.storage.from("profiles").getPublicUrl(filename).data.publicUrl;
-        }
-    }
-
-    // SAVE WORKER
-    await supabase.from("workers").insert([
-        {
-            full_name: fullName,
-            phone,
-            street,
-            apt,
-            city,
-            state,
-            zip,
-            language,
-            category: selectedCategory,
-            photo: photo_url,
-            telegram_id: tg.initDataUnsafe.user?.id,
-        }
-    ]);
-
-    tg.close();
-};
