@@ -1,147 +1,127 @@
-// ELIMAN WORKER – Uber-style registration
+console.log("APP JS LOADED");
 
+// TELEGRAM
 const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.expand();
-  tg.disableVerticalSwipes?.();
-}
+tg?.expand();
 
-// DOM элементы
+// DOM ELEMENTS
+const headerTitle = document.getElementById("headerTitle");
+
 const step1 = document.getElementById("step1");
 const step2 = document.getElementById("step2");
 const step3 = document.getElementById("step3");
 const doneScreen = document.getElementById("doneScreen");
 
-const headerTitle = document.getElementById("headerTitle");
-const closeBtn = document.getElementById("closeBtn");
-
 const toStep2Btn = document.getElementById("toStep2Btn");
 const toStep3Btn = document.getElementById("toStep3Btn");
 const finishBtn = document.getElementById("finishBtn");
 
-const fullNameInput = document.getElementById("fullName");
-const phoneInput = document.getElementById("phone");
-const addressLine1Input = document.getElementById("addressLine1");
-const addressLine2Input = document.getElementById("addressLine2");
-const cityInput = document.getElementById("city");
-const stateInput = document.getElementById("state");
-const zipInput = document.getElementById("zip");
-const languageSelect = document.getElementById("language");
+// INPUTS
+const fullName = document.getElementById("fullName");
+const phone = document.getElementById("phone");
+const addressLine1 = document.getElementById("addressLine1");
+const addressLine2 = document.getElementById("addressLine2");
+const city = document.getElementById("city");
+const state = document.getElementById("state");
+const zip = document.getElementById("zip");
+const language = document.getElementById("language");
 
+// PHOTO
 const photoPreview = document.getElementById("photoPreview");
 const photoInput = document.getElementById("photoInput");
 
+// SERVICES (multiple)
 const serviceCards = document.querySelectorAll(".category-card");
-const selectedServices = new Set();
+let selectedServices = new Set();
 
-// Выбор сервисов (мультивыбор)
+/* -----------------------------
+      STEP: SERVICE SELECT
+--------------------------------*/
 serviceCards.forEach(card => {
-  card.addEventListener("click", () => {
-    const service = card.dataset.service;
-    if (!service) return;
+    card.addEventListener("click", () => {
+        const key = card.dataset.service;
 
-    if (selectedServices.has(service)) {
-      selectedServices.delete(service);
-      card.classList.remove("selected");
-    } else {
-      selectedServices.add(service);
-      card.classList.add("selected");
-    }
-  });
+        if (selectedServices.has(key)) {
+            selectedServices.delete(key);
+            card.classList.remove("selected");
+        } else {
+            selectedServices.add(key);
+            card.classList.add("selected");
+        }
+    });
 });
 
-// Фото профиля – открыть селектор
-photoPreview.addEventListener("click", () => {
-  photoInput.click();
-});
-
-// Фото профиля – превью
-photoInput.addEventListener("change", event => {
-  const file = event.target.files?.[0];
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-  photoPreview.style.backgroundImage = `url(${url})`;
-  photoPreview.style.backgroundSize = "cover";
-  photoPreview.style.backgroundPosition = "center";
-  photoPreview.style.borderStyle = "solid";
-  photoPreview.textContent = "";
-});
-
-// Кнопка "Закрыть"
-closeBtn.addEventListener("click", () => {
-  if (tg) {
-    tg.close();
-  } else {
-    window.close();
-  }
-});
-
-// Валидация шага 1
-function validateStep1() {
-  const fullName = fullNameInput.value.trim();
-  const phone = phoneInput.value.trim();
-  const address1 = addressLine1Input.value.trim();
-  const city = cityInput.value.trim();
-  const zip = zipInput.value.trim();
-
-  if (!fullName || !phone || !address1 || !city || !zip) {
-    alert("Заполните имя, телефон, улицу, город и ZIP.");
-    return false;
-  }
-  return true;
-}
-
-// Переход на шаг 2
+/* -----------------------------
+      STEP 1 → STEP 2
+--------------------------------*/
 toStep2Btn.addEventListener("click", () => {
-  if (!validateStep1()) return;
-
-  step1.classList.add("hidden");
-  step2.classList.remove("hidden");
-  headerTitle.textContent = "Услуги";
-});
-
-// Переход на шаг 3
-toStep3Btn.addEventListener("click", () => {
-  if (selectedServices.size === 0) {
-    alert("Выберите хотя бы одну услугу.");
-    return;
-  }
-
-  step2.classList.add("hidden");
-  step3.classList.remove("hidden");
-  headerTitle.textContent = "Фото профиля";
-});
-
-// Завершение регистрации
-finishBtn.addEventListener("click", () => {
-  const worker = {
-    full_name: fullNameInput.value.trim(),
-    phone: phoneInput.value.trim(),
-    address_line1: addressLine1Input.value.trim(),
-    address_line2: addressLine2Input.value.trim(),
-    city: cityInput.value.trim(),
-    state: stateInput.value.trim(),
-    zip: zipInput.value.trim(),
-    language: languageSelect.value || null,
-    services: Array.from(selectedServices),
-    // фото мы пока не заливаем, только факт наличия
-    has_photo: !!photoInput.files?.[0]
-  };
-
-  console.log("Worker registration:", worker);
-
-  if (tg) {
-    try {
-      tg.sendData(JSON.stringify(worker));
-    } catch (e) {
-      console.error("Telegram sendData error:", e);
+    if (
+        fullName.value.trim() === "" ||
+        phone.value.trim() === "" ||
+        addressLine1.value.trim() === "" ||
+        city.value.trim() === "" ||
+        zip.value.trim() === ""
+    ) {
+        alert("Заполните обязательные поля");
+        return;
     }
-  }
 
-  step1.classList.add("hidden");
-  step2.classList.add("hidden");
-  step3.classList.add("hidden");
-  doneScreen.classList.remove("hidden");
-  headerTitle.textContent = "Готово";
+    step1.classList.add("hidden");
+    step2.classList.remove("hidden");
+    headerTitle.textContent = "Услуги";
+});
+
+/* -----------------------------
+      STEP 2 → STEP 3
+--------------------------------*/
+toStep3Btn.addEventListener("click", () => {
+    if (selectedServices.size === 0) {
+        alert("Выберите минимум одну услугу");
+        return;
+    }
+
+    step2.classList.add("hidden");
+    step3.classList.remove("hidden");
+    headerTitle.textContent = "Фото профиля";
+});
+
+/* -----------------------------
+      PHOTO UPLOAD
+--------------------------------*/
+photoPreview.addEventListener("click", () => photoInput.click());
+
+photoInput.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    photoPreview.style.backgroundImage = `url(${url})`;
+    photoPreview.style.backgroundSize = "cover";
+    photoPreview.textContent = "";
+});
+
+/* -----------------------------
+      FINISH REGISTRATION
+--------------------------------*/
+finishBtn.addEventListener("click", () => {
+    const data = {
+        fullName: fullName.value,
+        phone: phone.value,
+        addressLine1: addressLine1.value,
+        addressLine2: addressLine2.value,
+        city: city.value,
+        state: state.value,
+        zip: zip.value,
+        language: language.value,
+        services: Array.from(selectedServices),
+        hasPhoto: !!photoInput.files[0]
+    };
+
+    console.log("FINAL DATA:", data);
+
+    step3.classList.add("hidden");
+    doneScreen.classList.remove("hidden");
+    headerTitle.textContent = "Готово 🎉";
+
+    tg?.sendData(JSON.stringify(data));
 });
