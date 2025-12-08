@@ -1,105 +1,116 @@
-// =========================
-//  STEP LOGIC
-// =========================
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация | ELIMAN WORKER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const step3 = document.getElementById("step3");
-const doneScreen = document.getElementById("doneScreen");
+<body class="bg-gray-900 text-white">
 
-const headerTitle = document.getElementById("headerTitle");
-const headerSubtitle = document.getElementById("headerSubtitle");
+    <main class="p-5 space-y-6">
 
-// КНОПКА 1 — ДАЛЕЕ (О ВАС)
-document.getElementById("step1NextBtn").addEventListener("click", () => {
+        <!-- ШАГ 1 — О ВАС -->
+        <section id="step1" class="space-y-4">
+            <h2 class="text-3xl font-bold">О вас</h2>
 
-    // Проверка пустых полей
-    if (
-        !fullName.value.trim() ||
-        !phone.value.trim() ||
-        !street.value.trim() ||
-        !city.value.trim() ||
-        !state.value.trim() ||
-        !zip.value.trim() ||
-        !language.value.trim()
-    ) {
-        alert("Пожалуйста заполните ВСЕ поля");
-        return;
-    }
+            <input id="fullName" class="w-full p-3 rounded text-black" placeholder="Полное имя">
+            <input id="phone" class="w-full p-3 rounded text-black" placeholder="Телефон">
 
-    // Переключение экранов
-    step1.classList.add("hidden");
-    step2.classList.remove("hidden");
+            <h3 class="text-xl font-semibold mt-4">Адрес</h3>
 
-    headerTitle.textContent = "Категория";
-    headerSubtitle.textContent = "Выберите вашу категорию";
-});
+            <input id="street" class="w-full p-3 rounded text-black" placeholder="Улица, дом">
+            <input id="apt" class="w-full p-3 rounded text-black" placeholder="Квартира / офис (необязательно)">
+            
+            <div class="flex gap-3">
+                <input id="city" class="w-1/2 p-3 rounded text-black" placeholder="Город">
+                <input id="state" class="w-1/2 p-3 rounded text-black" placeholder="Штат">
+            </div>
 
+            <input id="zip" class="w-full p-3 rounded text-black" placeholder="ZIP код">
 
-// =========================
-//  CATEGORY SELECT
-// =========================
+            <select id="language" class="w-full p-3 rounded text-black">
+                <option value="English">English</option>
+                <option value="Russian">Русский</option>
+                <option value="Spanish">Spanish</option>
+            </select>
 
-let selectedCategory = null;
-
-document.querySelectorAll(".category-card").forEach(card => {
-    card.addEventListener("click", () => {
-        document.querySelectorAll(".category-card").forEach(c => c.classList.remove("ring-2", "ring-green-500"));
-
-        card.classList.add("ring-2", "ring-green-500");
-        selectedCategory = card.dataset.cat;
-    });
-});
+            <button id="step1NextBtn" class="w-full bg-green-500 p-3 rounded text-lg font-bold">
+                Далее
+            </button>
+        </section>
 
 
-// КНОПКА 2 — ДАЛЕЕ (КАТЕГОРИИ)
-document.getElementById("toPhotoBtn").addEventListener("click", () => {
-    if (!selectedCategory) {
-        alert("Выберите категорию");
-        return;
-    }
+        <!-- ШАГ 2 — КАТЕГОРИЯ -->
+        <section id="step2" class="hidden space-y-4">
+            <h2 class="text-3xl font-bold">Категория</h2>
 
-    step2.classList.add("hidden");
-    step3.classList.remove("hidden");
+            <div class="grid grid-cols-1 gap-3">
 
-    headerTitle.textContent = "Фото профиля";
-    headerSubtitle.textContent = "Загрузите своё фото";
-});
+                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Appliance Repair">
+                    Appliance Repair (washer, dryer, refrigerator...)
+                </div>
+
+                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Cleaning">
+                    Cleaning (home, office, car, lawn...)
+                </div>
+
+                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Handyman">
+                    Handyman (repair, install, painting...)
+                </div>
+
+                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Locksmith">
+                    Locksmith (car lock, install, open door...)
+                </div>
+
+                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Moving">
+                    Moving (packing, moving, heavy lifting...)
+                </div>
+
+                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Smart Home">
+                    Smart Home (camera, video doorbell...)
+                </div>
+
+                <div class="category-card p-4 bg-gray-800 rounded cursor-pointer" data-cat="Tire Service">
+                    Tire Service (change, rotate, jump-start...)
+                </div>
+
+            </div>
+
+            <button id="toPhotoBtn" class="w-full bg-green-500 p-3 rounded text-lg font-bold">
+                Далее
+            </button>
+        </section>
 
 
-// =========================
-//  PHOTO UPLOAD
-// =========================
+        <!-- ШАГ 3 — ФОТО -->
+        <section id="step3" class="hidden space-y-4">
+            <h2 class="text-3xl font-bold">Фото профиля</h2>
 
-const photoInput = document.getElementById("photoInput");
-const photoPreview = document.getElementById("photoPreview");
+            <div id="photoPreview"
+                 class="w-32 h-32 rounded-full bg-gray-700 flex items-center justify-center mx-auto cursor-pointer">
+                Фото
+            </div>
 
-photoPreview.onclick = () => photoInput.click();
+            <input id="photoInput" type="file" accept="image/*" class="hidden">
 
-photoInput.onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const url = URL.createObjectURL(file);
-
-    photoPreview.style.backgroundImage = `url(${url})`;
-    photoPreview.style.backgroundSize = "cover";
-    photoPreview.style.backgroundPosition = "center";
-    photoPreview.textContent = "";
-};
+            <button id="finishBtn" class="w-full bg-green-500 p-3 rounded text-lg font-bold">
+                Завершить регистрацию
+            </button>
+        </section>
 
 
-// КНОПКА 3 — ЗАВЕРШИТЬ РЕГИСТРАЦИЮ
-document.getElementById("finishBtn").addEventListener("click", () => {
+        <!-- ГОТОВО -->
+        <section id="doneScreen" class="hidden text-center space-y-4">
+            <h2 class="text-3xl font-bold">Готово 🎉</h2>
+            <p>Ваша анкета отправлена.</p>
+        </section>
 
-    if (!photoInput.files[0]) {
-        alert("Загрузите фото");
-        return;
-    }
+    </main>
 
-    step3.classList.add("hidden");
-    doneScreen.classList.remove("hidden");
+    <script type="module" src="./js/app.js"></script>
 
-    headerTitle.textContent = "Готово!";
-    headerSubtitle.textContent = "";
-});
+</body>
+</html>
