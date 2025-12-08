@@ -1,213 +1,454 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Eliman Worker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eliman Worker</title>
 
-    <!-- Telegram WebApp -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <style>
-        body {
-            background: #0f172a;
-            color: white;
-        }
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+    }
 
-        .input-box {
-            width: 100%;
-            background: #1e293b;
-            padding: 14px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-            color: white;
-        }
+    .input-box {
+      width: 100%;
+      background: #1e293b;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+      color: white;
+    }
 
-        .category-card {
-            background: #1e293b;
-            padding: 16px;
-            border-radius: 14px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .card-base {
+      background: #1e293b;
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-        .category-card.selected {
-            background: #22c55e;
-            color: black;
-        }
+    .card-base.selected {
+      background: #22c55e;
+      color: black;
+    }
 
-        #photoCircle {
-            width: 160px;
-            height: 160px;
-            border-radius: 100%;
-            border: 2px dashed #64748b;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 70px auto 30px;
-            font-size: 16px;
-            text-align: center;
-            color: #94a3b8;
-            cursor: pointer;
-        }
+    #photoCircle {
+      width: 160px;
+      height: 160px;
+      border-radius: 100%;
+      border: 2px dashed #64748b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 70px auto 30px;
+      font-size: 16px;
+      text-align: center;
+      color: #94a3b8;
+      cursor: pointer;
+    }
 
-        .primary-btn {
-            width: 100%;
-            background: #22c55e;
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 18px;
-            font-weight: 700;
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
+    .primary-btn {
+      width: 100%;
+      background: #22c55e;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body class="p-5 pb-20">
 
-    <!-- ШАГ 1 — О ВАС -->
-    <section id="step1" class="mt-8">
-        <h2 class="text-3xl font-bold mb-4">О вас</h2>
+  <!-- ШАГ 0 — ВЫБОР ЯЗЫКА -->
+  <section id="langStep" class="mt-10">
+    <h2 id="langTitle" class="text-3xl font-bold mb-3">Выберите язык</h2>
+    <p id="langSubtitle" class="text-gray-300 mb-5">
+      Пожалуйста, выберите язык. Мы покажем все шаги на вашем языке.
+    </p>
 
-        <input id="fullName" class="input-box" placeholder="Полное имя">
-        <input id="phone" class="input-box" placeholder="Телефон">
-        <input id="street" class="input-box" placeholder="Улица, дом">
-        <input id="apt" class="input-box" placeholder="Квартира / офис (необязательно)">
-        
-        <div class="flex gap-3">
-            <input id="city" class="input-box" placeholder="Город">
-            <input id="state" class="input-box" placeholder="Штат">
-        </div>
+    <div class="card-base language-card" data-lang="en">
+      <div class="font-bold text-lg">English</div>
+      <div class="text-gray-300 text-sm">United States, Canada…</div>
+    </div>
 
-        <input id="zip" class="input-box" placeholder="ZIP код">
+    <div class="card-base language-card" data-lang="ru">
+      <div class="font-bold text-lg">Русский</div>
+      <div class="text-gray-300 text-sm">Россия, СНГ…</div>
+    </div>
 
-        <select id="language" class="input-box text-black">
-            <option value="English">English</option>
-            <option value="Russian">Русский</option>
-            <option value="Spanish">Spanish</option>
-        </select>
-
-        <button onclick="goStep2()" class="primary-btn">Далее</button>
-    </section>
+    <div class="card-base language-card" data-lang="es">
+      <div class="font-bold text-lg">Español</div>
+      <div class="text-gray-300 text-sm">Latinoamérica, España…</div>
+    </div>
+  </section>
 
 
 
-    <!-- ШАГ 2 — Категория -->
-    <section id="step2" class="hidden mt-8">
-        <h2 class="text-3xl font-bold mb-3">Категория</h2>
-        <p class="text-gray-300 mb-4">Пожалуйста выберите свою категорию чтобы обслуживать клиентов.</p>
+  <!-- ШАГ 1 — ПРОФИЛЬ -->
+  <section id="step1" class="hidden mt-8">
+    <h2 id="step1Title" class="text-3xl font-bold mb-2">Профиль</h2>
+    <p id="step1Subtitle" class="text-gray-300 mb-4">
+      Расскажите о себе и адресе, чтобы мы знали, куда отправлять заказы.
+    </p>
 
-        <div class="category-card" data-cat="Appliance">
-            <div class="font-bold text-xl">Appliance Repair</div>
-            <div class="text-gray-300 text-sm">Washer, dryer, refrigerator…</div>
-        </div>
+    <input id="fullName" class="input-box" placeholder="Полное имя">
+    <input id="phone" class="input-box" placeholder="Телефон">
+    <input id="street" class="input-box" placeholder="Улица, дом">
+    <input id="apt" class="input-box" placeholder="Квартира / офис (необязательно)">
 
-        <div class="category-card" data-cat="Cleaning">
-            <div class="font-bold text-xl">Cleaning</div>
-            <div class="text-gray-300 text-sm">Home, office, car…</div>
-        </div>
+    <div class="flex gap-3">
+      <input id="city" class="input-box" placeholder="Город">
+      <input id="state" class="input-box" placeholder="Штат">
+    </div>
 
-        <div class="category-card" data-cat="Handyman">
-            <div class="font-bold text-xl">Handyman</div>
-            <div class="text-gray-300 text-sm">Repair, painting, install…</div>
-        </div>
+    <input id="zip" class="input-box" placeholder="ZIP код">
 
-        <div class="category-card" data-cat="Locksmith">
-            <div class="font-bold text-xl">Locksmith</div>
-            <div class="text-gray-300 text-sm">Locks, car locks…</div>
-        </div>
-
-        <div class="category-card" data-cat="Moving">
-            <div class="font-bold text-xl">Moving</div>
-            <div class="text-gray-300 text-sm">Packing, lifting…</div>
-        </div>
-
-        <div class="category-card" data-cat="SmartHome">
-            <div class="font-bold text-xl">Smart Home</div>
-            <div class="text-gray-300 text-sm">Doorbell, camera…</div>
-        </div>
-
-        <div class="category-card" data-cat="Tire">
-            <div class="font-bold text-xl">Tire & Roadside</div>
-            <div class="text-gray-300 text-sm">Tire change, jump start…</div>
-        </div>
-
-        <button onclick="goStep3()" class="primary-btn">Далее</button>
-    </section>
+    <button id="next1Btn" onclick="goStep2()" class="primary-btn">Далее</button>
+  </section>
 
 
 
-    <!-- ШАГ 3 — Фото -->
-    <section id="step3" class="hidden mt-10 text-center">
-        <h2 class="text-3xl font-bold mb-3">Фото профиля</h2>
+  <!-- ШАГ 2 — КАТЕГОРИЯ -->
+  <section id="step2" class="hidden mt-8">
+    <h2 id="step2Title" class="text-3xl font-bold mb-2">Категория</h2>
+    <p id="step2Subtitle" class="text-gray-300 mb-4">
+      Пожалуйста выберите свою категорию чтобы обслуживать клиентов.
+    </p>
 
-        <div id="photoCircle">Нажмите, чтобы выбрать фото</div>
-        <input id="photoInput" type="file" accept="image/*" class="hidden">
+    <div class="card-base category-card" data-cat="Appliance">
+      <div id="catApplianceTitle" class="font-bold text-xl">Appliance Repair</div>
+      <div id="catApplianceSub" class="text-gray-300 text-sm">
+        Washer, dryer, refrigerator…
+      </div>
+    </div>
 
-        <button class="primary-btn" onclick="finishRegistration()">Завершить</button>
-    </section>
+    <div class="card-base category-card" data-cat="Cleaning">
+      <div id="catCleaningTitle" class="font-bold text-xl">Cleaning</div>
+      <div id="catCleaningSub" class="text-gray-300 text-sm">
+        Home, office, car…
+      </div>
+    </div>
+
+    <div class="card-base category-card" data-cat="Handyman">
+      <div id="catHandymanTitle" class="font-bold text-xl">Handyman</div>
+      <div id="catHandymanSub" class="text-gray-300 text-sm">
+        Repair, painting, install…
+      </div>
+    </div>
+
+    <div class="card-base category-card" data-cat="Locksmith">
+      <div id="catLocksmithTitle" class="font-bold text-xl">Locksmith</div>
+      <div id="catLocksmithSub" class="text-gray-300 text-sm">
+        Locks, car locks…
+      </div>
+    </div>
+
+    <div class="card-base category-card" data-cat="Moving">
+      <div id="catMovingTitle" class="font-bold text-xl">Moving</div>
+      <div id="catMovingSub" class="text-gray-300 text-sm">
+        Packing, moving, lifting…
+      </div>
+    </div>
+
+    <div class="card-base category-card" data-cat="SmartHome">
+      <div id="catSmartTitle" class="font-bold text-xl">Smart Home</div>
+      <div id="catSmartSub" class="text-gray-300 text-sm">
+        Doorbell, camera…
+      </div>
+    </div>
+
+    <div class="card-base category-card" data-cat="Tire">
+      <div id="catTireTitle" class="font-bold text-xl">Tire & Roadside</div>
+      <div id="catTireSub" class="text-gray-300 text-sm">
+        Tire change, jump start…
+      </div>
+    </div>
+
+    <button id="next2Btn" onclick="goStep3()" class="primary-btn">Далее</button>
+  </section>
 
 
 
+  <!-- ШАГ 3 — ФОТО -->
+  <section id="step3" class="hidden mt-10 text-center">
+    <h2 id="step3Title" class="text-3xl font-bold mb-3">Фото профиля</h2>
 
-    <!-- JS ЛОГИКА -->
-    <script>
-        let selectedCategory = null;
+    <div id="photoCircle">Нажмите, чтобы выбрать фото</div>
+    <input id="photoInput" type="file" accept="image/*" class="hidden">
 
-        // --- ШАГ 1
-        function goStep2() {
-            document.getElementById("step1").classList.add("hidden");
-            document.getElementById("step2").classList.remove("hidden");
-        }
+    <button id="finishBtn" class="primary-btn" onclick="finishRegistration()">
+      Завершить
+    </button>
+  </section>
 
-        // --- ВЫБОР КАТЕГОРИИ
-        document.querySelectorAll(".category-card").forEach(card => {
-            card.onclick = () => {
-                document.querySelectorAll(".category-card")
-                    .forEach(c => c.classList.remove("selected"));
-                card.classList.add("selected");
-                selectedCategory = card.dataset.cat;
-            };
-        });
 
-        // --- ШАГ 2
-        function goStep3() {
-            if (!selectedCategory) {
-                alert("Выберите категорию");
-                return;
-            }
 
-            document.getElementById("step2").classList.add("hidden");
-            document.getElementById("step3").classList.remove("hidden");
-        }
+  <!-- JS ЛОГИКА + ПЕРЕВОДЫ -->
+  <script>
+    let currentLang = "ru";
+    let selectedCategory = null;
 
-        // --- ФОТО
-        document.getElementById("photoCircle").onclick = () =>
-            document.getElementById("photoInput").click();
+    const i18n = {
+      en: {
+        // lang screen
+        langTitle: "Choose language",
+        langSubtitle: "Select your language. We’ll show all steps in it.",
 
-        document.getElementById("photoInput").onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+        step1Title: "Worker profile",
+        step1Subtitle: "Tell us about you and your address so we can send jobs.",
+        fullName: "Full name",
+        phone: "Phone",
+        street: "Street, house",
+        apt: "Apartment / office (optional)",
+        city: "City",
+        state: "State",
+        zip: "ZIP code",
 
-            const url = URL.createObjectURL(file);
-            const circle = document.getElementById("photoCircle");
+        next: "Next",
 
-            circle.style.backgroundImage = `url(${url})`;
-            circle.style.backgroundSize = "cover";
-            circle.style.border = "none";
-            circle.textContent = "";
-        };
+        step2Title: "Category",
+        step2Subtitle: "Please choose your main category to serve clients.",
 
-        // --- ШАГ 3 Завершить
-        function finishRegistration() {
-            alert("Регистрация завершена!");
-        }
-    </script>
+        catApplianceTitle: "Appliance Repair",
+        catApplianceSub: "Washer, dryer, refrigerator…",
 
+        catCleaningTitle: "Cleaning",
+        catCleaningSub: "Home, office, car…",
+
+        catHandymanTitle: "Handyman",
+        catHandymanSub: "Repair, painting, install…",
+
+        catLocksmithTitle: "Locksmith",
+        catLocksmithSub: "Locks, car locks…",
+
+        catMovingTitle: "Moving",
+        catMovingSub: "Packing, moving, lifting…",
+
+        catSmartTitle: "Smart Home",
+        catSmartSub: "Doorbell, camera…",
+
+        catTireTitle: "Tire & Roadside",
+        catTireSub: "Tire change, jump start…",
+
+        step3Title: "Profile photo",
+        photoHint: "Tap to choose a photo",
+        finish: "Finish",
+
+        categoryAlert: "Please select a category",
+        finishAlert: "Registration completed!"
+      },
+
+      ru: {
+        langTitle: "Выберите язык",
+        langSubtitle: "Пожалуйста, выберите язык. Мы покажем все шаги на вашем языке.",
+
+        step1Title: "Профиль работника",
+        step1Subtitle: "Укажите свои данные и адрес, чтобы мы знали, куда отправлять заказы.",
+        fullName: "Полное имя",
+        phone: "Телефон",
+        street: "Улица, дом",
+        apt: "Квартира / офис (необязательно)",
+        city: "Город",
+        state: "Штат",
+        zip: "ZIP код",
+
+        next: "Далее",
+
+        step2Title: "Категория услуг",
+        step2Subtitle: "Пожалуйста выберите свою категорию, чтобы обслуживать клиентов.",
+
+        catApplianceTitle: "Ремонт техники",
+        catApplianceSub: "Стиралка, сушилка, холодильник…",
+
+        catCleaningTitle: "Уборка",
+        catCleaningSub: "Дом, офис, авто…",
+
+        catHandymanTitle: "Мастер на час",
+        catHandymanSub: "Ремонт, покраска, монтаж…",
+
+        catLocksmithTitle: "Слесарь / замки",
+        catLocksmithSub: "Дверные замки, авто-замки…",
+
+        catMovingTitle: "Переезд",
+        catMovingSub: "Упаковка, перенос, погрузка…",
+
+        catSmartTitle: "Умный дом",
+        catSmartSub: "Видеозвонок, камеры…",
+
+        catTireTitle: "Шины и помощь на дороге",
+        catTireSub: "Замена колеса, прикурить…",
+
+        step3Title: "Фото профиля",
+        photoHint: "Нажмите, чтобы выбрать фото",
+        finish: "Завершить",
+
+        categoryAlert: "Выберите категорию",
+        finishAlert: "Регистрация завершена!"
+      },
+
+      es: {
+        langTitle: "Elige idioma",
+        langSubtitle: "Selecciona tu idioma. Mostraremos todos los pasos en él.",
+
+        step1Title: "Perfil del trabajador",
+        step1Subtitle: "Cuéntanos sobre ti y tu dirección para enviarte trabajos.",
+        fullName: "Nombre completo",
+        phone: "Teléfono",
+        street: "Calle, número",
+        apt: "Apartamento / oficina (opcional)",
+        city: "Ciudad",
+        state: "Estado",
+        zip: "Código ZIP",
+
+        next: "Siguiente",
+
+        step2Title: "Categoría de servicios",
+        step2Subtitle: "Elige tu categoría principal para atender a los clientes.",
+
+        catApplianceTitle: "Reparación de electrodomésticos",
+        catApplianceSub: "Lavadora, secadora, refrigerador…",
+
+        catCleaningTitle: "Limpieza",
+        catCleaningSub: "Casa, oficina, auto…",
+
+        catHandymanTitle: "Manitas",
+        catHandymanSub: "Reparar, pintar, instalar…",
+
+        catLocksmithTitle: "Cerrajero",
+        catLocksmithSub: "Cerraduras, autos…",
+
+        catMovingTitle: "Mudanza",
+        catMovingSub: "Empaque, carga, traslado…",
+
+        catSmartTitle: "Casa inteligente",
+        catSmartSub: "Timbre, cámaras…",
+
+        catTireTitle: "Llantas y asistencia",
+        catTireSub: "Cambio de llanta, encender auto…",
+
+        step3Title: "Foto de perfil",
+        photoHint: "Toca para elegir foto",
+        finish: "Finalizar",
+
+        categoryAlert: "Elige una categoría",
+        finishAlert: "¡Registro completado!"
+      }
+    };
+
+    function applyTranslations() {
+      const t = i18n[currentLang];
+
+      // lang screen
+      document.getElementById("langTitle").textContent = t.langTitle;
+      document.getElementById("langSubtitle").textContent = t.langSubtitle;
+
+      // step1
+      document.getElementById("step1Title").textContent = t.step1Title;
+      document.getElementById("step1Subtitle").textContent = t.step1Subtitle;
+      document.getElementById("fullName").placeholder = t.fullName;
+      document.getElementById("phone").placeholder = t.phone;
+      document.getElementById("street").placeholder = t.street;
+      document.getElementById("apt").placeholder = t.apt;
+      document.getElementById("city").placeholder = t.city;
+      document.getElementById("state").placeholder = t.state;
+      document.getElementById("zip").placeholder = t.zip;
+      document.getElementById("next1Btn").textContent = t.next;
+
+      // step2
+      document.getElementById("step2Title").textContent = t.step2Title;
+      document.getElementById("step2Subtitle").textContent = t.step2Subtitle;
+      document.getElementById("catApplianceTitle").textContent = t.catApplianceTitle;
+      document.getElementById("catApplianceSub").textContent = t.catApplianceSub;
+      document.getElementById("catCleaningTitle").textContent = t.catCleaningTitle;
+      document.getElementById("catCleaningSub").textContent = t.catCleaningSub;
+      document.getElementById("catHandymanTitle").textContent = t.catHandymanTitle;
+      document.getElementById("catHandymanSub").textContent = t.catHandymanSub;
+      document.getElementById("catLocksmithTitle").textContent = t.catLocksmithTitle;
+      document.getElementById("catLocksmithSub").textContent = t.catLocksmithSub;
+      document.getElementById("catMovingTitle").textContent = t.catMovingTitle;
+      document.getElementById("catMovingSub").textContent = t.catMovingSub;
+      document.getElementById("catSmartTitle").textContent = t.catSmartTitle;
+      document.getElementById("catSmartSub").textContent = t.catSmartSub;
+      document.getElementById("catTireTitle").textContent = t.catTireTitle;
+      document.getElementById("catTireSub").textContent = t.catTireSub;
+      document.getElementById("next2Btn").textContent = t.next;
+
+      // step3
+      document.getElementById("step3Title").textContent = t.step3Title;
+      document.getElementById("photoCircle").textContent = t.photoHint;
+      document.getElementById("finishBtn").textContent = t.finish;
+    }
+
+    // выбор языка
+    document.querySelectorAll(".language-card").forEach(card => {
+      card.onclick = () => {
+        currentLang = card.dataset.lang;
+        applyTranslations();
+
+        document.getElementById("langStep").classList.add("hidden");
+        document.getElementById("step1").classList.remove("hidden");
+      };
+    });
+
+    // выбор категории
+    document.querySelectorAll(".category-card").forEach(card => {
+      card.onclick = () => {
+        document.querySelectorAll(".category-card")
+          .forEach(c => c.classList.remove("selected"));
+        card.classList.add("selected");
+        selectedCategory = card.dataset.cat;
+      };
+    });
+
+    function goStep2() {
+      document.getElementById("step1").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+    }
+
+    function goStep3() {
+      if (!selectedCategory) {
+        alert(i18n[currentLang].categoryAlert);
+        return;
+      }
+      document.getElementById("step2").classList.add("hidden");
+      document.getElementById("step3").classList.remove("hidden");
+    }
+
+    // фото
+    document.getElementById("photoCircle").onclick = () =>
+      document.getElementById("photoInput").click();
+
+    document.getElementById("photoInput").onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const url = URL.createObjectURL(file);
+      const circle = document.getElementById("photoCircle");
+
+      circle.style.backgroundImage = `url(${url})`;
+      circle.style.backgroundSize = "cover";
+      circle.style.border = "none";
+      circle.textContent = "";
+    };
+
+    function finishRegistration() {
+      alert(i18n[currentLang].finishAlert);
+      // тут потом добавим Supabase
+    }
+
+    // просто чтобы были русские тексты по умолчанию, пока юзер не выбрал язык
+    applyTranslations();
+  </script>
 </body>
 </html>
