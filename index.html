@@ -2,10 +2,13 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ELIMAN WORKER</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- TG -->
+    <!-- FIX for Telegram iOS scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>ELIMAN WORKER</title>
+
+    <!-- Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <!-- Tailwind -->
@@ -14,142 +17,99 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
-<body class="p-6">
+<body class="bg-gray-900 text-white">
 
-<!-- 🔵 STEP 1 — ABOUT YOU -->
-<section id="step1">
-    <h2 class="section-title">О вас</h2>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.Telegram?.WebApp) {
+        Telegram.WebApp.expand();
+        Telegram.WebApp.disableVerticalSwipes();
+    }
+});
+</script>
 
-    <input id="fullName" type="text" class="input" placeholder="Полное имя">
-    <input id="phone" type="text" class="input" placeholder="Телефон">
+<!-- ====================== ШАГ 1 ===================== -->
+<section id="step1" class="p-6 space-y-4">
+    <h1 class="text-3xl font-bold mb-2">О вас</h1>
 
-    <input id="street" type="text" class="input" placeholder="Улица, дом">
-    <input id="apt" type="text" class="input" placeholder="Квартира / офис (необязательно)">
+    <input id="name" class="input" placeholder="Полное имя">
+    <input id="phone" class="input" placeholder="Телефон">
+    <input id="street" class="input" placeholder="Улица, дом">
+    <input id="apt" class="input" placeholder="Квартира / офис (необязательно)">
+    
     <div class="flex gap-3">
-        <input id="city" type="text" class="input flex-1" placeholder="Город">
-        <input id="state" type="text" class="input flex-1" placeholder="Штат">
+        <input id="city" class="input flex-1" placeholder="Город">
+        <input id="state" class="input w-[35%]" placeholder="Штат">
     </div>
-    <input id="zip" type="text" class="input" placeholder="ZIP код">
 
-    <select id="language" class="input">
+    <input id="zip" class="input" placeholder="ZIP код">
+
+    <select id="lang" class="input">
         <option>English</option>
         <option>Русский</option>
-        <option>Spanish</option>
+        <option>Español</option>
     </select>
 
-    <button id="goStep2" class="primary-btn">Далее</button>
+    <button id="next1" class="btn">Далее</button>
 </section>
 
-<!-- 🟢 STEP 2 — CATEGORY -->
-<section id="step2" class="hidden">
-    <h2 class="section-title">Пожалуйста выберите свою категорию<br> чтобы обслуживать клиентов</h2>
+<!-- ====================== ШАГ 2 ===================== -->
+<section id="step2" class="p-6 hidden space-y-4">
+    <h1 class="text-3xl font-bold mb-2">Пожалуйста выберите свою категорию</h1>
 
-    <div class="category-card" data-cat="appliance">
-        <div class="category-title">Appliance Repair</div>
-        <div class="category-sub">Washer, dryer, refrigerator…</div>
+    <div id="categories" class="space-y-3">
+        <div class="cat" data-cat="Appliance Repair">
+            <div class="cat-title">Appliance Repair</div>
+            <div class="cat-sub">Washer, dryer, refrigerator…</div>
+        </div>
+
+        <div class="cat" data-cat="Cleaning">
+            <div class="cat-title">Cleaning</div>
+            <div class="cat-sub">Home, office, car cleaning…</div>
+        </div>
+
+        <div class="cat" data-cat="Handyman">
+            <div class="cat-title">Handyman</div>
+            <div class="cat-sub">Repair, painting, install…</div>
+        </div>
+
+        <div class="cat" data-cat="Locksmith">
+            <div class="cat-title">Locksmith</div>
+            <div class="cat-sub">Locks, car locks…</div>
+        </div>
+
+        <div class="cat" data-cat="Moving">
+            <div class="cat-title">Moving</div>
+            <div class="cat-sub">Packing, moving, lifting…</div>
+        </div>
+
+        <div class="cat" data-cat="Smart Home">
+            <div class="cat-title">Smart Home</div>
+            <div class="cat-sub">Doorbell, cameras…</div>
+        </div>
+
+        <div class="cat" data-cat="Tire & Roadside">
+            <div class="cat-title">Tire & Roadside</div>
+            <div class="cat-sub">Tire change, jump start…</div>
+        </div>
     </div>
 
-    <div class="category-card" data-cat="cleaning">
-        <div class="category-title">Cleaning</div>
-        <div class="category-sub">Home, office, car…</div>
-    </div>
-
-    <div class="category-card" data-cat="handyman">
-        <div class="category-title">Handyman</div>
-        <div class="category-sub">Repair, install, painting…</div>
-    </div>
-
-    <div class="category-card" data-cat="locksmith">
-        <div class="category-title">Locksmith</div>
-        <div class="category-sub">Locks, car locks…</div>
-    </div>
-
-    <div class="category-card" data-cat="moving">
-        <div class="category-title">Moving</div>
-        <div class="category-sub">Packing, lifting…</div>
-    </div>
-
-    <div class="category-card" data-cat="smart">
-        <div class="category-title">Smart Home</div>
-        <div class="category-sub">Doorbell, camera…</div>
-    </div>
-
-    <div class="category-card" data-cat="tire">
-        <div class="category-title">Tire & Roadside</div>
-        <div class="category-sub">Tire change, jump start…</div>
-    </div>
-
-    <button id="goStep3" class="primary-btn">Далее</button>
+    <button id="next2" class="btn">Далее</button>
 </section>
 
-<!-- 🟣 STEP 3 — PHOTO -->
-<section id="step3" class="hidden">
-    <h2 class="section-title">Фото профиля</h2>
+<!-- ====================== ШАГ 3 ===================== -->
+<section id="step3" class="p-6 hidden space-y-6">
+    <h1 class="text-3xl font-bold mb-2">Фото профиля</h1>
 
-    <div id="photoPreview">Нажмите, чтобы выбрать фото</div>
+    <div id="photoPreview" class="w-40 h-40 rounded-full mx-auto border-2 border-gray-400 flex items-center justify-center text-gray-400 text-center">
+        Нажмите, чтобы выбрать фото
+    </div>
+
     <input id="photoInput" type="file" accept="image/*" class="hidden">
 
-    <button id="finishBtn" class="primary-btn">Завершить</button>
+    <button id="finish" class="btn mt-3">Завершить</button>
 </section>
 
 <script type="module" src="./js/app.js"></script>
-
-<script>
-// ===== FRONTEND LOGIC =====
-let selectedCategory = null;
-
-// STEP SWITCH
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const step3 = document.getElementById("step3");
-
-document.getElementById("goStep2").onclick = () => {
-    step1.classList.add("hidden");
-    step2.classList.remove("hidden");
-};
-
-document.querySelectorAll(".category-card").forEach(card => {
-    card.onclick = () => {
-        document.querySelectorAll(".category-card")
-            .forEach(c => c.classList.remove("selected"));
-
-        card.classList.add("selected");
-        selectedCategory = card.dataset.cat;
-    };
-});
-
-document.getElementById("goStep3").onclick = () => {
-    if (!selectedCategory) {
-        alert("Выберите категорию");
-        return;
-    }
-    step2.classList.add("hidden");
-    step3.classList.remove("hidden");
-};
-
-// PHOTO UPLOAD
-document.getElementById("photoPreview").onclick = () => {
-    document.getElementById("photoInput").click();
-};
-
-document.getElementById("photoInput").onchange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const url = URL.createObjectURL(file);
-        const preview = document.getElementById("photoPreview");
-
-        preview.style.backgroundImage = `url(${url})`;
-        preview.style.backgroundSize = "cover";
-        preview.style.backgroundPosition = "center";
-        preview.textContent = "";
-        preview.style.border = "none";
-    }
-};
-
-document.getElementById("finishBtn").onclick = () => {
-    alert("Регистрация завершена!");
-};
-</script>
-
 </body>
 </html>
