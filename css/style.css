@@ -1,86 +1,42 @@
-/*body {
-    background: #0B111A;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
-}
-
-.section-title {
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 20px;
+/* FIX: Telegram iOS zoom */
+input, select, textarea, button {
+    font-size: 16px !important;
 }
 
 .input {
     width: 100%;
     padding: 14px;
-    border-radius: 12px;
-    background: #101824;
-    margin-bottom: 14px;
-    color: #fff;
+    border-radius: 10px;
+    background: #1e1e1e;
+    color: white;
 }
 
-select.input {
-    color: #fff;
-}
-
-.primary-btn {
+.btn {
     width: 100%;
-    background: #18C964;
-    padding: 16px;
+    background: #22c55e;
+    padding: 14px;
+    border-radius: 10px;
     text-align: center;
-    border-radius: 14px;
+    font-weight: 700;
     font-size: 18px;
-    font-weight: 600;
-    margin-top: 20px;
 }
 
-/* ------ CATEGORY CARDS (STEP 2) ------ */
-
-.category-card {
-    background: #101824;
-    padding: 14px 18px;
-    border-radius: 14px;
-    margin-bottom: 12px;
-    cursor: pointer;
+.cat {
+    background: #1d1f24;
+    padding: 15px;
+    border-radius: 12px;
 }
 
-.category-card:hover {
-    background: #14202E;
+.cat.selected {
+    border: 2px solid #22c55e;
 }
 
-.category-card.selected {
-    border: 2px solid #18C964;
-}
-
-.category-title {
+.cat-title {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
-.category-sub {
-    font-size: 13px;
-    opacity: 0.7;
-    margin-top: 4px;
-}
-
-/* ------ PHOTO STEP ------ */
-
-#photoStep {
-    padding-top: 90px;
-}
-
-#photoPreview {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    border: 2px dashed #666;
-    margin: 40px auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.cat-sub {
     font-size: 14px;
-    color: #aaa;
-    text-align: center;
-    opacity: 0.8;
+    opacity: 0.7;
 }
- Custom Styles */
