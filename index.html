@@ -8,15 +8,40 @@
     <!-- Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- Tailwind for styling (можем убрать позже) -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Фиксированная iOS-style шапка */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding-top: env(safe-area-inset-top);
+            background: #0f172a;
+            z-index: 50;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-900 text-white pt-[90px]">
+<body class="bg-gray-900 text-white"
+      style="padding-top: calc(env(safe-area-inset-top) + 80px);">
+
+    <!-- ⭐ iOS HEADER ⭐ -->
+    <div class="app-header px-4 py-3 flex items-center justify-between">
+        <button onclick="window.Telegram.WebApp.close()"
+                class="text-lg text-gray-300">
+            Закрыть
+        </button>
+
+        <h2 class="text-xl font-bold">Регистрация</h2>
+
+        <div class="opacity-0">•••</div>
+    </div>
 
     <!-- Registration Screen -->
-    <div id="registerScreen" class="p-6">
-        <h2 class="text-3xl font-bold mb-4 ">Регистрация</h2>
+    <div id="registerScreen" class="p-6 mt-2">
 
         <input id="fullName" type="text" placeholder="Ваше имя"
                class="w-full mb-3 p-3 rounded text-black">
@@ -41,22 +66,17 @@
         </select>
 
         <button id="registerBtn"
-                class="w-full bg-green-500 p-3 rounded text-lg font-bold">
+                class="w-full bg-green-500 p-3 rounded-xl text-lg font-bold">
             Зарегистрироваться
         </button>
     </div>
 
-    <!-- MAIN APP SCREEN (пока скрыто) -->
+    <!-- Main screen -->
     <div id="mainScreen" class="hidden p-6">
         <h1 class="text-3xl font-bold">Добро пожаловать!</h1>
         <p id="workerName" class="text-xl mt-3"></p>
     </div>
 
-    <!-- Connect JS -->
     <script type="module" src="./js/app.js"></script>
 </body>
 </html>
-
-
-
-
