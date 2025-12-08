@@ -1,77 +1,104 @@
-// STEP BLOCKS
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const step3 = document.getElementById("step3");
-const doneScreen = document.getElementById("doneScreen");
+console.log("App.js loaded");
 
-// BUTTON 1 — Далее (О вас)
-document.getElementById("step1NextBtn").addEventListener("click", () => {
-    if (!fullName.value.trim() ||
-        !phone.value.trim() ||
-        !street.value.trim() ||
-        !city.value.trim() ||
-        !state.value.trim() ||
-        !zip.value.trim()) {
-        alert("Заполните все обязательные поля");
+// ------------------------------
+//  ЭЛЕМЕНТЫ
+// ------------------------------
+const step1 = document.getElementById("step1");
+const categoriesStep = document.getElementById("categoriesStep");
+const photoStep = document.getElementById("photoStep");
+
+const toCategoriesBtn = document.getElementById("toCategories");
+const toPhotoBtn = document.getElementById("toPhoto");
+const finishBtn = document.getElementById("finishBtn");
+
+const photoPreview = document.getElementById("photoPreview");
+const photoInput = document.getElementById("photoInput");
+
+let selectedCategory = null;
+let uploadedPhotoFile = null;
+
+// ------------------------------
+//  ШАГ 1 → ШАГ КАТЕГОРИЙ
+// ------------------------------
+toCategoriesBtn.onclick = () => {
+    const name = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const street = document.getElementById("street").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const state = document.getElementById("state").value.trim();
+    const zip = document.getElementById("zip").value.trim();
+
+    if (!name || !phone || !street || !city || !state || !zip) {
+        alert("Пожалуйста заполните все обязательные поля");
         return;
     }
 
+    // Переход
     step1.classList.add("hidden");
-    step2.classList.remove("hidden");
-});
+    categoriesStep.classList.remove("hidden");
+};
 
-
-// CATEGORY SELECT
-let selectedCategory = null;
-
+// ------------------------------
+//  ВЫБОР КАТЕГОРИИ
+// ------------------------------
 document.querySelectorAll(".category-card").forEach(card => {
-    card.addEventListener("click", () => {
+    card.onclick = () => {
+        // Удалить выделение у всех
         document.querySelectorAll(".category-card")
-            .forEach(c => c.classList.remove("ring-2", "ring-green-500"));
+            .forEach(c => c.classList.remove("selected"));
 
-        card.classList.add("ring-2", "ring-green-500");
+        // Выделить выбранную
+        card.classList.add("selected");
         selectedCategory = card.dataset.cat;
-    });
+
+        console.log("Category selected:", selectedCategory);
+    };
 });
 
-
-// BUTTON 2 — Далее (Категории)
-document.getElementById("toPhotoBtn").addEventListener("click", () => {
+// ------------------------------
+//  ШАГ КАТЕГОРИЙ → ШАГ ФОТО
+// ------------------------------
+toPhotoBtn.onclick = () => {
     if (!selectedCategory) {
         alert("Выберите категорию");
         return;
     }
 
-    step2.classList.add("hidden");
-    step3.classList.remove("hidden");
-});
+    categoriesStep.classList.add("hidden");
+    photoStep.classList.remove("hidden");
+};
 
-
-// PHOTO UPLOAD
-const photoInput = document.getElementById("photoInput");
-const photoPreview = document.getElementById("photoPreview");
-
-photoPreview.onclick = () => photoInput.click();
+// ------------------------------
+//  ВЫБОР ФОТО
+// ------------------------------
+photoPreview.onclick = () => {
+    photoInput.click();
+};
 
 photoInput.onchange = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    if (file) {
+        uploadedPhotoFile = file;
+        const url = URL.createObjectURL(file);
 
-    const url = URL.createObjectURL(file);
-    photoPreview.style.backgroundImage = url(${url});
-    photoPreview.style.backgroundSize = "cover";
-    photoPreview.style.backgroundPosition = "center";
-    photoPreview.textContent = "";
+        photoPreview.style.backgroundImage = `url(${url})`;
+        photoPreview.style.backgroundSize = "cover";
+        photoPreview.style.border = "none";
+        photoPreview.textContent = "";
+    }
 };
 
-
-// BUTTON 3 — Завершить
-document.getElementById("finishBtn").addEventListener("click", () => {
-    if (!photoInput.files[0]) {
-        alert("Загрузите фото");
+// ------------------------------
+//  ФИНИШ
+// ------------------------------
+finishBtn.onclick = () => {
+    if (!uploadedPhotoFile) {
+        alert("Выберите фото профиля");
         return;
     }
 
-    step3.classList.add("hidden");
-    doneScreen.classList.remove("hidden");
-});
+    alert("Регистрация завершена! 🎉");
+
+    // TODO: Здесь мы подключим Supabase
+    // upload photo → insert worker → redirect to main app
+};
