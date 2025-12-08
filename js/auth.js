@@ -1,62 +1,49 @@
-import { tg } from "./config.js";
-import { uploadWorkerPhoto } from "./storage.js";
-import { getWorkerByTelegramId, createWorker } from "./workers.js";
-import { showMainApp } from "./ui.js";
+import { supabase } from "./config.js";
 
-// Проверка наличия worker
-export async function initAuth() {
-  const user = tg?.initDataUnsafe?.user;
+// Telegram
+const tg = window.Telegram.WebApp;
 
-  if (!user) {
-    alert("Open via Telegram bot");
-    return;
-  }
+// === Проверка, зарегистрирован ли работник ===
+export async function checkExistingWorker() {
+    const telegramId = tg.initDataUnsafe?.user?.id;
+    if (!telegramId) return false;
 
-  const telegramId = user.id.toString();
+    const { data } = await supabase
+        .from("workers")
+        .select("*")
+        .eq("telegram_id", telegramId)
+        .single();
 
-  const worker = await getWorkerByTelegramId(telegramId);
-
-  if (!worker) {
-    document.getElementById("registerScreen").classList.remove("hidden");
-  } else {
-    showMainApp(worker);
-  }
+    return data || false;
 }
 
-// РЕГИСТРАЦИЯ
+// === Регистрация ===
 export async function registerWorker() {
-  const tgUser = tg.initDataUnsafe.user;
-  const telegram_id = tgUser.id.toString();
+    const telegramId = tg.initDataUnsafe?.user?.id;
 
-  const full_name = regName.value.trim();
-  const phone = regPhone.value.trim();
-  const city = regCity.value.trim();
-  const bio = regBio.value.trim();
+    const fullName = document.getElementById("fullName").value;
+    const phone = document.getElementById("phone").value;
+    const city = document.getElementById("city").value;
+    const language = document.getElementById("language").value;
+    const category = document.getElementById("category").value;
 
-  const categories = Array.from(regCategories.selectedOptions).map(o => o.value);
-  const languages = Array.from(regLanguages.selectedOptions).map(o => o.value);
+    const { data, error } = await supabase
+        .from("workers")
+        .insert([{
+            telegram_id: telegramId,
+            full_name: fullName,
+            phone: phone,
+            city: city,
+            language: language,
+            category: category
+        }])
+        .single();
 
-  const photoFile = regPhoto.files[0];
-  let photo_url = null;
+    if (error) {
+        console.log("Error:", error);
+        tg.showAlert("Ошибка регистрации");
+        return false;
+    }
 
-  if (photoFile) {
-    photo_url = await uploadWorkerPhoto(photoFile, telegram_id);
-  }
-
-  const newWorker = await createWorker({
-    telegram_id,
-    full_name,
-    phone,
-    city,
-    categories,
-    languages,
-    bio,
-    photo_url,
-    status: "online",
-  });
-
-  if (newWorker) {
-    document.getElementById("registerScreen").classList.add("hidden");
-    showMainApp(newWorker);
-  }
+    return data;
 }
