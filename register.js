@@ -179,7 +179,7 @@ document.getElementById("photoInput").addEventListener("change", e => {
 
 /* FINISH */
 document.getElementById("finishBtn").addEventListener("click", () => {
-  window.location.href ="https://embakytbekov-cloud.github.io/eliman-worker/terms.html";
+  Telegram.location.href ="https://embakytbekov-cloud.github.io/eliman-worker/terms.html";
 });
 
 /* DEFAULT TEXT LOAD */
