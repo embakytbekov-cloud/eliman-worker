@@ -1,5 +1,3 @@
-Telegram.WebApp.ready();     // ← САМЫЙ ВЕРХ
-
 let currentLang = "ru";
 let selectedCategory = null;
 
@@ -181,8 +179,7 @@ document.getElementById("photoInput").addEventListener("change", e => {
 
 /* FINISH */
 document.getElementById("finishBtn").addEventListener("click", () => {
-    console.log("FINISH CLICKED");
-    Telegram.WebApp.openLink("https://embakytbekov-cloud.github.io/eliman-worker/terms.html");
+  window.location.href = "terms.html";
 });
 
 /* DEFAULT TEXT LOAD */
