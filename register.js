@@ -1,4 +1,3 @@
-Telegram.WebApp.ready();
 let currentLang = "ru";
 let selectedCategory = null;
 
