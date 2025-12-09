@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,29 +15,72 @@
     body {
       background: #0f172a;
       color: white;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 30px;
       text-align: center;
-      padding: 40px;
     }
-    .btn {
+
+    .logo-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 55px auto 25px;
+      font-size: 34px;
+      font-weight: 900;
+      color: #0f172a;
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.4);
+    }
+
+    .big-title {
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      margin-bottom: 50px;
+    }
+
+    .btn-start {
       width: 100%;
       background: #22c55e;
       padding: 18px;
-      border-radius: 12px;
-      font-size: 18px;
+      border-radius: 14px;
+      font-size: 19px;
       font-weight: 700;
-      margin-top: 40px;
-      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
+    }
+
+    .btn-start:active {
+      transform: scale(0.97);
+      background: #1faa55;
     }
   </style>
 </head>
 
 <body>
-  <h1 class="text-3xl font-bold mt-20 mb-4">Eliman Worker</h1>
-  <p class="text-gray-300 mb-10">Добро пожаловать! Начните регистрацию.</p>
 
-  <!-- ВАЖНО! Здесь исправленный путь -->
+  <!-- LOGO -->
+  <div class="logo-circle">E</div>
+
+  <!-- TITLE -->
+  <div class="big-title">Welcome</div>
+
+  <!-- SUBTEXT -->
+  <p class="subtitle">Start your registration to join Eliman Worker.</p>
+
+  <!-- BUTTON -->
   <a href="views/register.html">
-    <div class="btn">Начать регистрацию</div>
+    <div class="btn-start">Start Registration</div>
   </a>
+
 </body>
 </html>
