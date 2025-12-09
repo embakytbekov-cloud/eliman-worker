@@ -1,195 +1,115 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eliman Worker</title>
+  <title>Eliman Worker – Registration</title>
 
-  <!-- Telegram WebApp (может и не нужен, но оставим как было) -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    body {
-      background: #0f172a;
-      color: white;
-    }
-
-    .input-box {
-      width: 100%;
-      background: #1e293b;
-      padding: 14px;
-      border-radius: 10px;
-      margin-bottom: 14px;
-      color: white;
-    }
-
-    .card-base {
-      background: #1e293b;
-      padding: 16px;
-      border-radius: 14px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .card-base.selected {
-      background: #22c55e;
-      color: black;
-    }
-
-    #photoCircle {
-      width: 160px;
-      height: 160px;
-      border-radius: 100%;
-      border: 2px dashed #64748b;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 70px auto 30px;
-      font-size: 16px;
-      text-align: center;
-      color: #94a3b8;
-      cursor: pointer;
-    }
-
-    .primary-btn {
-      width: 100%;
-      background: #22c55e;
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 18px;
-      font-weight: 700;
-      margin-top: 20px;
-      text-align: center;
-    }
-  </style>
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body class="p-5 pb-20">
 
-  <!-- ШАГ 0 — ВЫБОР ЯЗЫКА -->
+  <!-- STEP 0 — LANGUAGE -->
   <section id="langStep" class="mt-10">
-    <h2 id="langTitle" class="text-3xl font-bold mb-3">Choose language</h2>
-    <p id="langSubtitle" class="text-gray-300 mb-5">
+    <h2 id="langTitle" class="title">Choose language</h2>
+    <p id="langSubtitle" class="subtitle">
       Please choose your language and we’ll display all registration steps in the language you prefer.
     </p>
 
-    <div class="card-base language-card" data-lang="en">
-      <div class="font-bold text-lg">English</div>
-      <div class="text-gray-300 text-sm">United States, Canada…</div>
+    <div class="card language-card" data-lang="en">
+      <div class="card-title">English</div>
+      <div class="card-sub">United States, Canada…</div>
     </div>
 
-    <div class="card-base language-card" data-lang="ru">
-      <div class="font-bold text-lg">Русский</div>
-      <div class="text-gray-300 text-sm">Россия, СНГ…</div>
+    <div class="card language-card" data-lang="ru">
+      <div class="card-title">Русский</div>
+      <div class="card-sub">Россия, СНГ…</div>
     </div>
 
-    <div class="card-base language-card" data-lang="es">
-      <div class="font-bold text-lg">Español</div>
-      <div class="text-gray-300 text-sm">Latinoamérica, España…</div>
+    <div class="card language-card" data-lang="es">
+      <div class="card-title">Español</div>
+      <div class="card-sub">Latinoamérica, España…</div>
     </div>
   </section>
 
+  <!-- STEP 1 — PROFILE -->
+  <section id="step1" class="hidden mt-10">
+    <h2 id="step1Title" class="title">Profile</h2>
+    <p id="step1Subtitle" class="subtitle">Tell us about yourself.</p>
 
-  <!-- ШАГ 1 — ПРОФИЛЬ -->
-  <section id="step1" class="hidden mt-8">
-    <h2 id="step1Title" class="text-3xl font-bold mb-2">Профиль</h2>
-    <p id="step1Subtitle" class="text-gray-300 mb-4">
-      Расскажите о себе и адресе, чтобы мы знали, куда отправлять заказы.
-    </p>
-
-    <input id="fullName" class="input-box" placeholder="Полное имя">
-    <input id="phone" class="input-box" placeholder="Телефон">
-    <input id="street" class="input-box" placeholder="Улица, дом">
-    <input id="apt" class="input-box" placeholder="Квартира / офис (необязательно)">
+    <input id="fullName" class="input-box" placeholder="Full name">
+    <input id="phone" class="input-box" placeholder="Phone">
+    <input id="street" class="input-box" placeholder="Street, house">
+    <input id="apt" class="input-box" placeholder="Apt / office (optional)">
 
     <div class="flex gap-3">
-      <input id="city" class="input-box" placeholder="Город">
-      <input id="state" class="input-box" placeholder="Штат">
+      <input id="city" class="input-box" placeholder="City">
+      <input id="state" class="input-box" placeholder="State">
     </div>
 
-    <input id="zip" class="input-box" placeholder="ZIP код">
+    <input id="zip" class="input-box" placeholder="ZIP code">
 
-    <button id="next1Btn" onclick="goStep2()" class="primary-btn">Далее</button>
+    <button id="next1Btn" class="primary-btn">Next</button>
   </section>
 
+  <!-- STEP 2 — CATEGORY -->
+  <section id="step2" class="hidden mt-10">
+    <h2 id="step2Title" class="title">Category</h2>
+    <p id="step2Subtitle" class="subtitle">Choose your main category.</p>
 
-  <!-- ШАГ 2 — КАТЕГОРИЯ -->
-  <section id="step2" class="hidden mt-8">
-    <h2 id="step2Title" class="text-3xl font-bold mb-2">Категория</h2>
-    <p id="step2Subtitle" class="text-gray-300 mb-4">
-      Пожалуйста выберите свою категорию чтобы обслуживать клиентов.
-    </p>
-
-    <div class="card-base category-card" data-cat="Appliance">
-      <div id="catApplianceTitle" class="font-bold text-xl">Appliance Repair</div>
-      <div id="catApplianceSub" class="text-gray-300 text-sm">
-        Washer, dryer, refrigerator…
-      </div>
+    <div class="card category-card" data-cat="Appliance">
+      <div class="card-title">Appliance Repair</div>
+      <div class="card-sub">Washer, dryer, refrigerator…</div>
     </div>
 
-    <div class="card-base category-card" data-cat="Cleaning">
-      <div id="catCleaningTitle" class="font-bold text-xl">Cleaning</div>
-      <div id="catCleaningSub" class="text-gray-300 text-sm">
-        Home, office, car…
-      </div>
+    <div class="card category-card" data-cat="Cleaning">
+      <div class="card-title">Cleaning</div>
+      <div class="card-sub">Home, office, car…</div>
     </div>
 
-    <div class="card-base category-card" data-cat="Handyman">
-      <div id="catHandymanTitle" class="font-bold text-xl">Handyman</div>
-      <div id="catHandymanSub" class="text-gray-300 text-sm">
-        Repair, painting, install…
-      </div>
+    <div class="card category-card" data-cat="Handyman">
+      <div class="card-title">Handyman</div>
+      <div class="card-sub">Repair, painting, install…</div>
     </div>
 
-    <div class="card-base category-card" data-cat="Locksmith">
-      <div id="catLocksmithTitle" class="font-bold text-xl">Locksmith</div>
-      <div id="catLocksmithSub" class="text-gray-300 text-sm">
-        Locks, car locks…
-      </div>
+    <div class="card category-card" data-cat="Locksmith">
+      <div class="card-title">Locksmith</div>
+      <div class="card-sub">Locks, car locks…</div>
     </div>
 
-    <div class="card-base category-card" data-cat="Moving">
-      <div id="catMovingTitle" class="font-bold text-xl">Moving</div>
-      <div id="catMovingSub" class="text-gray-300 text-sm">
-        Packing, moving, lifting…
-      </div>
+    <div class="card category-card" data-cat="Moving">
+      <div class="card-title">Moving</div>
+      <div class="card-sub">Packing, lifting…</div>
     </div>
 
-    <div class="card-base category-card" data-cat="SmartHome">
-      <div id="catSmartTitle" class="font-bold text-xl">Smart Home</div>
-      <div id="catSmartSub" class="text-gray-300 text-sm">
-        Doorbell, camera…
-      </div>
+    <div class="card category-card" data-cat="SmartHome">
+      <div class="card-title">Smart Home</div>
+      <div class="card-sub">Doorbell, camera…</div>
     </div>
 
-    <div class="card-base category-card" data-cat="Tire">
-      <div id="catTireTitle" class="font-bold text-xl">Tire & Roadside</div>
-      <div id="catTireSub" class="text-gray-300 text-sm">
-        Tire change, jump start…
-      </div>
+    <div class="card category-card" data-cat="Tire">
+      <div class="card-title">Tire & Roadside</div>
+      <div class="card-sub">Tire change, jump start…</div>
     </div>
 
-    <button id="next2Btn" onclick="goStep3()" class="primary-btn">Далее</button>
+    <button id="next2Btn" class="primary-btn">Next</button>
   </section>
 
+  <!-- STEP 3 — PHOTO -->
+  <section id="step3" class="hidden mt-12 text-center">
+    <h2 id="step3Title" class="title">Profile photo</h2>
 
-  <!-- ШАГ 3 — ФОТО -->
-  <section id="step3" class="hidden mt-10 text-center">
-    <h2 id="step3Title" class="text-3xl font-bold mb-3">Фото профиля</h2>
-
-    <div id="photoCircle">Нажмите, чтобы выбрать фото</div>
+    <div id="photoCircle" class="photo-circle">Tap to upload</div>
     <input id="photoInput" type="file" accept="image/*" class="hidden">
 
-    <button id="finishBtn" class="primary-btn" onclick="finishRegistration()">
-      Завершить
-    </button>
+    <button id="finishBtn" class="primary-btn">Finish</button>
   </section>
 
-  <!-- ПОДКЛЮЧАЕМ ВНЕШНИЙ JS -->
-  <script src="./js/register.js"></script>
+  <!-- SCRIPT -->
+  <script src="../js/register.js"></script>
+
 </body>
 </html>
