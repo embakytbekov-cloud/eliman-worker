@@ -163,19 +163,19 @@ document.getElementById("photoBox").addEventListener("click", () => {
   document.getElementById("photoInput").click();
 });
 
-document.getElementById("photoInput").addEventListener("change", e => {
+document.getElementById("photoInput").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
   const url = URL.createObjectURL(file);
   const box = document.getElementById("photoBox");
 
-  box.style.backgroundImage = `url(${url})`;
+  box.style.backgroundImage = url(${url});
   box.style.backgroundSize = "cover";
-  box.style.color = "transparent";
+  box.style.backgroundPosition = "center";
   box.style.border = "none";
+  box.style.color = "transparent";
 });
-
 
 /* FINISH */
 document.getElementById("finishBtn").addEventListener("click", () => {
