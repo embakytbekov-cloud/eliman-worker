@@ -27,7 +27,6 @@ input, select, textarea, button {
     border-radius: 12px;
 }
 
-.cat.selected {
     border: 2px solid #22c55e;
 }
 
@@ -39,4 +38,12 @@ input, select, textarea, button {
 .cat-sub {
     font-size: 14px;
     opacity: 0.7;
+}
+.photo-box {
+    z-index: 1;
+}
+
+#finishBtn {
+    position: relative;
+    z-index: 10;
 }
