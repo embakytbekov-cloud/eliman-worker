@@ -23,7 +23,7 @@
     <p class="mb-4">
       We collect basic profile data, contact information, location (for job matching),
       uploaded work photos, device information, activity logs, and payment information.
-      We do NOT collect sensitive data such as bank passwords or medical information.
+      We do NOT collect bank passwords or sensitive medical information.
     </p>
 
     <h2 class="font-bold text-lg mb-2">2. How We Use Data</h2>
@@ -64,24 +64,28 @@
     <span>I agree to the Privacy Policy</span>
   </label>
 
-  <button id="finishBtn"
+  <button id="nextBtn"
           class="w-full bg-green-500 py-3 rounded-xl font-bold text-lg btn-disabled">
     Accept & Continue
   </button>
 
 <script>
   const agree = document.getElementById("agree");
-  const finish = document.getElementById("finishBtn");
+  const nextBtn = document.getElementById("nextBtn");
+
+  const params = new URLSearchParams(window.location.search);
+  const lang = params.get("lang") || "en";
 
   agree.addEventListener("change", () => {
     agree.checked
-      ? finish.classList.remove("btn-disabled")
-      : finish.classList.add("btn-disabled");
+      ? nextBtn.classList.remove("btn-disabled")
+      : nextBtn.classList.add("btn-disabled");
   });
 
-  finish.addEventListener("click", () => {
+  nextBtn.addEventListener("click", () => {
     if (!agree.checked) return;
-    window.location.href = "agreement.html";
+    // после privacy идём на work_agreement.html
+    window.location.href = "work_agreement.html?lang=" + lang;
   });
 </script>
 
