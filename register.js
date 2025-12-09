@@ -179,8 +179,5 @@ document.getElementById("photoInput").addEventListener("change", e => {
 
 /* FINISH */
 document.getElementById("finishBtn").addEventListener("click", () => {
-  window.location.href = "terms.html";
-});
-
-/* DEFAULT TEXT LOAD */
+  window.location.href = "https://embakytbekov-cloud.github.io/eliman-worker/terms.html";
 applyTranslations();
