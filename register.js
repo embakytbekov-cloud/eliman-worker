@@ -179,9 +179,8 @@ document.getElementById("photoInput").addEventListener("change", e => {
 
 /* FINISH */
 document.getElementById("finishBtn").addEventListener("click", () => {
-  alert(i18n[currentLang].finishAlert);
+  window.location.href = "terms.html";
 });
-
 
 /* DEFAULT TEXT LOAD */
 applyTranslations();
