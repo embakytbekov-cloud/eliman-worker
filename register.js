@@ -179,7 +179,11 @@ document.getElementById("photoInput").addEventListener("change", e => {
 
 /* FINISH */
 document.getElementById("finishBtn").addEventListener("click", () => {
-  window.location.href = "terms.html";
+    console.log("FINISH CLICKED");
+
+    const url = "https://embakytbekov-cloud.github.io/eliman-worker/terms.html";
+
+    Telegram.WebApp.openLink(url);
 });
 
 /* DEFAULT TEXT LOAD */
