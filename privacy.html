@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy | Eliman Worker</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body { background:#0f172a; color:white; padding:20px;}
+    .btn-disabled { opacity:0.4; pointer-events:none; }
+  </style>
+</head>
+
+<body>
+
+  <h1 class="text-3xl font-bold mb-4">Privacy Policy</h1>
+
+  <div class="bg-slate-800 p-4 rounded-xl h-80 overflow-y-scroll text-sm leading-relaxed mb-6">
+
+    <h2 class="font-bold text-lg mb-2">1. Information We Collect</h2>
+    <p class="mb-4">
+      We collect basic profile data, contact information, location (for job matching),
+      uploaded work photos, device information, activity logs, and payment information.
+      We do NOT collect sensitive data such as bank passwords or medical information.
+    </p>
+
+    <h2 class="font-bold text-lg mb-2">2. How We Use Data</h2>
+    <p class="mb-4">
+      Data is used to match workers with customers, process payments, prevent fraud,
+      improve the platform, and provide support.
+    </p>
+
+    <h2 class="font-bold text-lg mb-2">3. Sharing Data</h2>
+    <p class="mb-4">
+      Limited information may be shared with customers, payment processors, and legal
+      authorities when required. We NEVER sell personal data.
+    </p>
+
+    <h2 class="font-bold text-lg mb-2">4. Location</h2>
+    <p class="mb-4">
+      Location is used only when you are online and using the app for job matching.
+    </p>
+
+    <h2 class="font-bold text-lg mb-2">5. Security</h2>
+    <p class="mb-4">
+      Data is encrypted and securely stored. You are responsible for securing your device.
+    </p>
+
+    <h2 class="font-bold text-lg mb-2">6. Account Deletion</h2>
+    <p class="mb-4">
+      You may request deletion anytime. Some payment records must remain for legal reasons.
+    </p>
+
+    <p class="mb-4">
+      By agreeing, you confirm that you understand our Privacy Policy.
+    </p>
+
+  </div>
+
+  <label class="flex items-center mb-6">
+    <input id="agree" type="checkbox" class="mr-3">
+    <span>I agree to the Privacy Policy</span>
+  </label>
+
+  <button id="finishBtn"
+          class="w-full bg-green-500 py-3 rounded-xl font-bold text-lg btn-disabled">
+    Accept & Continue
+  </button>
+
+<script>
+  const agree = document.getElementById("agree");
+  const finish = document.getElementById("finishBtn");
+
+  agree.addEventListener("change", () => {
+    agree.checked
+      ? finish.classList.remove("btn-disabled")
+      : finish.classList.add("btn-disabled");
+  });
+
+  finish.addEventListener("click", () => {
+    if (!agree.checked) return;
+    window.location.href = "agreement.html";
+  });
+</script>
+
+</body>
+</html>
