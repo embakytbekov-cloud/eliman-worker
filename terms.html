@@ -68,24 +68,28 @@
     <span>I agree to the Terms & Conditions</span>
   </label>
 
-  <button id="finishBtn"
+  <button id="nextBtn"
           class="w-full bg-green-500 py-3 rounded-xl font-bold text-lg btn-disabled">
     Accept & Continue
   </button>
 
 <script>
   const agree = document.getElementById("agree");
-  const finish = document.getElementById("finishBtn");
+  const nextBtn = document.getElementById("nextBtn");
+
+  const params = new URLSearchParams(window.location.search);
+  const lang = params.get("lang") || "en";
 
   agree.addEventListener("change", () => {
     agree.checked
-      ? finish.classList.remove("btn-disabled")
-      : finish.classList.add("btn-disabled");
+      ? nextBtn.classList.remove("btn-disabled")
+      : nextBtn.classList.add("btn-disabled");
   });
 
-  finish.addEventListener("click", () => {
+  nextBtn.addEventListener("click", () => {
     if (!agree.checked) return;
-    window.location.href = "privacy.html";
+    // после термов идём на privacy.html
+    window.location.href = "privacy.html?lang=" + lang;
   });
 </script>
 
