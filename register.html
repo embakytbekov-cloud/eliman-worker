@@ -1,187 +1,97 @@
-let currentLang = "ru";
-let selectedCategory = null;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registration | Eliman Worker</title>
 
-const i18n = {
-  en: {
-    langTitle: "Choose language",
-    langSubtitle: "Select your language. Registration will appear in this language.",
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    step1Title: "Profile",
-    step1Subtitle: "Enter your personal and address information.",
-    fullName: "Full name",
-    phone: "Phone number",
-    street: "Street, house",
-    apt: "Apartment / office (optional)",
-    city: "City",
-    state: "State",
-    zip: "ZIP code",
-    next: "Next",
+  <style>
+    body { background:#0f172a; color:white; }
+    .input-box {
+      width:100%; background:#1e293b; padding:14px;
+      border-radius:10px; margin-bottom:14px; color:white;
+    }
+    .card { background:#1e293b; padding:16px; border-radius:14px; margin-bottom:12px; cursor:pointer; }
+    .card.selected { background:#22c55e; color:black; }
+    .photo-box {
+      width:160px; height:160px; border-radius:100%;
+      border:2px dashed #64748b; margin:40px auto; display:flex;
+      align-items:center; justify-content:center; cursor:pointer;
+      color:#94a3b8;
+    }
+    .btn-main {
+      width:100%; background:#22c55e; padding:16px; border-radius:14px;
+      font-size:18px; font-weight:700; margin-top:20px;
+    }
+  </style>
+</head>
 
-    step2Title: "Category",
-    step2Subtitle: "Please choose your main working category.",
-    next2: "Next",
+<body class="p-5 pb-20">
 
-    step3Title: "Profile photo",
-    photoHint: "Click to upload",
-    finish: "Finish",
+  <!-- STEP 0 – LANGUAGE -->
+  <section id="stepLang">
+    <h2 class="text-3xl font-bold mb-2" id="langTitle">Choose language</h2>
+    <p class="text-gray-400 mb-6" id="langSubtitle">
+      Select your language. Registration will be shown in your language.
+    </p>
 
-    categoryAlert: "Please select a category",
-    finishAlert: "Registration completed!"
-  },
-
-  ru: {
-    langTitle: "Выберите язык",
-    langSubtitle: "Выберите язык. Регистрация будет показана на нём.",
-
-    step1Title: "Профиль",
-    step1Subtitle: "Введите ваши данные и адрес.",
-    fullName: "Полное имя",
-    phone: "Телефон",
-    street: "Улица, дом",
-    apt: "Квартира / офис (необязательно)",
-    city: "Город",
-    state: "Штат",
-    zip: "ZIP код",
-    next: "Далее",
-
-    step2Title: "Категория",
-    step2Subtitle: "Выберите вашу категорию для обслуживания клиентов.",
-    next2: "Далее",
-
-    step3Title: "Фото профиля",
-    photoHint: "Нажмите, чтобы загрузить",
-    finish: "Завершить",
-
-    categoryAlert: "Выберите категорию",
-    finishAlert: "Регистрация завершена!"
-  },
-
-  es: {
-    langTitle: "Elige tu idioma",
-    langSubtitle: "La registración aparecerá en este idioma.",
-
-    step1Title: "Perfil",
-    step1Subtitle: "Ingresa tu información personal y dirección.",
-    fullName: "Nombre completo",
-    phone: "Teléfono",
-    street: "Calle, número",
-    apt: "Departamento / oficina (opcional)",
-    city: "Ciudad",
-    state: "Estado",
-    zip: "Código ZIP",
-    next: "Siguiente",
-
-    step2Title: "Categoría",
-    step2Subtitle: "Elige tu categoría principal de trabajo.",
-    next2: "Siguiente",
-
-    step3Title: "Foto de perfil",
-    photoHint: "Toca para subir foto",
-    finish: "Finalizar",
-
-    categoryAlert: "Por favor elige una categoría",
-    finishAlert: "¡Registro completado!"
-  }
-};
+    <div class="card lang" data-lang="en">English</div>
+    <div class="card lang" data-lang="ru">Русский</div>
+    <div class="card lang" data-lang="es">Español</div>
+  </section>
 
 
-function applyTranslations() {
-  const t = i18n[currentLang];
+  <!-- STEP 1 – PROFILE -->
+  <section id="step1" class="hidden">
+    <h2 class="text-3xl font-bold mb-2" id="step1Title">Профиль</h2>
+    <p class="text-gray-400 mb-4" id="step1Subtitle">Введите данные</p>
 
-  // Step 0
-  document.getElementById("langTitle").textContent = t.langTitle;
-  document.getElementById("langSubtitle").textContent = t.langSubtitle;
+    <input id="fullName" class="input-box" placeholder="Полное имя">
+    <input id="phone" class="input-box" placeholder="Телефон">
+    <input id="street" class="input-box" placeholder="Улица, дом">
+    <input id="apt" class="input-box" placeholder="Квартира / офис">
+    <div class="flex gap-3">
+      <input id="city" class="input-box" placeholder="Город">
+      <input id="state" class="input-box" placeholder="Штат">
+    </div>
+    <input id="zip" class="input-box" placeholder="ZIP код">
 
-  // Step 1
-  document.getElementById("step1Title").textContent = t.step1Title;
-  document.getElementById("step1Subtitle").textContent = t.step1Subtitle;
-  document.getElementById("fullName").placeholder = t.fullName;
-  document.getElementById("phone").placeholder = t.phone;
-  document.getElementById("street").placeholder = t.street;
-  document.getElementById("apt").placeholder = t.apt;
-  document.getElementById("city").placeholder = t.city;
-  document.getElementById("state").placeholder = t.state;
-  document.getElementById("zip").placeholder = t.zip;
-  document.getElementById("next1").textContent = t.next;
-
-  // Step 2
-  document.getElementById("step2Title").textContent = t.step2Title;
-  document.getElementById("step2Subtitle").textContent = t.step2Subtitle;
-  document.getElementById("next2").textContent = t.next2;
-
-  // Step 3
-  document.getElementById("step3Title").textContent = t.step3Title;
-  document.getElementById("photoBox").textContent = t.photoHint;
-  document.getElementById("finishBtn").textContent = t.finish;
-}
+    <button class="btn-main" id="next1">Далее</button>
+  </section>
 
 
-/* LANGUAGE SELECT */
-document.querySelectorAll(".lang").forEach(btn => {
-  btn.addEventListener("click", () => {
-    currentLang = btn.dataset.lang;
+  <!-- STEP 2 – CATEGORY -->
+  <section id="step2" class="hidden">
+    <h2 class="text-3xl font-bold mb-2" id="step2Title">Категория</h2>
+    <p class="text-gray-400 mb-4" id="step2Subtitle">
+      Пожалуйста выберите свою категорию чтобы обслуживать клиентов.
+    </p>
 
-    applyTranslations();
+    <div class="card category" data-cat="Appliance">Appliance Repair</div>
+    <div class="card category" data-cat="Cleaning">Cleaning</div>
+    <div class="card category" data-cat="Handyman">Handyman</div>
+    <div class="card category" data-cat="Locksmith">Locksmith</div>
+    <div class="card category" data-cat="Moving">Moving</div>
+    <div class="card category" data-cat="SmartHome">Smart Home</div>
+    <div class="card category" data-cat="Tire">Tire & Roadside</div>
 
-    document.getElementById("stepLang").classList.add("hidden");
-    document.getElementById("step1").classList.remove("hidden");
-  });
-});
-
-
-/* STEP 1 → STEP 2 */
-document.getElementById("next1").addEventListener("click", () => {
-  document.getElementById("step1").classList.add("hidden");
-  document.getElementById("step2").classList.remove("hidden");
-});
-
-
-/* CATEGORY SELECT */
-document.querySelectorAll(".category").forEach(card => {
-  card.addEventListener("click", () => {
-    document.querySelectorAll(".category").forEach(c => c.classList.remove("selected"));
-    card.classList.add("selected");
-    selectedCategory = card.dataset.cat;
-  });
-});
+    <button class="btn-main" id="next2">Далее</button>
+  </section>
 
 
-/* STEP 2 → STEP 3 */
-document.getElementById("next2").addEventListener("click", () => {
-  if (!selectedCategory) {
-    alert(i18n[currentLang].categoryAlert);
-    return;
-  }
+  <!-- STEP 3 – PHOTO -->
+  <section id="step3" class="hidden text-center">
+    <h2 class="text-3xl font-bold mb-3" id="step3Title">Фото профиля</h2>
 
-  document.getElementById("step2").classList.add("hidden");
-  document.getElementById("step3").classList.remove("hidden");
-});
+    <div class="photo-box" id="photoBox">Click to upload</div>
+    <input type="file" id="photoInput" class="hidden" accept="image/*">
 
+    <button class="btn-main" id="finishBtn">Завершить</button>
+  </section>
 
-/* PHOTO UPLOAD */
-document.getElementById("photoBox").addEventListener("click", () => {
-  document.getElementById("photoInput").click();
-});
+  <script src="register.js"></script>
 
-document.getElementById("photoInput").addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-  const box = document.getElementById("photoBox");
-
-  box.style.backgroundImage = `url(${url})`;
-  box.style.backgroundSize = "cover";
-  box.style.color = "transparent";
-  box.style.border = "none";
-});
-
-
-/* FINISH */
-document.getElementById("finishBtn").addEventListener("click", () => {
-  alert(i18n[currentLang].finishAlert);
-});
-
-
-/* DEFAULT TEXT LOAD */
-applyTranslations();
+</body>
+</html>
