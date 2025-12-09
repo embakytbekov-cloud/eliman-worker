@@ -3,12 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eliman Worker – Registration</title>
+  <title>Eliman Registration</title>
 
-  <!-- Telegram WebApp -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -48,7 +44,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 70px auto 30px;
+      margin: 40px auto 30px;
       font-size: 16px;
       text-align: center;
       color: #94a3b8;
@@ -70,126 +66,108 @@
 
 <body class="p-5 pb-20">
 
-  <!-- ШАГ 0 — ВЫБОР ЯЗЫКА -->
-  <section id="langStep" class="mt-10">
-    <h2 id="langTitle" class="text-3xl font-bold mb-3">Choose language</h2>
-    <p id="langSubtitle" class="text-gray-300 mb-5">
-      Please choose your language and we’ll display all registration steps in the language you prefer.
-    </p>
+<!-- ШАГ 0 — язык -->
+<section id="langStep" class="mt-10">
+  <h2 id="langTitle" class="text-3xl font-bold mb-3">Choose language</h2>
+  <p id="langSubtitle" class="text-gray-300 mb-5">Select language</p>
 
-    <div class="card-base language-card" data-lang="en">
-      <div class="font-bold text-lg">English</div>
-      <div class="text-gray-300 text-sm">United States, Canada…</div>
-    </div>
+  <div class="card-base language-card" data-lang="en">English</div>
+  <div class="card-base language-card" data-lang="ru">Русский</div>
+  <div class="card-base language-card" data-lang="es">Español</div>
+</section>
 
-    <div class="card-base language-card" data-lang="ru">
-      <div class="font-bold text-lg">Русский</div>
-      <div class="text-gray-300 text-sm">Россия, СНГ…</div>
-    </div>
+<!-- ШАГ 1 -->
+<section id="step1" class="hidden mt-8">
+  <h2 id="step1Title" class="text-3xl font-bold mb-2">Профиль</h2>
 
-    <div class="card-base language-card" data-lang="es">
-      <div class="font-bold text-lg">Español</div>
-      <div class="text-gray-300 text-sm">Latinoamérica, España…</div>
-    </div>
-  </section>
+  <input id="fullName" class="input-box" placeholder="Полное имя">
+  <input id="phone" class="input-box" placeholder="Телефон">
+  <input id="street" class="input-box" placeholder="Улица, дом">
+  <input id="apt" class="input-box" placeholder="Квартира / офис">
+  <div class="flex gap-3">
+    <input id="city" class="input-box" placeholder="Город">
+    <input id="state" class="input-box" placeholder="Штат">
+  </div>
+  <input id="zip" class="input-box" placeholder="ZIP">
 
+  <div id="next1Btn" class="primary-btn">Далее</div>
+</section>
 
-  <!-- ШАГ 1 — ПРОФИЛЬ -->
-  <section id="step1" class="hidden mt-8">
-    <h2 id="step1Title" class="text-3xl font-bold mb-2">Профиль</h2>
-    <p id="step1Subtitle" class="text-gray-300 mb-4">
-      Расскажите о себе и адресе, чтобы мы знали, куда отправлять заказы.
-    </p>
+<!-- ШАГ 2 -->
+<section id="step2" class="hidden mt-8">
+  <h2 id="step2Title" class="text-3xl font-bold mb-2">Категория</h2>
 
-    <input id="fullName" class="input-box" placeholder="Полное имя" />
-    <input id="phone" class="input-box" placeholder="Телефон" />
-    <input id="street" class="input-box" placeholder="Улица, дом" />
-    <input id="apt" class="input-box" placeholder="Квартира / офис (необязательно)" />
+  <div class="card-base category-card" data-cat="Appliance">Appliance Repair</div>
+  <div class="card-base category-card" data-cat="Cleaning">Cleaning</div>
+  <div class="card-base category-card" data-cat="Handyman">Handyman</div>
+  <div class="card-base category-card" data-cat="Locksmith">Locksmith</div>
+  <div class="card-base category-card" data-cat="Moving">Moving</div>
+  <div class="card-base category-card" data-cat="SmartHome">Smart Home</div>
+  <div class="card-base category-card" data-cat="Tire">Tire & Roadside</div>
 
-    <div class="flex gap-3">
-      <input id="city" class="input-box" placeholder="Город" />
-      <input id="state" class="input-box" placeholder="Штат" />
-    </div>
+  <div id="next2Btn" class="primary-btn">Далее</div>
+</section>
 
-    <input id="zip" class="input-box" placeholder="ZIP код" />
+<!-- ШАГ 3 -->
+<section id="step3" class="hidden mt-10 text-center">
+  <h2 id="step3Title" class="text-3xl font-bold mb-3">Фото профиля</h2>
 
-    <button id="next1Btn" onclick="goStep2()" class="primary-btn">Далее</button>
-  </section>
+  <div id="photoCircle">Выберите фото</div>
+  <input id="photoInput" type="file" accept="image/*" class="hidden">
 
+  <div id="finishBtn" class="primary-btn">Завершить</div>
+</section>
 
-  <!-- ШАГ 2 — КАТЕГОРИЯ -->
-  <section id="step2" class="hidden mt-8">
-    <h2 id="step2Title" class="text-3xl font-bold mb-2">Категория</h2>
-    <p id="step2Subtitle" class="text-gray-300 mb-4">
-      Пожалуйста выберите свою категорию чтобы обслуживать клиентов.
-    </p>
+<script>
+let currentLang = "ru";
+let selectedCategory = null;
 
-    <div class="card-base category-card" data-cat="Appliance">
-      <div id="catApplianceTitle" class="font-bold text-xl">Appliance Repair</div>
-      <div id="catApplianceSub" class="text-gray-300 text-sm">
-        Washer, dryer, refrigerator…
-      </div>
-    </div>
+document.querySelectorAll(".language-card").forEach(card => {
+  card.onclick = () => {
+    currentLang = card.dataset.lang;
 
-    <div class="card-base category-card" data-cat="Cleaning">
-      <div id="catCleaningTitle" class="font-bold text-xl">Cleaning</div>
-      <div id="catCleaningSub" class="text-gray-300 text-sm">
-        Home, office, car…
-      </div>
-    </div>
+    document.getElementById("langStep").classList.add("hidden");
+    document.getElementById("step1").classList.remove("hidden");
+  };
+});
 
-    <div class="card-base category-card" data-cat="Handyman">
-      <div id="catHandymanTitle" class="font-bold text-xl">Handyman</div>
-      <div id="catHandymanSub" class="text-gray-300 text-sm">
-        Repair, painting, install…
-      </div>
-    </div>
+document.getElementById("next1Btn").onclick = () => {
+  document.getElementById("step1").classList.add("hidden");
+  document.getElementById("step2").classList.remove("hidden");
+};
 
-    <div class="card-base category-card" data-cat="Locksmith">
-      <div id="catLocksmithTitle" class="font-bold text-xl">Locksmith</div>
-      <div id="catLocksmithSub" class="text-gray-300 text-sm">
-        Locks, car locks…
-      </div>
-    </div>
+document.querySelectorAll(".category-card").forEach(card => {
+  card.onclick = () => {
+    document.querySelectorAll(".category-card")
+      .forEach(c => c.classList.remove("selected"));
+    card.classList.add("selected");
+    selectedCategory = card.dataset.cat;
+  };
+});
 
-    <div class="card-base category-card" data-cat="Moving">
-      <div id="catMovingTitle" class="font-bold text-xl">Moving</div>
-      <div id="catMovingSub" class="text-gray-300 text-sm">
-        Packing, moving, lifting…
-      </div>
-    </div>
+document.getElementById("next2Btn").onclick = () => {
+  if (!selectedCategory) return alert("Выберите категорию");
+  document.getElementById("step2").classList.add("hidden");
+  document.getElementById("step3").classList.remove("hidden");
+};
 
-    <div class="card-base category-card" data-cat="SmartHome">
-      <div id="catSmartTitle" class="font-bold text-xl">Smart Home</div>
-      <div id="catSmartSub" class="text-gray-300 text-sm">
-        Doorbell, camera…
-      </div>
-    </div>
+document.getElementById("photoCircle").onclick = () =>
+  document.getElementById("photoInput").click();
 
-    <div class="card-base category-card" data-cat="Tire">
-      <div id="catTireTitle" class="font-bold text-xl">Tire & Roadside</div>
-      <div id="catTireSub" class="text-gray-300 text-sm">
-        Tire change, jump start…
-      </div>
-    </div>
+document.getElementById("photoInput").onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const circle = document.getElementById("photoCircle");
+  circle.style.backgroundImage = `url(${url})`;
+  circle.style.backgroundSize = "cover";
+  circle.textContent = "";
+};
 
-    <button id="next2Btn" onclick="goStep3()" class="primary-btn">Далее</button>
-  </section>
+document.getElementById("finishBtn").onclick = () => {
+  alert("Готово!");
+};
+</script>
 
-
-  <!-- ШАГ 3 — ФОТО -->
-  <section id="step3" class="hidden mt-10 text-center">
-    <h2 id="step3Title" class="text-3xl font-bold mb-3">Фото профиля</h2>
-
-    <div id="photoCircle">Нажмите, чтобы выбрать фото</div>
-    <input id="photoInput" type="file" accept="image/*" class="hidden" />
-
-    <button id="finishBtn" class="primary-btn" onclick="finishRegistration()">
-      Завершить
-    </button>
-  </section>
-
-  <!-- ПОДКЛЮЧАЕМ JS -->
-  <script src="../js/register.js"></script>
 </body>
 </html>
