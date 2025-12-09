@@ -1,3 +1,5 @@
+Telegram.WebApp.ready();
+
 let currentLang = "ru";
 let selectedCategory = null;
 
@@ -25,8 +27,7 @@ const i18n = {
     photoHint: "Click to upload",
     finish: "Finish",
 
-    categoryAlert: "Please select a category",
-    finishAlert: "Registration completed!"
+    categoryAlert: "Please select a category"
   },
 
   ru: {
@@ -52,12 +53,11 @@ const i18n = {
     photoHint: "Нажмите, чтобы загрузить",
     finish: "Завершить",
 
-    categoryAlert: "Выберите категорию",
-    finishAlert: "Регистрация завершена!"
+    categoryAlert: "Выберите категорию"
   },
 
   es: {
-    langTitle: "Elige tu idioma",
+    langTitle: "Elige idioma",
     langSubtitle: "La registración aparecerá en este idioma.",
 
     step1Title: "Perfil",
@@ -79,8 +79,7 @@ const i18n = {
     photoHint: "Toca para subir foto",
     finish: "Finalizar",
 
-    categoryAlert: "Por favor elige una categoría",
-    finishAlert: "¡Registro completado!"
+    categoryAlert: "Por favor elige una categoría"
   }
 };
 
@@ -115,7 +114,6 @@ function applyTranslations() {
   document.getElementById("finishBtn").textContent = t.finish;
 }
 
-
 /* LANGUAGE SELECT */
 document.querySelectorAll(".lang").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -128,13 +126,11 @@ document.querySelectorAll(".lang").forEach(btn => {
   });
 });
 
-
 /* STEP 1 → STEP 2 */
 document.getElementById("next1").addEventListener("click", () => {
   document.getElementById("step1").classList.add("hidden");
   document.getElementById("step2").classList.remove("hidden");
 });
-
 
 /* CATEGORY SELECT */
 document.querySelectorAll(".category").forEach(card => {
@@ -144,7 +140,6 @@ document.querySelectorAll(".category").forEach(card => {
     selectedCategory = card.dataset.cat;
   });
 });
-
 
 /* STEP 2 → STEP 3 */
 document.getElementById("next2").addEventListener("click", () => {
@@ -157,34 +152,28 @@ document.getElementById("next2").addEventListener("click", () => {
   document.getElementById("step3").classList.remove("hidden");
 });
 
-
 /* PHOTO UPLOAD */
 document.getElementById("photoBox").addEventListener("click", () => {
   document.getElementById("photoInput").click();
 });
 
-document.getElementById("photoInput").addEventListener("change", (e) => {
+document.getElementById("photoInput").addEventListener("change", e => {
   const file = e.target.files[0];
   if (!file) return;
 
   const url = URL.createObjectURL(file);
   const box = document.getElementById("photoBox");
 
-  box.style.backgroundImage = url(${url});
+  box.style.backgroundImage = `url(${url})`;
   box.style.backgroundSize = "cover";
-  box.style.backgroundPosition = "center";
-  box.style.border = "none";
   box.style.color = "transparent";
+  box.style.border = "none";
 });
 
-/* FINISH */
+/* FINISH → TERMS (Telegram Safe) */
 document.getElementById("finishBtn").addEventListener("click", () => {
-    console.log("FINISH CLICKED");
-
-    const url = "https://embakytbekov-cloud.github.io/eliman-worker/terms.html";
-
-    Telegram.WebApp.openLink(url);
+  Telegram.WebApp.openLink("terms.html");
 });
 
-/* DEFAULT TEXT LOAD */
+/* DEFAULT LOAD */
 applyTranslations();
