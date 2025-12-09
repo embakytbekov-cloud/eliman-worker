@@ -1,4 +1,4 @@
-Telegram.WebApp.ready();
+Telegram.WebApp.ready();     // ← САМЫЙ ВЕРХ
 
 let currentLang = "ru";
 let selectedCategory = null;
@@ -27,7 +27,8 @@ const i18n = {
     photoHint: "Click to upload",
     finish: "Finish",
 
-    categoryAlert: "Please select a category"
+    categoryAlert: "Please select a category",
+    finishAlert: "Registration completed!"
   },
 
   ru: {
@@ -53,11 +54,12 @@ const i18n = {
     photoHint: "Нажмите, чтобы загрузить",
     finish: "Завершить",
 
-    categoryAlert: "Выберите категорию"
+    categoryAlert: "Выберите категорию",
+    finishAlert: "Регистрация завершена!"
   },
 
   es: {
-    langTitle: "Elige idioma",
+    langTitle: "Elige tu idioma",
     langSubtitle: "La registración aparecerá en este idioma.",
 
     step1Title: "Perfil",
@@ -79,7 +81,8 @@ const i18n = {
     photoHint: "Toca para subir foto",
     finish: "Finalizar",
 
-    categoryAlert: "Por favor elige una categoría"
+    categoryAlert: "Por favor elige una categoría",
+    finishAlert: "¡Registro completado!"
   }
 };
 
@@ -114,6 +117,7 @@ function applyTranslations() {
   document.getElementById("finishBtn").textContent = t.finish;
 }
 
+
 /* LANGUAGE SELECT */
 document.querySelectorAll(".lang").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -126,11 +130,13 @@ document.querySelectorAll(".lang").forEach(btn => {
   });
 });
 
+
 /* STEP 1 → STEP 2 */
 document.getElementById("next1").addEventListener("click", () => {
   document.getElementById("step1").classList.add("hidden");
   document.getElementById("step2").classList.remove("hidden");
 });
+
 
 /* CATEGORY SELECT */
 document.querySelectorAll(".category").forEach(card => {
@@ -140,6 +146,7 @@ document.querySelectorAll(".category").forEach(card => {
     selectedCategory = card.dataset.cat;
   });
 });
+
 
 /* STEP 2 → STEP 3 */
 document.getElementById("next2").addEventListener("click", () => {
@@ -151,6 +158,7 @@ document.getElementById("next2").addEventListener("click", () => {
   document.getElementById("step2").classList.add("hidden");
   document.getElementById("step3").classList.remove("hidden");
 });
+
 
 /* PHOTO UPLOAD */
 document.getElementById("photoBox").addEventListener("click", () => {
@@ -170,10 +178,12 @@ document.getElementById("photoInput").addEventListener("change", e => {
   box.style.border = "none";
 });
 
-/* FINISH → TERMS (Telegram Safe) */
+
+/* FINISH */
 document.getElementById("finishBtn").addEventListener("click", () => {
-  Telegram.WebApp.openLink("terms.html");
+    console.log("FINISH CLICKED");
+    Telegram.WebApp.openLink("https://embakytbekov-cloud.github.io/eliman-worker/terms.html");
 });
 
-/* DEFAULT LOAD */
+/* DEFAULT TEXT LOAD */
 applyTranslations();
