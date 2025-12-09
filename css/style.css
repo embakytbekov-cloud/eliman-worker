@@ -26,6 +26,10 @@ input, select, textarea, button {
     padding: 15px;
     border-radius: 12px;
 }
+#finishBtn {
+  position: relative;
+  z-index: 9999;
+}
 
     border: 2px solid #22c55e;
 }
