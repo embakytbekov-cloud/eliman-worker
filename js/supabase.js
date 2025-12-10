@@ -1,4 +1,4 @@
-const SUPABASE_URL = "ТВОЙ_URL";
+const SUPABASE_URL = "https://ccqldccmikwdjkbxmcsn.supabase.co";
 const SUPABASE_KEY = "ТВОЙ_ANON_KEY";
 
 const { createClient } = supabase;
