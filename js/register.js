@@ -183,5 +183,6 @@ document.getElementById("finishBtn").addEventListener("click", () => {
 });
 
 
+
 /* DEFAULT TEXT LOAD */
 applyTranslations();
