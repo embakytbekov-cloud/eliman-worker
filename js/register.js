@@ -178,8 +178,17 @@ document.getElementById("photoInput").addEventListener("change", e => {
 });
 
 
-/* 🔥 FINISH — SUPABASE INSERT + переход в terms */
+/* 🔥 FINISH — SAFE SUPABASE INSERT */
 document.getElementById("finishBtn").addEventListener("click", async () => {
+
+  // Сначала проверяем, существует ли Supabase клиент
+  if (!window.db) {
+    console.error("Supabase client not loaded");
+    alert("Ошибка подключения к базе.");
+    return;
+  }
+
+  // Собираем данные
   const full_name = document.getElementById("fullName").value;
   const phone = document.getElementById("phone").value;
   const street = document.getElementById("street").value;
@@ -188,7 +197,8 @@ document.getElementById("finishBtn").addEventListener("click", async () => {
   const state = document.getElementById("state").value;
   const zip = document.getElementById("zip").value;
 
-  const { error } = await db.from("workers").insert({
+  // Запись в базу
+  const { error } = await window.db.from("workers").insert({
     full_name,
     phone,
     street,
@@ -205,11 +215,12 @@ document.getElementById("finishBtn").addEventListener("click", async () => {
   });
 
   if (error) {
-    alert("Ошибка при сохранении");
-    console.log(error);
+    console.error(error);
+    alert("Ошибка при сохранении данных");
     return;
   }
 
+  // Если всё успешно → отправляем на terms
   window.location.href = "terms.html?lang=" + currentLang;
 });
 
