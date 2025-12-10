@@ -88,11 +88,9 @@ const i18n = {
 function applyTranslations() {
   const t = i18n[currentLang];
 
-  // Step 0
   document.getElementById("langTitle").textContent = t.langTitle;
   document.getElementById("langSubtitle").textContent = t.langSubtitle;
 
-  // Step 1
   document.getElementById("step1Title").textContent = t.step1Title;
   document.getElementById("step1Subtitle").textContent = t.step1Subtitle;
   document.getElementById("fullName").placeholder = t.fullName;
@@ -104,12 +102,10 @@ function applyTranslations() {
   document.getElementById("zip").placeholder = t.zip;
   document.getElementById("next1").textContent = t.next;
 
-  // Step 2
   document.getElementById("step2Title").textContent = t.step2Title;
   document.getElementById("step2Subtitle").textContent = t.step2Subtitle;
   document.getElementById("next2").textContent = t.next2;
 
-  // Step 3
   document.getElementById("step3Title").textContent = t.step3Title;
   document.getElementById("photoBox").textContent = t.photoHint;
   document.getElementById("finishBtn").textContent = t.finish;
@@ -120,9 +116,7 @@ function applyTranslations() {
 document.querySelectorAll(".lang").forEach(btn => {
   btn.addEventListener("click", () => {
     currentLang = btn.dataset.lang;
-
     applyTranslations();
-
     document.getElementById("stepLang").classList.add("hidden");
     document.getElementById("step1").classList.remove("hidden");
   });
@@ -177,9 +171,53 @@ document.getElementById("photoInput").addEventListener("change", e => {
 });
 
 
-/* FINISH → просто переход на terms */
-document.getElementById("finishBtn").addEventListener("click", () => {
-  window.location.href = "terms.html?lang=" + currentLang;
+/* 🔥 FINISH — INSERT → REDIRECT WITH worker_id */
+document.getElementById("finishBtn").addEventListener("click", async () => {
+
+  if (!window.db) {
+    alert("Ошибка подключения к базе.");
+    return;
+  }
+
+  const full_name = document.getElementById("fullName").value;
+  const phone = document.getElementById("phone").value;
+  const street = document.getElementById("street").value;
+  const apt = document.getElementById("apt").value;
+  const city = document.getElementById("city").value;
+  const state = document.getElementById("state").value;
+  const zip = document.getElementById("zip").value;
+
+  // INSERT + RETURN ID
+  const { data, error } = await window.db
+    .from("workers")
+    .insert({
+      full_name,
+      phone,
+      street,
+      apt,
+      city,
+      state,
+      zip,
+      category: selectedCategory,
+      lang: currentLang,
+      accepted_terms: false,
+      accepted_privacy: false,
+      accepted_work_agreement: false,
+      created_at: new Date().toISOString()
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error(error);
+    alert("Ошибка сохранения");
+    return;
+  }
+
+  const workerId = data.id;
+
+  // redirect to next page with worker id
+  window.location.href = `terms.html?id=${workerId}&lang=${currentLang}`;
 });
 
 
