@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Supabase Test</title>
-</head>
+import { supabase } from "./supabase.js";
 
-<body style="background:#0f172a; color:white; padding:40px;">
-  <h1>Supabase Connection Test</h1>
-  <p>Смотри в консоль (F12) — там будет результат.</p>
+async function testConnection() {
+    console.log("🔄 Testing Supabase connection...");
 
-  <script type="module" src="./js/supabase.js"></script>
-  <script type="module" src="./js/test_supabase.js"></script>
-</body>
-</html>
+    const { data, error } = await supabase.from("test_table").select("*").limit(1);
+
+    if (error) {
+        console.error("❌ Connection Failed:", error);
+    } else {
+        console.log("✅ Supabase Connected Successfully!");
+    }
+}
+
+testConnection();
