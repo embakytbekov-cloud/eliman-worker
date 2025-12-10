@@ -1,4 +1,3 @@
-
 let currentLang = "ru";
 let selectedCategory = null;
 
@@ -178,49 +177,8 @@ document.getElementById("photoInput").addEventListener("change", e => {
 });
 
 
-/* 🔥 FINISH — SAFE SUPABASE INSERT */
-document.getElementById("finishBtn").addEventListener("click", async () => {
-
-  // Сначала проверяем, существует ли Supabase клиент
-  if (!window.db) {
-    console.error("Supabase client not loaded");
-    alert("Ошибка подключения к базе.");
-    return;
-  }
-
-  // Собираем данные
-  const full_name = document.getElementById("fullName").value;
-  const phone = document.getElementById("phone").value;
-  const street = document.getElementById("street").value;
-  const apt = document.getElementById("apt").value;
-  const city = document.getElementById("city").value;
-  const state = document.getElementById("state").value;
-  const zip = document.getElementById("zip").value;
-
-  // Запись в базу
-  const { error } = await window.db.from("workers").insert({
-    full_name,
-    phone,
-    street,
-    apt,
-    city,
-    state,
-    zip,
-    category: selectedCategory,
-    lang: currentLang,
-    accepted_terms: true,
-    accepted_privacy: true,
-    accepted_work_agreement: true,
-    created_at: new Date().toISOString()
-  });
-
-  if (error) {
-    console.error(error);
-    alert("Ошибка при сохранении данных");
-    return;
-  }
-
-  // Если всё успешно → отправляем на terms
+/* FINISH → просто переход на terms */
+document.getElementById("finishBtn").addEventListener("click", () => {
   window.location.href = "terms.html?lang=" + currentLang;
 });
 
