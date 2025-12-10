@@ -1,3 +1,4 @@
+
 let currentLang = "ru";
 let selectedCategory = null;
 
@@ -177,9 +178,38 @@ document.getElementById("photoInput").addEventListener("change", e => {
 });
 
 
-/* FINISH → OPEN TERMS (АККУРАТНАЯ СВЯЗКА, 1 ФУНКЦИЯ) */
-document.getElementById("finishBtn").addEventListener("click", () => {
-  // вместо alert открываем terms.html
+/* 🔥 FINISH — SUPABASE INSERT + переход в terms */
+document.getElementById("finishBtn").addEventListener("click", async () => {
+  const full_name = document.getElementById("fullName").value;
+  const phone = document.getElementById("phone").value;
+  const street = document.getElementById("street").value;
+  const apt = document.getElementById("apt").value;
+  const city = document.getElementById("city").value;
+  const state = document.getElementById("state").value;
+  const zip = document.getElementById("zip").value;
+
+  const { error } = await db.from("workers").insert({
+    full_name,
+    phone,
+    street,
+    apt,
+    city,
+    state,
+    zip,
+    category: selectedCategory,
+    lang: currentLang,
+    accepted_terms: true,
+    accepted_privacy: true,
+    accepted_work_agreement: true,
+    created_at: new Date().toISOString()
+  });
+
+  if (error) {
+    alert("Ошибка при сохранении");
+    console.log(error);
+    return;
+  }
+
   window.location.href = "terms.html?lang=" + currentLang;
 });
 
