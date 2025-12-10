@@ -6,6 +6,8 @@
   <title>Worker Agreement | Eliman Worker</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
 
   <style>
     body { background:#0f172a; color:white; padding:20px;}
@@ -15,54 +17,14 @@
 
 <body>
 
-  <h1 class="text-3xl font-bold mb-4">Independent Contractor Agreement</h1>
+  <h1 id="title" class="text-3xl font-bold mb-4">Independent Contractor Agreement</h1>
 
-  <div class="bg-slate-800 p-4 rounded-xl h-80 overflow-y-scroll text-sm leading-relaxed mb-6">
-
-    <h2 class="font-bold text-lg mb-2">1. Independent Contractor Status</h2>
-    <p class="mb-4">
-      You agree that you are an independent contractor, not an employee, agent,
-      or representative of ELIMAN. You choose your own hours, tools, methods, and work.
-    </p>
-
-    <h2 class="font-bold text-lg mb-2">2. Responsibilities</h2>
-    <p class="mb-4">
-      You are fully responsible for job performance, customer satisfaction, taxes,
-      insurance, transportation, tools, materials, and work safety.
-    </p>
-
-    <h2 class="font-bold text-lg mb-2">3. Insurance & Risk</h2>
-    <p class="mb-4">
-      ELIMAN does not provide insurance or workplace protection. You assume all risks
-      related to your work, including injuries, damages, accidents, and property loss.
-    </p>
-
-    <h2 class="font-bold text-lg mb-2">4. Compensation</h2>
-    <p class="mb-4">
-      You are paid per completed job. No guaranteed wage, no benefits.
-    </p>
-
-    <h2 class="font-bold text-lg mb-2">5. Indemnification</h2>
-    <p class="mb-4">
-      You agree to indemnify and protect ELIMAN from all claims, damages, lawsuits,
-      injuries, or losses arising from your work, tools, actions, or negligence.
-    </p>
-
-    <h2 class="font-bold text-lg mb-2">6. Termination</h2>
-    <p class="mb-4">
-      ELIMAN may deactivate or suspend your access at any time for violations,
-      unsafe behavior, or fraudulent activity.
-    </p>
-
-    <p class="mb-4">
-      By agreeing, you confirm you understand and accept all legal responsibilities.
-    </p>
-
-  </div>
+  <div id="content"
+       class="bg-slate-800 p-4 rounded-xl h-80 overflow-y-scroll text-sm leading-relaxed mb-6"></div>
 
   <label class="flex items-center mb-6">
     <input id="agree" type="checkbox" class="mr-3">
-    <span>I agree to the Independent Contractor Agreement</span>
+    <span id="agreeLabel">I agree to the Independent Contractor Agreement</span>
   </label>
 
   <button id="finishBtn"
@@ -73,22 +35,179 @@
 <script>
   const agree = document.getElementById("agree");
   const finishBtn = document.getElementById("finishBtn");
+  const title = document.getElementById("title");
+  const content = document.getElementById("content");
+  const agreeLabel = document.getElementById("agreeLabel");
 
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang") || "en";
+  const workerId = params.get("id"); // получаем ID рабочего
 
+
+  // 🌍 Мультиязык
+  const i18n = {
+    en: {
+      title: "Independent Contractor Agreement",
+      agree: "I agree to the Independent Contractor Agreement",
+      finish: "Finish & Complete Registration",
+      content: `
+        <h2 class="font-bold text-lg mb-2">1. Independent Contractor Status</h2>
+        <p class="mb-4">
+          You are an independent contractor and not an employee of ELIMAN. You choose your hours,
+          tools, and work methods.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">2. Responsibilities</h2>
+        <p class="mb-4">
+          You are responsible for job performance, customer satisfaction, taxes,
+          insurance, transportation, tools, and materials.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">3. Insurance & Risk</h2>
+        <p class="mb-4">
+          ELIMAN does not provide insurance. You assume all risks including injuries,
+          damages, accidents, and loss.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">4. Compensation</h2>
+        <p class="mb-4">
+          You are paid per completed job. No guaranteed wage or benefits.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">5. Indemnification</h2>
+        <p class="mb-4">
+          You indemnify ELIMAN from all claims, damages, injuries, lawsuits, or losses.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">6. Termination</h2>
+        <p class="mb-4">
+          ELIMAN may suspend or deactivate you for violations or unsafe behavior.
+        </p>
+      `
+    },
+
+    ru: {
+      title: "Соглашение независимого подрядчика",
+      agree: "Я принимаю Соглашение независимого подрядчика",
+      finish: "Завершить регистрацию",
+      content: `
+        <h2 class="font-bold text-lg mb-2">1. Статус независимого подрядчика</h2>
+        <p class="mb-4">
+          Вы являетесь независимым подрядчиком, а не сотрудником ELIMAN. Вы сами выбираете график,
+          инструменты и методы работы.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">2. Ответственность</h2>
+        <p class="mb-4">
+          Вы несёте ответственность за качество работы, удовлетворённость клиентов,
+          налоги, страховку, транспорт, инструменты и материалы.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">3. Страховка и риски</h2>
+        <p class="mb-4">
+          ELIMAN не предоставляет страховку. Вы несёте риски травм, ущерба,
+          несчастных случаев и потерь.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">4. Оплата</h2>
+        <p class="mb-4">
+          Оплата производится за выполненную работу. Нет гарантированной зарплаты и бонусов.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">5. Компенсация</h2>
+        <p class="mb-4">
+          Вы компенсируете ELIMAN любые претензии, ущерб, травмы или убытки.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">6. Прекращение</h2>
+        <p class="mb-4">
+          ELIMAN может отключить доступ за нарушения или небезопасное поведение.
+        </p>
+      `
+    },
+
+    es: {
+      title: "Acuerdo de Contratista Independiente",
+      agree: "Acepto el Acuerdo de Contratista Independiente",
+      finish: "Finalizar registro",
+      content: `
+        <h2 class="font-bold text-lg mb-2">1. Contratista Independiente</h2>
+        <p class="mb-4">
+          Eres un contratista independiente, no empleado de ELIMAN. Tú eliges tu horario,
+          herramientas y métodos de trabajo.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">2. Responsabilidades</h2>
+        <p class="mb-4">
+          Eres responsable del trabajo, satisfacción del cliente, impuestos,
+          seguro, transporte, herramientas y materiales.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">3. Riesgo y Seguro</h2>
+        <p class="mb-4">
+          ELIMAN no ofrece seguro. Asumes todos los riesgos como daños, lesiones o pérdidas.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">4. Compensación</h2>
+        <p class="mb-4">
+          Pagan por trabajo completado. No hay sueldo fijo ni beneficios.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">5. Indemnización</h2>
+        <p class="mb-4">
+          Aceptas indemnizar a ELIMAN de cualquier reclamo o daño.
+        </p>
+
+        <h2 class="font-bold text-lg mb-2">6. Terminación</h2>
+        <p class="mb-4">
+          ELIMAN puede suspender tu acceso por violaciones o comportamiento peligroso.
+        </p>
+      `
+    }
+  };
+
+
+  // применяем язык
+  title.textContent = i18n[lang].title;
+  agreeLabel.textContent = i18n[lang].agree;
+  finishBtn.textContent = i18n[lang].finish;
+  content.innerHTML = i18n[lang].content;
+
+
+  // checkbox
   agree.addEventListener("change", () => {
     agree.checked
       ? finishBtn.classList.remove("btn-disabled")
       : finishBtn.classList.add("btn-disabled");
   });
 
-  finishBtn.addEventListener("click", () => {
+
+  // 🔥 FINISH → UPDATE Supabase + redirect to dashboard
+  finishBtn.addEventListener("click", async () => {
     if (!agree.checked) return;
 
-    alert("Registration completed!");
-    // тут потом можно:
-    // window.location.href = "index.html";
+    if (!window.db) {
+      alert("Database connection error");
+      return;
+    }
+    if (!workerId) {
+      alert("Worker ID missing");
+      return;
+    }
+
+    const { error } = await window.db
+      .from("workers")
+      .update({ accepted_work_agreement: true })
+      .eq("id", workerId);
+
+    if (error) {
+      console.error(error);
+      alert("Database update error");
+      return;
+    }
+
+    // Финальный переход — в приложение
+    window.location.href = `index.html?lang=${lang}&id=${workerId}`;
   });
 </script>
 
