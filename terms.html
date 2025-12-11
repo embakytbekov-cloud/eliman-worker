@@ -43,7 +43,9 @@
 
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang") || "en";
-  const workerId = params.get("id"); // ID из register.js
+
+  // 🔥 ВАЖНО — ИСПРАВЛЕНО!
+  const workerId = params.get("worker_id");  
 
   const i18n = {
     en: {
@@ -203,7 +205,7 @@
       : nextBtn.classList.add("btn-disabled");
   });
 
-  // 🔥 UPDATE accepted_terms = true и переход на privacy
+  // UPDATE accepted_terms = true и переход на privacy
   nextBtn.addEventListener("click", async () => {
     if (!agree.checked) return;
 
