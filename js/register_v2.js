@@ -5,13 +5,12 @@ let currentLang = "ru";
 let selectedCategory = null;
 
 // ----------------------------
-// TRANSLATIONS (i18n)
+// i18n TRANSLATIONS
 // ----------------------------
 const i18n = {
   en: {
     langTitle: "Choose language",
     langSubtitle: "Select your language. Registration will appear in this language.",
-
     step1Title: "Profile",
     step1Subtitle: "Enter your personal and address information.",
     fullName: "Full name",
@@ -22,16 +21,14 @@ const i18n = {
     state: "State",
     zip: "ZIP code",
     next: "Next",
-
     step2Title: "Category",
     step2Subtitle: "Please choose your main working category.",
     next2: "Next",
-
     step3Title: "Profile photo",
     photoHint: "Click to upload",
     finish: "Finish",
-
     categoryAlert: "Please select a category",
+    finishAlert: "Registration completed!",
     dbError: "Database error",
     saveError: "Error while saving data",
     uploadError: "Error while uploading photo"
@@ -40,7 +37,6 @@ const i18n = {
   ru: {
     langTitle: "Выберите язык",
     langSubtitle: "Выберите язык. Регистрация будет показана на нём.",
-
     step1Title: "Профиль",
     step1Subtitle: "Введите ваши данные и адрес.",
     fullName: "Полное имя",
@@ -51,16 +47,14 @@ const i18n = {
     state: "Штат",
     zip: "ZIP код",
     next: "Далее",
-
     step2Title: "Категория",
     step2Subtitle: "Выберите вашу категорию для обслуживания клиентов.",
     next2: "Далее",
-
     step3Title: "Фото профиля",
     photoHint: "Нажмите, чтобы загрузить",
     finish: "Завершить",
-
     categoryAlert: "Выберите категорию",
+    finishAlert: "Регистрация завершена!",
     dbError: "Ошибка базы данных",
     saveError: "Ошибка при сохранении данных",
     uploadError: "Ошибка при загрузке фото"
@@ -69,7 +63,6 @@ const i18n = {
   es: {
     langTitle: "Elige tu idioma",
     langSubtitle: "La registración aparecerá en este idioma.",
-
     step1Title: "Perfil",
     step1Subtitle: "Ingresa tu información personal y dirección.",
     fullName: "Nombre completo",
@@ -80,21 +73,20 @@ const i18n = {
     state: "Estado",
     zip: "Código ZIP",
     next: "Siguiente",
-
     step2Title: "Categoría",
     step2Subtitle: "Elige tu categoría principal de trabajo.",
     next2: "Siguiente",
-
     step3Title: "Foto de perfil",
     photoHint: "Toca para subir foto",
     finish: "Finalizar",
-
     categoryAlert: "Por favor elige una categoría",
+    finishAlert: "¡Registro completado!",
     dbError: "Error de base de datos",
     saveError: "Error al guardar datos",
-    uploadError: "Error al subir foto"
+    uploadError: "Error al subir la foto"
   }
 };
+
 
 // ----------------------------
 // APPLY TRANSLATIONS
@@ -125,21 +117,29 @@ function applyTranslations() {
   document.getElementById("finishBtn").textContent = t.finish;
 }
 
+
 // ----------------------------
-// TELEGRAM ID (без ошибок → fallback работает)
+// TELEGRAM ID DETECTION
 // ----------------------------
 let telegramId = null;
 let workerKey = null;
 
-(function () {
-  try {
-    if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
-      telegramId = String(window.Telegram.WebApp.initDataUnsafe.user.id);
+(function detectTelegram() {
+  const tg = window.Telegram && window.Telegram.WebApp
+    ? window.Telegram.WebApp
+    : null;
+
+  if (tg) {
+    try { tg.ready(); } catch (_) {}
+
+    if (tg.initDataUnsafe?.user?.id) {
+      telegramId = String(tg.initDataUnsafe.user.id);
     }
-  } catch (_) {}
+  }
 
   workerKey = telegramId || `anon_${Date.now()}`;
 })();
+
 
 // ----------------------------
 // STEP SWITCHING
@@ -158,13 +158,13 @@ next1.onclick = () => {
   step2.classList.remove("hidden");
 };
 
-document.querySelectorAll(".category").forEach(card =>
-  card.addEventListener("click", () => {
-    document.querySelectorAll(".category").forEach(c => c.classList.remove("selected"));
-    card.classList.add("selected");
-    selectedCategory = card.dataset.cat;
-  })
-);
+document.querySelectorAll(".category").forEach(c => {
+  c.onclick = () => {
+    document.querySelectorAll(".category").forEach(x => x.classList.remove("selected"));
+    c.classList.add("selected");
+    selectedCategory = c.dataset.cat;
+  };
+});
 
 next2.onclick = () => {
   if (!selectedCategory) {
@@ -175,6 +175,7 @@ next2.onclick = () => {
   step3.classList.remove("hidden");
 };
 
+
 // ----------------------------
 // PHOTO PREVIEW
 // ----------------------------
@@ -183,29 +184,34 @@ photoBox.onclick = () => photoInput.click();
 photoInput.onchange = e => {
   const file = e.target.files[0];
   if (!file) return;
+
   const url = URL.createObjectURL(file);
   photoBox.style.backgroundImage = `url(${url})`;
   photoBox.style.backgroundSize = "cover";
-  photoBox.style.color = "transparent";
   photoBox.style.border = "none";
+  photoBox.style.color = "transparent";
 };
 
+
 // ----------------------------
-// SAVE → SUPABASE
+// SAVE TO SUPABASE
 // ----------------------------
 finishBtn.onclick = async () => {
   const t = i18n[currentLang];
 
-  if (!window.db) {
-    alert(t.dbError);
-    return;
-  }
+  const full_name = fullName.value.trim();
+  const phoneValue = phone.value.trim();
+  const streetValue = street.value.trim();
+  const aptValue = apt.value.trim();
+  const cityValue = city.value.trim();
+  const stateValue = state.value.trim();
+  const zipValue = zip.value.trim();
 
   const file = photoInput.files[0];
   let photo_url = null;
 
   if (file) {
-    const ext = file.name.split(".").pop();
+    const ext = file.name.split(".").pop() || "jpg";
     const filePath = `worker_${workerKey}.${ext}`;
 
     const { error: uploadErr } = await db.storage
@@ -214,22 +220,22 @@ finishBtn.onclick = async () => {
 
     if (uploadErr) {
       alert(t.uploadError);
-      console.log(uploadErr);
+      console.error(uploadErr);
       return;
     }
 
     photo_url = db.storage.from("workers_photos").getPublicUrl(filePath).data.publicUrl;
   }
 
-  const { error } = await db.from("workers").insert({
+  const { error: insertErr } = await db.from("workers").insert({
     telegram_id: workerKey,
-    full_name: fullName.value,
-    phone: phone.value,
-    street: street.value,
-    apartment: apt.value,
-    city: city.value,
-    state: state.value,
-    zipcode: zip.value,
+    full_name,
+    phone: phoneValue,
+    street: streetValue,
+    apt: aptValue,
+    city: cityValue,
+    state: stateValue,
+    zipcode: zipValue,
     category: selectedCategory,
     language: currentLang,
     lang: currentLang,
@@ -239,14 +245,17 @@ finishBtn.onclick = async () => {
     accepted_work_agreement: false
   });
 
-  if (error) {
+  if (insertErr) {
     alert(t.saveError);
-    console.log(error);
+    console.error(insertErr);
     return;
   }
 
-  window.location.href = `terms.html?lang=${currentLang}`;
+  window.location.href = "terms.html?lang=" + currentLang;
 };
 
+
+// ----------------------------
+// INIT
 // ----------------------------
 applyTranslations();
