@@ -43,15 +43,14 @@
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang") || "en";
 
-  // 🔥 Исправлено — поддерживает и worker_id, и id
-  const workerId = params.get("worker_id") || params.get("id");
+  // ✅ Правильный ID из URL
+  const workerId = params.get("worker_id");
 
   if (!workerId) {
     alert("Worker ID missing");
   }
 
-  // 🌍 Твой i18n ниже (не трогаю)
-
+  // 🌍 I18N
   const i18n = {
     en: {
       title: "Privacy Policy",
@@ -174,32 +173,26 @@
     }
   };
 
-  // применяем язык
+  // apply language
   title.textContent = i18n[lang].title;
   agreeLabel.textContent = i18n[lang].agree;
   nextBtn.textContent = i18n[lang].next;
   content.innerHTML = i18n[lang].content;
 
-  // логика кнопки
   agree.addEventListener("change", () => {
     agree.checked
       ? nextBtn.classList.remove("btn-disabled")
       : nextBtn.classList.add("btn-disabled");
   });
 
-  // UPDATE accepted_privacy = true
+  // ✅ Важная правка — обновляем по telegram_id
   nextBtn.addEventListener("click", async () => {
     if (!agree.checked) return;
-
-    if (!workerId) {
-      alert("Worker ID missing");
-      return;
-    }
 
     const { error } = await window.db
       .from("workers")
       .update({ accepted_privacy: true })
-      .eq("id", workerId);
+      .eq("telegram_id", workerId);
 
     if (error) {
       console.error(error);
@@ -207,7 +200,6 @@
       return;
     }
 
-    // переход к следующей странице
     window.location.href = `work_agreement.html?worker_id=${workerId}&lang=${lang}`;
   });
 </script>
