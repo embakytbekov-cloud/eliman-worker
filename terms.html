@@ -6,7 +6,6 @@
   <title>Terms & Conditions | Eliman Worker</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
 
@@ -44,8 +43,8 @@
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang") || "en";
 
-  // 🔥 ВАЖНО — ИСПРАВЛЕНО!
-  const workerId = params.get("worker_id");  
+  // ✅ ID получаем правильно
+  const workerId = params.get("worker_id");
 
   const i18n = {
     en: {
@@ -153,59 +152,25 @@
         <h2 class="font-bold text-lg mb-2">1. Rol de la plataforma</h2>
         <p class="mb-4">
           ELIMAN es una plataforma que conecta clientes con trabajadores independientes.
-          ELIMAN no emplea trabajadores ni es responsable por su trabajo.
-        </p>
-
-        <h2 class="font-bold text-lg mb-2">2. Contratista independiente</h2>
-        <p class="mb-4">
-          Al usar la plataforma, confirmas que eres contratista independiente, no empleado.
-          Eres responsable de impuestos, seguros, herramientas y gastos.
-        </p>
-
-        <h2 class="font-bold text-lg mb-2">3. Responsabilidad y riesgo</h2>
-        <p class="mb-4">
-          Trabajas bajo tu propio riesgo. ELIMAN no se hace responsable por daños,
-          lesiones, pérdidas o disputas.
-        </p>
-
-        <h2 class="font-bold text-lg mb-2">4. Aceptación de trabajos</h2>
-        <p class="mb-4">
-          Puedes aceptar o rechazar trabajos. ELIMAN no es responsable por cancelaciones
-          ni comportamiento de los clientes.
-        </p>
-
-        <h2 class="font-bold text-lg mb-2">5. Pagos</h2>
-        <p class="mb-4">
-          El pago se realiza después de completar el trabajo. El fraude lleva a suspensión.
-        </p>
-
-        <h2 class="font-bold text-lg mb-2">6. Indemnización</h2>
-        <p class="mb-4">
-          Aceptas mantener a ELIMAN libre de reclamos, daños, lesiones o gastos
-          derivados de tu trabajo.
-        </p>
-
-        <p class="mb-4">
-          Al aceptar, confirmas que entiendes y asumes toda responsabilidad.
         </p>
       `
     }
   };
 
-  // применяем язык
+  // apply language
   title.textContent = i18n[lang].title;
   agreeLabel.textContent = i18n[lang].agree;
   nextBtn.textContent = i18n[lang].next;
   content.innerHTML = i18n[lang].content;
 
-  // логика кнопки
+  // enable button
   agree.addEventListener("change", () => {
     agree.checked
       ? nextBtn.classList.remove("btn-disabled")
       : nextBtn.classList.add("btn-disabled");
   });
 
-  // UPDATE accepted_terms = true и переход на privacy
+  // SAVE accepted_terms
   nextBtn.addEventListener("click", async () => {
     if (!agree.checked) return;
 
@@ -214,15 +179,10 @@
       return;
     }
 
-    if (!window.db) {
-      alert("Database connection error");
-      return;
-    }
-
     const { error } = await window.db
       .from("workers")
       .update({ accepted_terms: true })
-      .eq("id", workerId);
+      .eq("telegram_id", workerId);  // ✅ FIXED!
 
     if (error) {
       console.error(error);
@@ -230,7 +190,7 @@
       return;
     }
 
-    window.location.href = `privacy.html?id=${workerId}&lang=${lang}`;
+    window.location.href = `privacy.html?worker_id=${workerId}&lang=${lang}`;
   });
 </script>
 
