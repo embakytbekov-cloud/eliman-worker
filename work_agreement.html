@@ -41,10 +41,15 @@
 
   const params = new URLSearchParams(window.location.search);
   const lang = params.get("lang") || "en";
-  const workerId = params.get("id"); // получаем ID рабочего
 
+  // 🔥 FIXED — поддерживает worker_id и id
+  const workerId = params.get("worker_id") || params.get("id");
 
-  // 🌍 Мультиязык
+  if (!workerId) {
+    alert("Worker ID missing");
+  }
+
+  // 🌍 MULTI-LANGUAGE (твой код)
   const i18n = {
     en: {
       title: "Independent Contractor Agreement",
@@ -166,13 +171,10 @@
     }
   };
 
-
-  // применяем язык
   title.textContent = i18n[lang].title;
   agreeLabel.textContent = i18n[lang].agree;
   finishBtn.textContent = i18n[lang].finish;
   content.innerHTML = i18n[lang].content;
-
 
   // checkbox
   agree.addEventListener("change", () => {
@@ -181,8 +183,7 @@
       : finishBtn.classList.add("btn-disabled");
   });
 
-
-  // 🔥 FINISH → UPDATE Supabase + redirect to dashboard
+  // FINISH → UPDATE & redirect
   finishBtn.addEventListener("click", async () => {
     if (!agree.checked) return;
 
@@ -206,8 +207,8 @@
       return;
     }
 
-    // Финальный переход — в приложение
-    window.location.href = `index.html?lang=${lang}&id=${workerId}`;
+    // Финальный переход
+    window.location.href = `index.html?worker_id=${workerId}&lang=${lang}`;
   });
 </script>
 
