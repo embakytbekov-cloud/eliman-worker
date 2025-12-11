@@ -251,7 +251,7 @@ finishBtn.onclick = async () => {
     return;
   }
 
-  window.location.href = "terms.html?lang=" + currentLang;
+  window.location.href = `terms.html?lang=${currentLang}&worker_id=${workerKey}`;
 };
 
 
