@@ -1,14 +1,16 @@
 // ================================
 // ORDERS PAGE — BASE VERSION
 // + AUTO LANGUAGE FROM WORKER
-// + VIEW DETAILS BUTTON
+// + VIEW DETAILS BUTTON (FIXED)
 // ================================
 
+console.log("ORDERS JS V3 LOADED");
+
+// ================================
 // URL params
+// ================================
 const params = new URLSearchParams(window.location.search);
 const urlLang = params.get("lang"); // может быть null
-
-console.log("ORDERS PAGE LOADED");
 
 // ================================
 // I18N
@@ -46,7 +48,7 @@ const i18n = {
   }
 };
 
-let lang = "en"; // fallback
+let lang = "en";
 let t = i18n.en;
 
 // ================================
@@ -59,6 +61,9 @@ const tabActive = document.getElementById("tabActive");
 const tabProfile = document.getElementById("tabProfile");
 const list = document.getElementById("ordersList");
 
+// ================================
+// CHECK SUPABASE
+// ================================
 if (!window.db) {
   alert("Supabase not connected");
   throw new Error("Supabase not connected");
@@ -74,8 +79,9 @@ if (!list) {
 // ================================
 function applyLanguage(langKey) {
   if (!i18n[langKey]) langKey = "en";
-  t = i18n[langKey];
+
   lang = langKey;
+  t = i18n[langKey];
 
   if (pageTitle) pageTitle.textContent = t.title;
   if (pageSubtitle) pageSubtitle.textContent = t.subtitle;
@@ -87,7 +93,7 @@ function applyLanguage(langKey) {
 }
 
 // ================================
-// LOAD WORKER LANGUAGE
+// DETECT LANGUAGE
 // ================================
 async function detectLanguage() {
   // 1️⃣ URL priority
@@ -95,7 +101,7 @@ async function detectLanguage() {
     return applyLanguage(urlLang);
   }
 
-  // 2️⃣ From workers table
+  // 2️⃣ from workers table
   const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
   if (tg?.id) {
@@ -110,7 +116,7 @@ async function detectLanguage() {
     }
   }
 
-  // 3️⃣ fallback EN
+  // 3️⃣ fallback
   return applyLanguage("en");
 }
 
@@ -197,11 +203,11 @@ function renderOrders(orders) {
 }
 
 // ================================
-// OPEN DETAILS
+// OPEN DETAILS (⚠️ ВАЖНО)
 // ================================
-function openOrderDetails(orderId) {
+window.openOrderDetails = function (orderId) {
   window.location.href = `order-details.html?id=${orderId}&lang=${lang}`;
-}
+};
 
 // ================================
 // START
