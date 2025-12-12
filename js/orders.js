@@ -1,13 +1,66 @@
 // ================================
 // ORDERS PAGE — BASE VERSION
 // NO FILTERS, NO WORKERS
+// + I18N (EN/RU/ES)
 // ================================
 
 // params
 const params = new URLSearchParams(window.location.search);
-const lang = params.get("lang") || "en";
+
+// ✅ язык из URL, по умолчанию RU (потому что у тебя html lang="ru")
+let lang = params.get("lang") || "ru";
+
+// ================================
+// I18N
+// ================================
+const i18n = {
+  en: {
+    title: "Worker Console",
+    subtitle: "New orders available for your skills",
+    tabOrders: "Orders",
+    tabActive: "Active",
+    tabProfile: "Profile",
+    noOrders: "No orders yet",
+    errorLoading: "Error loading orders"
+  },
+  ru: {
+    title: "Worker Console",
+    subtitle: "Новые заказы, доступные по вашим навыкам",
+    tabOrders: "Заказы",
+    tabActive: "Активные",
+    tabProfile: "Профиль",
+    noOrders: "No orders yet",
+    errorLoading: "Ошибка загрузки заказов"
+  },
+  es: {
+    title: "Worker Console",
+    subtitle: "Nuevos pedidos disponibles según tus habilidades",
+    tabOrders: "Pedidos",
+    tabActive: "Activos",
+    tabProfile: "Perfil",
+    noOrders: "Aún no hay pedidos",
+    errorLoading: "Error al cargar pedidos"
+  }
+};
+
+if (!i18n[lang]) lang = "ru";
+const t = i18n[lang];
 
 console.log("ORDERS PAGE LOADED");
+console.log("lang:", lang);
+
+// ✅ применяем перевод к UI (если элементы есть — чтобы ничего не ломалось)
+const pageTitle = document.getElementById("pageTitle");
+const pageSubtitle = document.getElementById("pageSubtitle");
+const tabOrders = document.getElementById("tabOrders");
+const tabActive = document.getElementById("tabActive");
+const tabProfile = document.getElementById("tabProfile");
+
+if (pageTitle) pageTitle.textContent = t.title;
+if (pageSubtitle) pageSubtitle.textContent = t.subtitle;
+if (tabOrders) tabOrders.textContent = t.tabOrders;
+if (tabActive) tabActive.textContent = t.tabActive;
+if (tabProfile) tabProfile.textContent = t.tabProfile;
 
 // supabase check
 if (!window.db) {
@@ -37,14 +90,14 @@ async function loadOrders() {
   if (error) {
     console.error(error);
     list.innerHTML = `<div class="text-red-400 text-center mt-10">
-      Error loading orders
+      ${t.errorLoading}
     </div>`;
     return;
   }
 
   if (!data || data.length === 0) {
     list.innerHTML = `<div class="text-slate-400 text-center mt-10">
-      No orders yet
+      ${t.noOrders}
     </div>`;
     return;
   }
