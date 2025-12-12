@@ -30,13 +30,17 @@
       ELIMAN
     </div>
     <div class="flex items-center justify-between mb-2">
-      <h1 class="text-2xl font-bold">Worker Console</h1>
+      <!-- ✅ добавил id -->
+      <h1 id="pageTitle" class="text-2xl font-bold">Worker Console</h1>
+
       <div id="onlineBadge"
            class="px-4 py-1 rounded-full bg-emerald-500 text-xs font-bold text-black">
         ONLINE
       </div>
     </div>
-    <p class="text-sm text-slate-400">
+
+    <!-- ✅ добавил id -->
+    <p id="pageSubtitle" class="text-sm text-slate-400">
       Новые заказы, доступные по&nbsp;вашим навыкам
     </p>
   </header>
@@ -54,21 +58,24 @@
       <button
         class="flex-1 py-3 flex flex-col items-center gap-1 bg-emerald-500 text-black bottom-tab-active">
         <span class="text-xl">💼</span>
-        <span class="text-xs font-semibold">Заказы</span>
+        <!-- ✅ добавил id -->
+        <span id="tabOrders" class="text-xs font-semibold">Заказы</span>
       </button>
 
       <!-- TAB: Active -->
       <button
         class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400">
         <span class="text-xl">🕒</span>
-        <span class="text-xs font-medium">Активные</span>
+        <!-- ✅ добавил id -->
+        <span id="tabActive" class="text-xs font-medium">Активные</span>
       </button>
 
       <!-- TAB: Profile -->
       <button
         class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400">
         <span class="text-xl">👤</span>
-        <span class="text-xs font-medium">Профиль</span>
+        <!-- ✅ добавил id -->
+        <span id="tabProfile" class="text-xs font-medium">Профиль</span>
       </button>
 
     </div>
