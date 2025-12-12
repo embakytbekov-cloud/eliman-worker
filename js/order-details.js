@@ -1,43 +1,138 @@
 // ================================
-// ORDER DETAILS
+// ORDERS PAGE
+// + $1 ACCEPT LOGIC
 // ================================
 
 const params = new URLSearchParams(window.location.search);
-const orderId = params.get("id");
+const urlLang = params.get("lang") || "en";
 
-if (!orderId) {
-  alert("Order ID missing");
-  throw new Error("Order ID missing");
+let lang = urlLang;
+
+// ================================
+// I18N
+// ================================
+const i18n = {
+  en: {
+    title: "Worker Console",
+    subtitle: "New orders available for your skills",
+    noOrders: "No orders yet",
+    errorLoading: "Error loading orders",
+    accept: "Accept job — $1",
+    confirmAccept: "Accepting this job costs $1. Continue?"
+  },
+  ru: {
+    title: "Консоль работника",
+    subtitle: "Новые заказы, доступные по вашим навыкам",
+    noOrders: "Заказов пока нет",
+    errorLoading: "Ошибка загрузки заказов",
+    accept: "Принять заказ — $1",
+    confirmAccept: "Принятие заказа стоит $1. Продолжить?"
+  },
+  es: {
+    title: "Consola del trabajador",
+    subtitle: "Nuevos pedidos disponibles según tus habilidades",
+    noOrders: "No hay pedidos",
+    errorLoading: "Error al cargar pedidos",
+    accept: "Aceptar trabajo — $1",
+    confirmAccept: "Aceptar este trabajo cuesta $1. ¿Continuar?"
+  }
+};
+
+if (!i18n[lang]) lang = "en";
+const t = i18n[lang];
+
+// ================================
+// DOM
+// ================================
+const list = document.getElementById("ordersList");
+const pageTitle = document.getElementById("pageTitle");
+const pageSubtitle = document.getElementById("pageSubtitle");
+
+if (pageTitle) pageTitle.textContent = t.title;
+if (pageSubtitle) pageSubtitle.textContent = t.subtitle;
+
+if (!window.db) {
+  alert("Supabase not connected");
+  throw new Error("Supabase not connected");
 }
 
-const el = id => document.getElementById(id);
-
-async function loadOrder() {
+// ================================
+// LOAD ORDERS
+// ================================
+async function loadOrders() {
   const { data, error } = await window.db
     .from("orders")
     .select("*")
-    .eq("id", orderId)
-    .single();
+    .eq("status", "new")
+    .order("created_at", { ascending: false });
 
-  if (error || !data) {
-    alert("Order not found");
+  if (error) {
+    list.innerHTML = `<div class="text-red-400 text-center mt-10">${t.errorLoading}</div>`;
     return;
   }
 
-  el("serviceName").textContent = data.service_name || "Service";
-  el("clientName").textContent = data.client_name || "";
-  el("clientPhone").textContent = data.client_phone || "";
-  el("address").textContent = data.address || "";
-  el("datetime").textContent = `${data.date || ""} ${data.time || ""}`;
-  el("price").textContent = `$${data.price || ""}`;
-  el("notes").textContent = data.notes || "";
+  if (!data || data.length === 0) {
+    list.innerHTML = `<div class="text-slate-400 text-center mt-10">${t.noOrders}</div>`;
+    return;
+  }
 
-  el("mapsLink").href =
-    "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent(data.address);
+  renderOrders(data);
 }
 
-async function acceptOrder() {
+// ================================
+// RENDER
+// ================================
+function renderOrders(orders) {
+  list.innerHTML = "";
+
+  orders.forEach(order => {
+    const card = document.createElement("div");
+    card.className = `
+      bg-slate-800/90
+      border border-slate-700
+      rounded-2xl
+      p-4
+      shadow-lg
+    `;
+
+    card.innerHTML = `
+      <div class="flex justify-between items-start mb-2">
+        <div>
+          <div class="text-lg font-bold text-white">
+            ${order.service_name || "Service"}
+          </div>
+          <div class="text-sm text-slate-400">
+            ${order.service_type || ""}
+          </div>
+        </div>
+        <div class="px-3 py-1 rounded-full bg-emerald-500 text-black font-bold">
+          $${order.price || "--"}
+        </div>
+      </div>
+
+      <div class="text-sm text-slate-300 mb-3">
+        📍 ${order.address || ""}
+      </div>
+
+      <button
+        class="w-full py-2 rounded-xl bg-emerald-500 text-black font-bold"
+        onclick="acceptOrder('${order.id}')"
+      >
+        ${t.accept}
+      </button>
+    `;
+
+    list.appendChild(card);
+  });
+}
+
+// ================================
+// ACCEPT ORDER ($1)
+// ================================
+async function acceptOrder(orderId) {
+  const ok = confirm(t.confirmAccept);
+  if (!ok) return;
+
   const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
   if (!tg?.id) {
     alert("Telegram user not found");
@@ -47,22 +142,23 @@ async function acceptOrder() {
   const { error } = await window.db
     .from("orders")
     .update({
-      status: "accepted",
-      worker_id: tg.id
+      status: "active",
+      accepted_by: String(tg.id),
+      accept_fee_paid: true
     })
     .eq("id", orderId);
 
   if (error) {
-    alert("Failed to accept order");
+    alert("Error accepting order");
+    console.error(error);
     return;
   }
 
-  alert("Order accepted!");
-  window.location.href = "orders.html";
+  // 👉 идём в Active
+  window.location.href = "active.html";
 }
 
-function closePage() {
-  window.history.back();
-}
-
-loadOrder();
+// ================================
+// START
+// ================================
+loadOrders();
