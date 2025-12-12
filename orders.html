@@ -8,7 +8,7 @@
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Telegram WebApp (на будущее для online/offline) -->
+  <!-- Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
@@ -29,61 +29,78 @@
     <div class="text-xs tracking-[0.35em] text-emerald-400 font-semibold mb-1">
       ELIMAN
     </div>
-    <div class="flex items-center justify-between mb-2">
-      <!-- ✅ добавил id -->
-      <h1 id="pageTitle" class="text-2xl font-bold">Worker Console</h1>
 
-      <div id="onlineBadge"
-           class="px-4 py-1 rounded-full bg-emerald-500 text-xs font-bold text-black">
+    <div class="flex items-center justify-between mb-2">
+      <!-- 🔑 используется в orders.js -->
+      <h1 id="pageTitle" class="text-2xl font-bold">
+        Worker Console
+      </h1>
+
+      <div
+        id="onlineBadge"
+        class="px-4 py-1 rounded-full bg-emerald-500 text-xs font-bold text-black"
+      >
         ONLINE
       </div>
     </div>
 
-    <!-- ✅ добавил id -->
+    <!-- 🔑 используется в orders.js -->
     <p id="pageSubtitle" class="text-sm text-slate-400">
       Новые заказы, доступные по&nbsp;вашим навыкам
     </p>
   </header>
 
-  <!-- СПИСОК ЗАКАЗОВ -->
+  <!-- ORDERS LIST -->
   <main id="ordersList" class="space-y-4 pb-28">
-    <!-- сюда JS будет рендерить карточки заказов -->
+    <!-- cards from orders.js -->
   </main>
 
   <!-- BOTTOM NAV -->
   <nav class="fixed left-0 right-0 bottom-0 px-4 pb-4">
-    <div class="flex rounded-3xl bg-slate-900/95 backdrop-blur border border-slate-800 overflow-hidden">
+    <div
+      class="flex rounded-3xl bg-slate-900/95 backdrop-blur border border-slate-800 overflow-hidden"
+    >
 
-      <!-- TAB: Orders -->
+      <!-- ORDERS -->
       <button
-        class="flex-1 py-3 flex flex-col items-center gap-1 bg-emerald-500 text-black bottom-tab-active">
+        class="flex-1 py-3 flex flex-col items-center gap-1 bg-emerald-500 text-black bottom-tab-active"
+      >
         <span class="text-xl">💼</span>
-        <!-- ✅ добавил id -->
-        <span id="tabOrders" class="text-xs font-semibold">Заказы</span>
+        <!-- 🔑 используется в orders.js -->
+        <span id="tabOrders" class="text-xs font-semibold">
+          Заказы
+        </span>
       </button>
 
-      <!-- TAB: Active -->
+      <!-- ACTIVE -->
       <button
-        class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400">
+        class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400"
+      >
         <span class="text-xl">🕒</span>
-        <!-- ✅ добавил id -->
-        <span id="tabActive" class="text-xs font-medium">Активные</span>
+        <!-- 🔑 используется в orders.js -->
+        <span id="tabActive" class="text-xs font-medium">
+          Активные
+        </span>
       </button>
 
-      <!-- TAB: Profile -->
+      <!-- PROFILE -->
       <button
-        class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400">
+        class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400"
+      >
         <span class="text-xl">👤</span>
-        <!-- ✅ добавил id -->
-        <span id="tabProfile" class="text-xs font-medium">Профиль</span>
+        <!-- 🔑 используется в orders.js -->
+        <span id="tabProfile" class="text-xs font-medium">
+          Профиль
+        </span>
       </button>
 
     </div>
   </nav>
 
-  <!-- Supabase + наш код -->
+  <!-- SUPABASE + LOGIC -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
   <script src="js/orders.js"></script>
+
 </body>
 </html>
