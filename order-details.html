@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Details</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      background: radial-gradient(circle at top, #020617 0%, #000 70%);
+      color: #e5e7eb;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center px-4">
+
+  <div id="orderCard"
+       class="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-start mb-4">
+      <h1 id="serviceName" class="text-xl font-bold"></h1>
+      <button onclick="closePage()" class="text-slate-400 text-xl">✕</button>
+    </div>
+
+    <!-- CLIENT -->
+    <div class="mb-4">
+      <div class="text-xs text-slate-400 mb-1">Client</div>
+      <div id="clientName" class="font-semibold"></div>
+      <div id="clientPhone" class="text-slate-300"></div>
+    </div>
+
+    <!-- ADDRESS -->
+    <div class="mb-4">
+      <div class="text-xs text-slate-400 mb-1">Address</div>
+      <div id="address"></div>
+      <a id="mapsLink" target="_blank"
+         class="text-emerald-400 text-sm font-semibold inline-flex items-center gap-1 mt-1">
+        Open in Maps ↗
+      </a>
+    </div>
+
+    <!-- TIME -->
+    <div class="mb-4">
+      <div class="text-xs text-slate-400 mb-1">Time</div>
+      <div id="datetime"></div>
+    </div>
+
+    <!-- PRICE -->
+    <div class="mb-4">
+      <div class="text-xs text-slate-400 mb-1">Price</div>
+      <div id="price" class="text-2xl font-bold text-emerald-400"></div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="mb-6">
+      <div class="text-xs text-slate-400 mb-1">Notes</div>
+      <div id="notes" class="text-slate-300"></div>
+    </div>
+
+    <!-- ACTION -->
+    <button
+      onclick="acceptOrder()"
+      class="w-full py-3 rounded-2xl bg-emerald-500 text-black font-bold text-lg
+             hover:bg-emerald-400 transition">
+      Accept order
+    </button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/order-details.js"></script>
+</body>
+</html>
