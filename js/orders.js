@@ -1,14 +1,31 @@
 // ================================
-// ORDERS PAGE — BASE VERSION
-// NO FILTERS, NO WORKERS
-// + I18N (EN / RU / ES)
+// ORDERS PAGE — AUTO LANGUAGE FROM WORKERS
 // ================================
 
 // params
 const params = new URLSearchParams(window.location.search);
+let lang = params.get("lang"); // ⬅️ пока может быть null
 
-// язык из URL, по умолчанию RU
-let lang = params.get("lang") || "ru";
+// telegram
+const tg = window.Telegram?.WebApp;
+const telegramId = tg?.initDataUnsafe?.user?.id?.toString();
+
+console.log("ORDERS PAGE");
+console.log("telegramId:", telegramId);
+console.log("lang from URL:", lang);
+
+// supabase check
+if (!window.db) {
+  alert("Supabase not connected");
+  throw new Error("Supabase not connected");
+}
+
+// container
+const list = document.getElementById("ordersList");
+if (!list) {
+  alert("ordersList not found");
+  throw new Error("ordersList missing");
+}
 
 // ================================
 // I18N
@@ -33,59 +50,76 @@ const i18n = {
     errorLoading: "Ошибка загрузки заказов"
   },
   es: {
-    title: "Consola del trabajador",
+    title: "Panel del trabajador",
     subtitle: "Nuevos pedidos disponibles según tus habilidades",
     tabOrders: "Pedidos",
     tabActive: "Activos",
     tabProfile: "Perfil",
-    noOrders: "Aún no hay pedidos",
+    noOrders: "No hay pedidos",
     errorLoading: "Error al cargar pedidos"
   }
 };
 
-// защита
-if (!i18n[lang]) lang = "ru";
-const t = i18n[lang];
-
-console.log("ORDERS PAGE LOADED");
-console.log("lang:", lang);
-
 // ================================
-// APPLY UI TRANSLATION (SAFE)
+// APPLY UI TRANSLATION
 // ================================
-const pageTitle = document.getElementById("pageTitle");
-const pageSubtitle = document.getElementById("pageSubtitle");
-const tabOrders = document.getElementById("tabOrders");
-const tabActive = document.getElementById("tabActive");
-const tabProfile = document.getElementById("tabProfile");
+function applyLang(lang) {
+  const t = i18n[lang] || i18n.ru;
 
-if (pageTitle) pageTitle.textContent = t.title;
-if (pageSubtitle) pageSubtitle.textContent = t.subtitle;
-if (tabOrders) tabOrders.textContent = t.tabOrders;
-if (tabActive) tabActive.textContent = t.tabActive;
-if (tabProfile) tabProfile.textContent = t.tabProfile;
+  const pageTitle = document.getElementById("pageTitle");
+  const pageSubtitle = document.getElementById("pageSubtitle");
+  const tabOrders = document.getElementById("tabOrders");
+  const tabActive = document.getElementById("tabActive");
+  const tabProfile = document.getElementById("tabProfile");
 
-// ================================
-// SUPABASE CHECK
-// ================================
-if (!window.db) {
-  alert("Supabase not connected");
-  throw new Error("Supabase not connected");
+  if (pageTitle) pageTitle.textContent = t.title;
+  if (pageSubtitle) pageSubtitle.textContent = t.subtitle;
+  if (tabOrders) tabOrders.textContent = t.tabOrders;
+  if (tabActive) tabActive.textContent = t.tabActive;
+  if (tabProfile) tabProfile.textContent = t.tabProfile;
 }
 
-// container
-const list = document.getElementById("ordersList");
+// ================================
+// LOAD WORKER LANGUAGE (ONCE)
+// ================================
+async function ensureLanguage() {
+  if (lang) {
+    applyLang(lang);
+    loadOrders(lang);
+    return;
+  }
 
-if (!list) {
-  alert("ordersList not found");
-  throw new Error("ordersList missing");
+  if (!telegramId) {
+    lang = "ru";
+    applyLang(lang);
+    loadOrders(lang);
+    return;
+  }
+
+  const { data, error } = await window.db
+    .from("workers")
+    .select("language")
+    .eq("telegram_id", telegramId)
+    .single();
+
+  if (error || !data?.language) {
+    console.warn("Worker language not found, fallback to RU");
+    lang = "ru";
+  } else {
+    lang = data.language;
+  }
+
+  // 🔥 ОДИН РАЗ ПЕРЕЗАГРУЖАЕМ С lang
+  const newUrl = new URL(window.location.href);
+  newUrl.searchParams.set("lang", lang);
+  window.location.replace(newUrl.toString());
 }
 
 // ================================
 // LOAD ORDERS
 // ================================
-async function loadOrders() {
-  console.log("Loading orders...");
+async function loadOrders(lang) {
+  const t = i18n[lang] || i18n.ru;
 
   const { data, error } = await window.db
     .from("orders")
@@ -93,21 +127,16 @@ async function loadOrders() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(error);
-    list.innerHTML = `
-      <div class="text-red-400 text-center mt-10">
-        ${t.errorLoading}
-      </div>
-    `;
+    list.innerHTML = `<div class="text-red-400 text-center mt-10">
+      ${t.errorLoading}
+    </div>`;
     return;
   }
 
   if (!data || data.length === 0) {
-    list.innerHTML = `
-      <div class="text-slate-400 text-center mt-10">
-        ${t.noOrders}
-      </div>
-    `;
+    list.innerHTML = `<div class="text-slate-400 text-center mt-10">
+      ${t.noOrders}
+    </div>`;
     return;
   }
 
@@ -122,7 +151,6 @@ function renderOrders(orders) {
 
   orders.forEach(order => {
     const card = document.createElement("div");
-
     card.className = `
       bg-slate-800/90
       border border-slate-700
@@ -148,7 +176,7 @@ function renderOrders(orders) {
       </div>
 
       <div class="text-sm text-slate-300 mb-1">
-        📍 ${order.address || "No address"}
+        📍 ${order.address || ""}
       </div>
 
       <div class="text-xs text-slate-400">
@@ -163,4 +191,4 @@ function renderOrders(orders) {
 // ================================
 // START
 // ================================
-loadOrders();
+ensureLanguage();
