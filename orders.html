@@ -49,46 +49,34 @@
   </header>
 
   <!-- ORDERS LIST -->
-  <main id="ordersList" class="space-y-4 pb-28">
-    <!-- cards from orders_v3.js -->
-  </main>
+  <main id="ordersList" class="space-y-4 pb-28"></main>
 
   <!-- BOTTOM NAV -->
   <nav class="fixed left-0 right-0 bottom-0 px-4 pb-4">
-    <div
-      class="flex rounded-3xl bg-slate-900/95 backdrop-blur border border-slate-800 overflow-hidden"
-    >
+    <div class="flex rounded-3xl bg-slate-900/95 backdrop-blur border border-slate-800 overflow-hidden">
 
-      <!-- ORDERS (текущая страница) -->
-      <button
-        class="flex-1 py-3 flex flex-col items-center gap-1 bg-emerald-500 text-black bottom-tab-active"
-      >
+      <!-- ORDERS -->
+      <button class="flex-1 py-3 flex flex-col items-center gap-1 bg-emerald-500 text-black bottom-tab-active">
         <span class="text-xl">💼</span>
-        <span id="tabOrders" class="text-xs font-semibold">
-          Заказы
-        </span>
+        <span id="tabOrders" class="text-xs font-semibold">Заказы</span>
       </button>
 
       <!-- ACTIVE -->
       <button
         class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400"
-        onclick="window.location.href='active.html'" <!-- ✅ -->
+        onclick="window.location.href='active.html'"
       >
         <span class="text-xl">🕒</span>
-        <span id="tabActive" class="text-xs font-medium">
-          Активные
-        </span>
+        <span id="tabActive" class="text-xs font-medium">Активные</span>
       </button>
 
       <!-- PROFILE -->
       <button
         class="flex-1 py-3 flex flex-col items-center gap-1 text-slate-400"
-        onclick="window.location.href='profile.html'" <!-- ✅ -->
+        onclick="window.location.href='profile.html'"
       >
         <span class="text-xl">👤</span>
-        <span id="tabProfile" class="text-xs font-medium">
-          Профиль
-        </span>
+        <span id="tabProfile" class="text-xs font-medium">Профиль</span>
       </button>
 
     </div>
