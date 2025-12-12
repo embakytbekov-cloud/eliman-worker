@@ -1,10 +1,9 @@
 // ================================
 // ORDERS PAGE
 // + $1 ACCEPT LOGIC
-// + SHOW ONLY NEW ORDERS
+// + SHOW ONLY PENDING ORDERS
 // ================================
 
-// URL params
 const params = new URLSearchParams(window.location.search);
 let lang = params.get("lang") || "en";
 
@@ -57,13 +56,13 @@ if (!window.db) {
 }
 
 // ================================
-// LOAD ORDERS (ONLY NEW)
+// LOAD ORDERS (PENDING)
 // ================================
 async function loadOrders() {
   const { data, error } = await window.db
     .from("orders")
     .select("*")
-    .eq("status", "new") // 🔥 КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ
+    .eq("status", "pending")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -163,7 +162,6 @@ async function acceptOrder(orderId) {
     return;
   }
 
-  // 👉 Переход в Active
   window.location.href = "active.html";
 }
 
