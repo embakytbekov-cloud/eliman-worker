@@ -1,18 +1,16 @@
 // ================================
-// ORDERS PAGE — AUTO LANGUAGE FROM WORKERS
+// ORDERS PAGE — FINAL VERSION
+// language FROM workers.language
 // ================================
 
 // params
 const params = new URLSearchParams(window.location.search);
-let lang = params.get("lang"); // ⬅️ пока может быть null
+const workerId = params.get("worker_id");
 
-// telegram
-const tg = window.Telegram?.WebApp;
-const telegramId = tg?.initDataUnsafe?.user?.id?.toString();
-
-console.log("ORDERS PAGE");
-console.log("telegramId:", telegramId);
-console.log("lang from URL:", lang);
+if (!workerId) {
+  alert("worker_id missing");
+  throw new Error("worker_id missing");
+}
 
 // supabase check
 if (!window.db) {
@@ -22,10 +20,7 @@ if (!window.db) {
 
 // container
 const list = document.getElementById("ordersList");
-if (!list) {
-  alert("ordersList not found");
-  throw new Error("ordersList missing");
-}
+if (!list) throw new Error("ordersList missing");
 
 // ================================
 // I18N
@@ -50,93 +45,63 @@ const i18n = {
     errorLoading: "Ошибка загрузки заказов"
   },
   es: {
-    title: "Panel del trabajador",
+    title: "Consola del trabajador",
     subtitle: "Nuevos pedidos disponibles según tus habilidades",
     tabOrders: "Pedidos",
     tabActive: "Activos",
     tabProfile: "Perfil",
-    noOrders: "No hay pedidos",
+    noOrders: "Aún no hay pedidos",
     errorLoading: "Error al cargar pedidos"
   }
 };
 
-// ================================
-// APPLY UI TRANSLATION
-// ================================
-function applyLang(lang) {
-  const t = i18n[lang] || i18n.ru;
-
-  const pageTitle = document.getElementById("pageTitle");
-  const pageSubtitle = document.getElementById("pageSubtitle");
-  const tabOrders = document.getElementById("tabOrders");
-  const tabActive = document.getElementById("tabActive");
-  const tabProfile = document.getElementById("tabProfile");
-
-  if (pageTitle) pageTitle.textContent = t.title;
-  if (pageSubtitle) pageSubtitle.textContent = t.subtitle;
-  if (tabOrders) tabOrders.textContent = t.tabOrders;
-  if (tabActive) tabActive.textContent = t.tabActive;
-  if (tabProfile) tabProfile.textContent = t.tabProfile;
-}
+let t = i18n.en; // временно
 
 // ================================
-// LOAD WORKER LANGUAGE (ONCE)
+// LOAD WORKER LANGUAGE
 // ================================
-async function ensureLanguage() {
-  if (lang) {
-    applyLang(lang);
-    loadOrders(lang);
-    return;
-  }
-
-  if (!telegramId) {
-    lang = "ru";
-    applyLang(lang);
-    loadOrders(lang);
-    return;
-  }
-
+async function loadWorkerLanguage() {
   const { data, error } = await window.db
     .from("workers")
     .select("language")
-    .eq("telegram_id", telegramId)
+    .eq("id", workerId)
     .single();
 
-  if (error || !data?.language) {
-    console.warn("Worker language not found, fallback to RU");
-    lang = "ru";
-  } else {
-    lang = data.language;
+  if (error || !data) {
+    console.error("Worker language error", error);
+    return "en";
   }
 
-  // 🔥 ОДИН РАЗ ПЕРЕЗАГРУЖАЕМ С lang
-  const newUrl = new URL(window.location.href);
-  newUrl.searchParams.set("lang", lang);
-  window.location.replace(newUrl.toString());
+  return data.language || "en";
+}
+
+// ================================
+// APPLY UI TEXT
+// ================================
+function applyUI() {
+  document.getElementById("pageTitle").textContent = t.title;
+  document.getElementById("pageSubtitle").textContent = t.subtitle;
+  document.getElementById("tabOrders").textContent = t.tabOrders;
+  document.getElementById("tabActive").textContent = t.tabActive;
+  document.getElementById("tabProfile").textContent = t.tabProfile;
 }
 
 // ================================
 // LOAD ORDERS
 // ================================
-async function loadOrders(lang) {
-  const t = i18n[lang] || i18n.ru;
-
+async function loadOrders() {
   const { data, error } = await window.db
     .from("orders")
     .select("*")
     .order("created_at", { ascending: false });
 
   if (error) {
-    list.innerHTML = `<div class="text-red-400 text-center mt-10">
-      ${t.errorLoading}
-    </div>`;
+    list.innerHTML = `<div class="text-red-400 text-center mt-10">${t.errorLoading}</div>`;
     return;
   }
 
   if (!data || data.length === 0) {
-    list.innerHTML = `<div class="text-slate-400 text-center mt-10">
-      ${t.noOrders}
-    </div>`;
+    list.innerHTML = `<div class="text-slate-400 text-center mt-10">${t.noOrders}</div>`;
     return;
   }
 
@@ -151,37 +116,20 @@ function renderOrders(orders) {
 
   orders.forEach(order => {
     const card = document.createElement("div");
-    card.className = `
-      bg-slate-800/90
-      border border-slate-700
-      rounded-2xl
-      p-4
-      shadow-lg
-    `;
+    card.className = "bg-slate-800/90 border border-slate-700 rounded-2xl p-4 shadow-lg";
 
     card.innerHTML = `
-      <div class="flex justify-between items-start mb-2">
+      <div class="flex justify-between mb-2">
         <div>
-          <div class="text-lg font-bold text-white">
-            ${order.service_name || "Service"}
-          </div>
-          <div class="text-sm text-slate-400">
-            ${order.service_type || ""}
-          </div>
+          <div class="text-lg font-bold">${order.service_name}</div>
+          <div class="text-sm text-slate-400">${order.service_type}</div>
         </div>
-
         <div class="px-4 py-1 rounded-full bg-emerald-500 text-black font-bold">
-          $${order.price || "--"}
+          $${order.price}
         </div>
       </div>
-
-      <div class="text-sm text-slate-300 mb-1">
-        📍 ${order.address || ""}
-      </div>
-
-      <div class="text-xs text-slate-400">
-        🕒 ${order.date || ""} ${order.time || ""}
-      </div>
+      <div class="text-sm">📍 ${order.address}</div>
+      <div class="text-xs text-slate-400">🕒 ${order.date} ${order.time}</div>
     `;
 
     list.appendChild(card);
@@ -191,4 +139,9 @@ function renderOrders(orders) {
 // ================================
 // START
 // ================================
-ensureLanguage();
+(async () => {
+  const lang = await loadWorkerLanguage();
+  t = i18n[lang] || i18n.en;
+  applyUI();
+  loadOrders();
+})();
