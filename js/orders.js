@@ -1,13 +1,13 @@
 // ================================
 // ORDERS PAGE — BASE VERSION
 // NO FILTERS, NO WORKERS
-// + I18N (EN/RU/ES)
+// + I18N (EN / RU / ES)
 // ================================
 
 // params
 const params = new URLSearchParams(window.location.search);
 
-// ✅ язык из URL, по умолчанию RU (потому что у тебя html lang="ru")
+// язык из URL, по умолчанию RU
 let lang = params.get("lang") || "ru";
 
 // ================================
@@ -24,16 +24,16 @@ const i18n = {
     errorLoading: "Error loading orders"
   },
   ru: {
-    title: "Worker Console",
+    title: "Консоль работника",
     subtitle: "Новые заказы, доступные по вашим навыкам",
     tabOrders: "Заказы",
     tabActive: "Активные",
     tabProfile: "Профиль",
-    noOrders: "No orders yet",
+    noOrders: "Нет заказов",
     errorLoading: "Ошибка загрузки заказов"
   },
   es: {
-    title: "Worker Console",
+    title: "Consola del trabajador",
     subtitle: "Nuevos pedidos disponibles según tus habilidades",
     tabOrders: "Pedidos",
     tabActive: "Activos",
@@ -43,13 +43,16 @@ const i18n = {
   }
 };
 
+// защита
 if (!i18n[lang]) lang = "ru";
 const t = i18n[lang];
 
 console.log("ORDERS PAGE LOADED");
 console.log("lang:", lang);
 
-// ✅ применяем перевод к UI (если элементы есть — чтобы ничего не ломалось)
+// ================================
+// APPLY UI TRANSLATION (SAFE)
+// ================================
 const pageTitle = document.getElementById("pageTitle");
 const pageSubtitle = document.getElementById("pageSubtitle");
 const tabOrders = document.getElementById("tabOrders");
@@ -62,7 +65,9 @@ if (tabOrders) tabOrders.textContent = t.tabOrders;
 if (tabActive) tabActive.textContent = t.tabActive;
 if (tabProfile) tabProfile.textContent = t.tabProfile;
 
-// supabase check
+// ================================
+// SUPABASE CHECK
+// ================================
 if (!window.db) {
   alert("Supabase not connected");
   throw new Error("Supabase not connected");
@@ -89,16 +94,20 @@ async function loadOrders() {
 
   if (error) {
     console.error(error);
-    list.innerHTML = `<div class="text-red-400 text-center mt-10">
-      ${t.errorLoading}
-    </div>`;
+    list.innerHTML = `
+      <div class="text-red-400 text-center mt-10">
+        ${t.errorLoading}
+      </div>
+    `;
     return;
   }
 
   if (!data || data.length === 0) {
-    list.innerHTML = `<div class="text-slate-400 text-center mt-10">
-      ${t.noOrders}
-    </div>`;
+    list.innerHTML = `
+      <div class="text-slate-400 text-center mt-10">
+        ${t.noOrders}
+      </div>
+    `;
     return;
   }
 
