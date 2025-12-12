@@ -1,12 +1,12 @@
 // ================================
 // ORDERS PAGE
 // + $1 ACCEPT LOGIC
+// + SHOW ONLY NEW ORDERS
 // ================================
 
+// URL params
 const params = new URLSearchParams(window.location.search);
-const urlLang = params.get("lang") || "en";
-
-let lang = urlLang;
+let lang = params.get("lang") || "en";
 
 // ================================
 // I18N
@@ -57,22 +57,29 @@ if (!window.db) {
 }
 
 // ================================
-// LOAD ORDERS
+// LOAD ORDERS (ONLY NEW)
 // ================================
 async function loadOrders() {
   const { data, error } = await window.db
     .from("orders")
     .select("*")
-    .eq("status", "new")
+    .eq("status", "new") // 🔥 КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ
     .order("created_at", { ascending: false });
 
   if (error) {
-    list.innerHTML = `<div class="text-red-400 text-center mt-10">${t.errorLoading}</div>`;
+    console.error(error);
+    list.innerHTML = `
+      <div class="text-red-400 text-center mt-10">
+        ${t.errorLoading}
+      </div>`;
     return;
   }
 
   if (!data || data.length === 0) {
-    list.innerHTML = `<div class="text-slate-400 text-center mt-10">${t.noOrders}</div>`;
+    list.innerHTML = `
+      <div class="text-slate-400 text-center mt-10">
+        ${t.noOrders}
+      </div>`;
     return;
   }
 
@@ -105,6 +112,7 @@ function renderOrders(orders) {
             ${order.service_type || ""}
           </div>
         </div>
+
         <div class="px-3 py-1 rounded-full bg-emerald-500 text-black font-bold">
           $${order.price || "--"}
         </div>
@@ -115,7 +123,8 @@ function renderOrders(orders) {
       </div>
 
       <button
-        class="w-full py-2 rounded-xl bg-emerald-500 text-black font-bold"
+        class="w-full py-2 rounded-xl bg-emerald-500 text-black font-bold
+               hover:bg-emerald-400 transition"
         onclick="acceptOrder('${order.id}')"
       >
         ${t.accept}
@@ -149,12 +158,12 @@ async function acceptOrder(orderId) {
     .eq("id", orderId);
 
   if (error) {
-    alert("Error accepting order");
     console.error(error);
+    alert("Error accepting order");
     return;
   }
 
-  // 👉 идём в Active
+  // 👉 Переход в Active
   window.location.href = "active.html";
 }
 
