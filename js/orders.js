@@ -1,6 +1,7 @@
 // ================================
 // ORDERS PAGE — BASE VERSION
 // + AUTO LANGUAGE FROM WORKER
+// + VIEW DETAILS BUTTON
 // ================================
 
 // URL params
@@ -20,16 +21,18 @@ const i18n = {
     tabActive: "Active",
     tabProfile: "Profile",
     noOrders: "No orders yet",
-    errorLoading: "Error loading orders"
+    errorLoading: "Error loading orders",
+    viewDetails: "View details →"
   },
   ru: {
-    title: "Worker Console",
+    title: "Консоль работника",
     subtitle: "Новые заказы, доступные по вашим навыкам",
     tabOrders: "Заказы",
     tabActive: "Активные",
     tabProfile: "Профиль",
     noOrders: "Заказов пока нет",
-    errorLoading: "Ошибка загрузки заказов"
+    errorLoading: "Ошибка загрузки заказов",
+    viewDetails: "Подробнее →"
   },
   es: {
     title: "Consola del trabajador",
@@ -38,11 +41,13 @@ const i18n = {
     tabActive: "Activos",
     tabProfile: "Perfil",
     noOrders: "Aún no hay pedidos",
-    errorLoading: "Error al cargar pedidos"
+    errorLoading: "Error al cargar pedidos",
+    viewDetails: "Ver detalles →"
   }
 };
 
 let lang = "en"; // fallback
+let t = i18n.en;
 
 // ================================
 // DOM
@@ -69,7 +74,8 @@ if (!list) {
 // ================================
 function applyLanguage(langKey) {
   if (!i18n[langKey]) langKey = "en";
-  const t = i18n[langKey];
+  t = i18n[langKey];
+  lang = langKey;
 
   if (pageTitle) pageTitle.textContent = t.title;
   if (pageSubtitle) pageSubtitle.textContent = t.subtitle;
@@ -84,13 +90,12 @@ function applyLanguage(langKey) {
 // LOAD WORKER LANGUAGE
 // ================================
 async function detectLanguage() {
-  // 1️⃣ URL имеет приоритет
+  // 1️⃣ URL priority
   if (urlLang && i18n[urlLang]) {
-    lang = urlLang;
-    return applyLanguage(lang);
+    return applyLanguage(urlLang);
   }
 
-  // 2️⃣ берём из workers по telegram_id
+  // 2️⃣ From workers table
   const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
   if (tg?.id) {
@@ -101,36 +106,38 @@ async function detectLanguage() {
       .single();
 
     if (!error && data?.language && i18n[data.language]) {
-      lang = data.language;
-      return applyLanguage(lang);
+      return applyLanguage(data.language);
     }
   }
 
-  // 3️⃣ fallback
-  lang = "en";
-  return applyLanguage(lang);
+  // 3️⃣ fallback EN
+  return applyLanguage("en");
 }
 
 // ================================
 // LOAD ORDERS
 // ================================
-async function loadOrders(t) {
+async function loadOrders() {
   const { data, error } = await window.db
     .from("orders")
     .select("*")
     .order("created_at", { ascending: false });
 
   if (error) {
-    list.innerHTML = `<div class="text-red-400 text-center mt-10">
-      ${t.errorLoading}
-    </div>`;
+    list.innerHTML = `
+      <div class="text-red-400 text-center mt-10">
+        ${t.errorLoading}
+      </div>
+    `;
     return;
   }
 
   if (!data || data.length === 0) {
-    list.innerHTML = `<div class="text-slate-400 text-center mt-10">
-      ${t.noOrders}
-    </div>`;
+    list.innerHTML = `
+      <div class="text-slate-400 text-center mt-10">
+        ${t.noOrders}
+      </div>
+    `;
     return;
   }
 
@@ -173,9 +180,16 @@ function renderOrders(orders) {
         📍 ${order.address || ""}
       </div>
 
-      <div class="text-xs text-slate-400">
+      <div class="text-xs text-slate-400 mb-3">
         🕒 ${order.date || ""} ${order.time || ""}
       </div>
+
+      <button
+        class="w-full py-2 rounded-xl border border-emerald-500 text-emerald-400 font-semibold
+               hover:bg-emerald-500 hover:text-black transition"
+        onclick="openOrderDetails(${order.id})">
+        ${t.viewDetails}
+      </button>
     `;
 
     list.appendChild(card);
@@ -183,9 +197,16 @@ function renderOrders(orders) {
 }
 
 // ================================
+// OPEN DETAILS
+// ================================
+function openOrderDetails(orderId) {
+  window.location.href = `order-details.html?id=${orderId}&lang=${lang}`;
+}
+
+// ================================
 // START
 // ================================
 (async () => {
-  const t = await detectLanguage();
-  await loadOrders(t);
-})(); 
+  await detectLanguage();
+  await loadOrders();
+})();
