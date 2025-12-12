@@ -188,4 +188,4 @@ function renderOrders(orders) {
 (async () => {
   const t = await detectLanguage();
   await loadOrders(t);
-})();
+})(); 
