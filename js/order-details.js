@@ -107,4 +107,4 @@ async function acceptOrder() {
 // ================================
 function closePage() {
   window.history.back();
-}
+} 
