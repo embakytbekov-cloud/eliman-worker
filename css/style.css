@@ -1,41 +1,83 @@
-/* FIX: Telegram iOS zoom */
+/* ================================
+   FIX: Telegram iOS zoom
+   ================================ */
 input, select, textarea, button {
     font-size: 16px !important;
 }
 
+/* ================================
+   COLOR VARIABLES (GLOBAL)
+   ================================ */
+:root {
+    --bg-main: #020617;          /* очень тёмный фон */
+    --bg-card: #0b1220;          /* карточки */
+    --bg-soft: #111827;          /* инпуты */
+
+    --accent: #14b8a6;           /* TEAL (сине-зелёный) */
+    --accent-hover: #2dd4bf;
+    --accent-glow: rgba(20, 184, 166, 0.55);
+
+    --text-main: #e5e7eb;
+    --text-muted: rgba(229,231,235,0.7);
+}
+
+/* ================================
+   INPUTS
+   ================================ */
 .input {
     width: 100%;
     padding: 14px;
     border-radius: 10px;
-    background: #1e1e1e;
-    color: white;
+    background: var(--bg-soft);
+    color: var(--text-main);
+    border: 1px solid #1f2937;
 }
 
+/* ================================
+   BUTTONS (TEAL)
+   ================================ */
 .btn {
     width: 100%;
-    background: #22c55e;
+    background: var(--accent);
     padding: 14px;
-    border-radius: 10px;
+    border-radius: 12px;
     text-align: center;
     font-weight: 700;
     font-size: 18px;
+    color: #021617;
+    box-shadow: 0 0 18px var(--accent-glow);
+    transition: all 0.2s ease;
 }
 
+.btn:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 0 28px var(--accent-glow);
+}
+
+/* ================================
+   CATEGORY CARDS
+   ================================ */
 .cat {
-    background: #1d1f24;
+    background: var(--bg-card);
     padding: 15px;
-    border-radius: 12px;
+    border-radius: 14px;
+    border: 1px solid #1f2937;
 }
 
 .cat-title {
     font-size: 18px;
     font-weight: 700;
+    color: var(--text-main);
 }
 
 .cat-sub {
     font-size: 14px;
-    opacity: 0.7;
+    color: var(--text-muted);
 }
+
+/* ================================
+   PHOTO / FIXES
+   ================================ */
 .photo-box {
     z-index: 1;
 }
