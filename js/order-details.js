@@ -1,5 +1,5 @@
 // ================================
-// ORDER DETAILS — FIXED VERSION
+// ORDER DETAILS — FIXED & CLEAN
 // ================================
 
 const params = new URLSearchParams(window.location.search);
@@ -10,7 +10,9 @@ if (!orderId) {
   throw new Error("Order ID missing");
 }
 
-// DOM (ТОЧНО как в HTML)
+// ================================
+// DOM ELEMENTS (MUST MATCH HTML)
+// ================================
 const serviceName = document.getElementById("serviceName");
 const clientName = document.getElementById("clientName");
 const clientPhone = document.getElementById("clientPhone");
@@ -19,6 +21,7 @@ const mapsLink = document.getElementById("mapsLink");
 const datetimeEl = document.getElementById("datetime");
 const priceEl = document.getElementById("price");
 const notesEl = document.getElementById("notes");
+const acceptBtn = document.getElementById("acceptOrderBtn");
 
 if (!window.db) {
   alert("Supabase not connected");
@@ -26,7 +29,7 @@ if (!window.db) {
 }
 
 // ================================
-// LOAD ORDER
+// LOAD ORDER DETAILS
 // ================================
 async function loadOrder() {
   const { data, error } = await window.db
@@ -55,34 +58,50 @@ async function loadOrder() {
   } else {
     mapsLink.style.display = "none";
   }
+
+  // 🔥 IMPORTANT: $1 ONLY HERE
+  if (acceptBtn) {
+    acceptBtn.textContent = "Принять заказ — $1";
+  }
 }
 
 loadOrder();
 
 // ================================
-// ACCEPT ORDER ($1 LOGIC LATER)
+// ACCEPT ORDER (NO REAL PAYMENT YET)
 // ================================
 async function acceptOrder() {
-  const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
-  if (!tg?.id) {
+  if (!tgUser?.id) {
     alert("Telegram user not found");
     return;
   }
 
-  // Получаем worker
-  const { data: worker, error: wErr } = await window.db
+  // Disable button to prevent double click
+  if (acceptBtn) {
+    acceptBtn.disabled = true;
+    acceptBtn.textContent = "Обрабатывается...";
+  }
+
+  // Get worker by telegram_id
+  const { data: worker, error: workerError } = await window.db
     .from("workers")
     .select("id")
-    .eq("telegram_id", String(tg.id))
+    .eq("telegram_id", String(tgUser.id))
     .single();
 
-  if (wErr || !worker) {
+  if (workerError || !worker) {
     alert("Worker not found");
+
+    if (acceptBtn) {
+      acceptBtn.disabled = false;
+      acceptBtn.textContent = "Принять заказ — $1";
+    }
     return;
   }
 
-  // Обновляем заказ
+  // Update order (protect from double accept)
   const { error } = await window.db
     .from("orders")
     .update({
@@ -90,15 +109,20 @@ async function acceptOrder() {
       worker_id: worker.id
     })
     .eq("id", orderId)
-    .eq("status", "new"); // 🔥 ВАЖНО: совпадает с orders page
+    .eq("status", "new"); // 🔥 VERY IMPORTANT
 
   if (error) {
     alert("Order already accepted");
     console.error(error);
+
+    if (acceptBtn) {
+      acceptBtn.disabled = false;
+      acceptBtn.textContent = "Принять заказ — $1";
+    }
     return;
   }
 
-  // 👉 В Active
+  // Go to Active Orders
   window.location.href = "active.html";
 }
 
@@ -107,4 +131,4 @@ async function acceptOrder() {
 // ================================
 function closePage() {
   window.history.back();
-} 
+}
