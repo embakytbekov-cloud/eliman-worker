@@ -18,8 +18,9 @@
 
 <body class="min-h-screen flex items-center justify-center px-4">
 
-  <div id="orderCard"
-       class="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+  <div
+    class="w-full max-w-md bg-slate-900/90 border border-slate-800
+           rounded-3xl p-6 shadow-2xl">
 
     <!-- HEADER -->
     <div class="flex justify-between items-start mb-4">
@@ -38,8 +39,10 @@
     <div class="mb-4">
       <div class="text-xs text-slate-400 mb-1">Address</div>
       <div id="address"></div>
-      <a id="mapsLink" target="_blank"
-         class="text-emerald-400 text-sm font-semibold inline-flex items-center gap-1 mt-1">
+      <a
+        id="mapsLink"
+        target="_blank"
+        class="text-emerald-400 text-sm font-semibold inline-flex items-center gap-1 mt-1">
         Open in Maps ↗
       </a>
     </div>
@@ -64,8 +67,10 @@
 
     <!-- ACTION -->
     <button
+      id="acceptOrderBtn"
       onclick="acceptOrder()"
-      class="w-full py-3 rounded-2xl bg-emerald-500 text-black font-bold text-lg
+      class="w-full py-3 rounded-2xl bg-emerald-500
+             text-black font-bold text-lg
              hover:bg-emerald-400 transition">
       Accept order
     </button>
@@ -75,4 +80,4 @@
   <script src="js/supabase.js"></script>
   <script src="js/order-details.js"></script>
 </body>
-</html> 
+</html>
