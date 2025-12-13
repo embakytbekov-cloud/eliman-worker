@@ -1,7 +1,7 @@
 // ================================
-// ORDERS PAGE
-// + $1 ACCEPT LOGIC
-// + SHOW ONLY PENDING ORDERS
+// ORDERS PAGE — FIXED VERSION
+// SHOW ONLY PENDING ORDERS
+// NO $1 HERE
 // ================================
 
 const params = new URLSearchParams(window.location.search);
@@ -16,24 +16,21 @@ const i18n = {
     subtitle: "New orders available for your skills",
     noOrders: "No orders yet",
     errorLoading: "Error loading orders",
-    accept: "Accept job — $1",
-    confirmAccept: "Accepting this job costs $1. Continue?"
+    details: "View details"
   },
   ru: {
     title: "Консоль работника",
     subtitle: "Новые заказы, доступные по вашим навыкам",
     noOrders: "Заказов пока нет",
     errorLoading: "Ошибка загрузки заказов",
-    accept: "Принять заказ — $1",
-    confirmAccept: "Принятие заказа стоит $1. Продолжить?"
+    details: "Подробнее"
   },
   es: {
     title: "Consola del trabajador",
     subtitle: "Nuevos pedidos disponibles según tus habilidades",
     noOrders: "No hay pedidos",
     errorLoading: "Error al cargar pedidos",
-    accept: "Aceptar trabajo — $1",
-    confirmAccept: "Aceptar este trabajo cuesta $1. ¿Continuar?"
+    details: "Ver detalles"
   }
 };
 
@@ -124,9 +121,9 @@ function renderOrders(orders) {
       <button
         class="w-full py-2 rounded-xl bg-emerald-500 text-black font-bold
                hover:bg-emerald-400 transition"
-        onclick="acceptOrder('${order.id}')"
+        onclick="openDetails('${order.id}')"
       >
-        ${t.accept}
+        ${t.details}
       </button>
     `;
 
@@ -135,34 +132,10 @@ function renderOrders(orders) {
 }
 
 // ================================
-// ACCEPT ORDER ($1)
+// OPEN DETAILS PAGE
 // ================================
-async function acceptOrder(orderId) {
-  const ok = confirm(t.confirmAccept);
-  if (!ok) return;
-
-  const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  if (!tg?.id) {
-    alert("Telegram user not found");
-    return;
-  }
-
-  const { error } = await window.db
-    .from("orders")
-    .update({
-      status: "active",
-      accepted_by: String(tg.id),
-      accept_fee_paid: true
-    })
-    .eq("id", orderId);
-
-  if (error) {
-    console.error(error);
-    alert("Error accepting order");
-    return;
-  }
-
-  window.location.href = "active.html";
+function openDetails(orderId) {
+  window.location.href = `order-details.html?id=${orderId}&lang=${lang}`;
 }
 
 // ================================
