@@ -1,88 +1,50 @@
 /* ================================
-   FIX: Telegram iOS zoom
+   BOTTOM NAV — PREMIUM TEAL STYLE
    ================================ */
-input, select, textarea, button {
-    font-size: 16px !important;
-}
 
-/* ================================
-   COLOR VARIABLES (GLOBAL)
-   ================================ */
-:root {
-    --bg-main: #020617;          /* очень тёмный фон */
-    --bg-card: #0b1220;          /* карточки */
-    --bg-soft: #111827;          /* инпуты */
-
-    --accent: #14b8a6;           /* TEAL (сине-зелёный) */
-    --accent-hover: #2dd4bf;
-    --accent-glow: rgba(20, 184, 166, 0.55);
-
-    --text-main: #e5e7eb;
-    --text-muted: rgba(229,231,235,0.7);
-}
-
-/* ================================
-   INPUTS
-   ================================ */
-.input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 10px;
-    background: var(--bg-soft);
-    color: var(--text-main);
+.bottom-nav {
+    background: rgba(10, 15, 30, 0.85);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     border: 1px solid #1f2937;
+    border-radius: 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.6);
 }
 
-/* ================================
-   BUTTONS (TEAL)
-   ================================ */
-.btn {
-    width: 100%;
-    background: var(--accent);
-    padding: 14px;
-    border-radius: 12px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 18px;
-    color: #021617;
-    box-shadow: 0 0 18px var(--accent-glow);
-    transition: all 0.2s ease;
+/* TAB */
+.bottom-tab {
+    flex: 1;
+    padding: 14px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all .25s ease;
+    background: transparent;
 }
 
-.btn:hover {
-    background: var(--accent-hover);
-    box-shadow: 0 0 28px var(--accent-glow);
+/* ICON */
+.bottom-tab .icon {
+    font-size: 20px;
 }
 
-/* ================================
-   CATEGORY CARDS
-   ================================ */
-.cat {
-    background: var(--bg-card);
-    padding: 15px;
-    border-radius: 14px;
-    border: 1px solid #1f2937;
-}
-
-.cat-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-main);
-}
-
-.cat-sub {
-    font-size: 14px;
-    color: var(--text-muted);
-}
-
-/* ================================
-   PHOTO / FIXES
-   ================================ */
-.photo-box {
-    z-index: 1;
-}
-
-#finishBtn {
+/* ACTIVE TAB */
+.bottom-tab.active {
+    color: #14b8a6;
     position: relative;
-    z-index: 10;
+}
+
+/* ACTIVE DOT */
+.bottom-tab.active::after {
+    content: "";
+    position: absolute;
+    bottom: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #14b8a6;
+    box-shadow: 0 0 12px rgba(20,184,166,.8);
 }
